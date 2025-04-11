@@ -2,6 +2,7 @@ import { Text, StyleSheet, TextInput, Alert, ScrollView, View, Pressable } from 
 import { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { Colors } from "@/constants/Colors";
+import { ThemedText } from "@/components/ThemedText";
 
 export default function NewSpiderScreen() {
   const [name, setName] = useState<string>();
@@ -30,16 +31,16 @@ export default function NewSpiderScreen() {
 
   return (
     <ScrollView
-      style={[styles.container, { backgroundColor: Colors.light.background }]}
+      style={[styles.container]}
       contentContainerStyle={styles.contentContainer}
       keyboardShouldPersistTaps="handled"
     >
       <View style={styles.centered}>
-        <Text style={[styles.headerText, { color: Colors.light.text }]}>Dodaj nowego pająka</Text>
-        <Text style={[styles.subHeaderText, { color: Colors.light.text }]}>Uzupełnij informacje o pająku</Text>
+        <ThemedText style={[styles.headerText]}>Dodaj nowego pająka</ThemedText>
+        <ThemedText style={[styles.subHeaderText]}>Uzupełnij informacje o pająku</ThemedText>
       </View>
 
-      <Text style={[styles.label, { color: Colors.light.text }]}>Imię</Text>
+      <ThemedText style={[styles.label]}>Imię</ThemedText>
       <TextInput
         value={name}
         onChangeText={setName}
@@ -49,7 +50,7 @@ export default function NewSpiderScreen() {
         autoCapitalize="words"
       />
 
-      <Text style={[styles.label, { color: Colors.light.text }]}>Wiek</Text>
+      <ThemedText style={[styles.label, { color: Colors.light.text }]}>Wiek</ThemedText>
       <TextInput
         value={age}
         onChangeText={setAge}
@@ -58,7 +59,7 @@ export default function NewSpiderScreen() {
         placeholderTextColor={Colors.light.icon}
       />
 
-      <Text style={[styles.label, { color: Colors.light.text }]}>Pochodzenie</Text>
+      <ThemedText style={[styles.label]}>Pochodzenie</ThemedText>
       <Picker
         selectedValue={origin}
         onValueChange={(itemValue) => setOrigin(itemValue)}
@@ -73,7 +74,7 @@ export default function NewSpiderScreen() {
         <Picker.Item label="Europa" value="europe" />
       </Picker>
 
-      <Text style={[styles.label, { color: Colors.light.text }]}>Ostatnio karmiony</Text>
+      <ThemedText style={[styles.label]}>Ostatnio karmiony</ThemedText>
       <TextInput
         value={lastFed}
         onChangeText={setLastFed}
@@ -82,7 +83,7 @@ export default function NewSpiderScreen() {
         placeholderTextColor={Colors.light.icon}
       />
 
-      <Text style={[styles.label, { color: Colors.light.text }]}>Częstotliwość karmienia</Text>
+      <ThemedText style={[styles.label]}>Częstotliwość karmienia</ThemedText>
       <Picker
         selectedValue={feedingFrequency}
         onValueChange={(itemValue) => setFeedingFrequency(itemValue)}
@@ -97,7 +98,7 @@ export default function NewSpiderScreen() {
         <Picker.Item label="Rzadziej" value="rarely" />
       </Picker>
 
-      <Text style={[styles.label, { color: Colors.light.text }]}>Data ostatniego linienia</Text>
+      <ThemedText style={[styles.label]}>Data ostatniego linienia</ThemedText>
       <TextInput
         value={lastMolt}
         onChangeText={setLastMolt}
@@ -107,7 +108,7 @@ export default function NewSpiderScreen() {
       />
 
       <Pressable style={[styles.button, { backgroundColor: Colors.light.tint }]} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Zapisz pająka</Text>
+        <ThemedText style={styles.buttonText}>Zapisz pająka</ThemedText>
       </Pressable>
     </ScrollView>
   );
@@ -149,7 +150,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
-    color: "#fff",
     fontSize: 18,
   },
   headerText: {
