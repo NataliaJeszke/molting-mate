@@ -8,6 +8,7 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useUserStore } from "@/store/userStore";
+import { FontAwesome6, MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -48,7 +49,7 @@ export default function TabLayout() {
         options={{
           title: "Linienie",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <IconSymbol size={28} name="tshirt.fill" color={color} />
           ),
         }}
       />
@@ -57,7 +58,7 @@ export default function TabLayout() {
         options={{
           title: "Karmienie",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <FontAwesome6 name="utensils" size={28} color={color} />
           ),
         }}
       />
@@ -66,7 +67,16 @@ export default function TabLayout() {
         options={{
           title: "Kolekcja",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <FontAwesome6 name="bugs" size={28} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profil",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="spider-web" size={28} color={color} />
           ),
         }}
       />

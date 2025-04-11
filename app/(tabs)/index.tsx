@@ -7,31 +7,41 @@ import {
   View,
 } from "react-native";
 
-import { ThemedText } from "@/components/ThemedText";
-import SpiderList from "@/components/commons/SpiderList/SpiderList";
 import { useRouter } from "expo-router";
+
+import Feather from "@expo/vector-icons/build/Feather";
+import { AntDesign } from "@expo/vector-icons";
+
+import SpiderList from "@/components/commons/SpiderList/SpiderList";
 
 export default function HomeScreen() {
   const router = useRouter();
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Szukaj pająka..."
-          placeholderTextColor="#888"
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => router.push("/newSpider")}
-        >
-          <ThemedText style={styles.buttonText}>Dodaj pająka</ThemedText>
-        </TouchableOpacity>
+        <View style={styles.topBar}>
+          <TouchableOpacity
+            onPress={() => {
+              console.log("Ulubione pająki");
+              router.push("/favourites");
+            }}
+          >
+            <AntDesign name="heart" size={24} color="#e63946" />
+          </TouchableOpacity>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Szukaj pająka..."
+            placeholderTextColor="#888"
+          />
+          <TouchableOpacity onPress={() => router.push("/newSpider")}>
+            <Feather name="plus-circle" size={28} color="#1a759f" />
+          </TouchableOpacity>
+        </View>
         <ScrollView>
-          <SpiderList title="🕷️ Pająki przed linieniem" />
-          <SpiderList title="🍽️ Pająki przed karmieniem" />
-          <SpiderList title="❤️ Pająki ulubione" />
-          <SpiderList title="🕸️ Pająki po linieniu" />
+          <SpiderList title="Przed linieniem" />
+          <SpiderList title="Głodne" />
+          <SpiderList title="Po linieniu" />
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -58,29 +68,25 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
 
-  button: {
-    backgroundColor: "#1a759f",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 8,
-  },
-
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    textAlign: "center",
+  topBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    gap: 12,
   },
 
   searchInput: {
-    backgroundColor: "#f1f1f1",
-    padding: 10,
-    margin: 16,
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 8,
     fontSize: 16,
     borderColor: "#ccc",
     borderWidth: 1,
+    marginHorizontal: 8,
   },
 });
