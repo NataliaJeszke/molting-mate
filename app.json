@@ -36,6 +36,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "fee69385-8b65-4794-aa34-efdb222d844b"
+      }
+    },
+    "owner": "nataliafrontend-org"
   }
 }
