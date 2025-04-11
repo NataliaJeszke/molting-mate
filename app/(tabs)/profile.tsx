@@ -8,6 +8,7 @@ import {
   Switch,
 } from "react-native";
 import { useUserStore } from "@/store/userStore";
+import { ThemedText } from "@/components/ThemedText";
 
 export default function ProfileScreen() {
   const { currentTheme, toggleTheme } = useUserStore();
@@ -16,7 +17,7 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.switchContainer}>
-        <Text style={styles.switchLabel}>Przełącz motyw:</Text>
+        <ThemedText style={styles.switchLabel}>Przełącz motyw:</ThemedText>
         <Switch
           value={currentTheme === "dark"}
           onValueChange={toggleTheme}

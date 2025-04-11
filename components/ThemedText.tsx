@@ -1,6 +1,7 @@
 import { Text, type TextProps, StyleSheet } from 'react-native';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { useUserStore } from '@/store/userStore';
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
@@ -15,7 +16,49 @@ export function ThemedText({
   type = 'default',
   ...rest
 }: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+  const { currentTheme } = useUserStore(); 
+  let color;
+  if (currentTheme === 'light') {
+    switch (type) {
+      case 'default':
+        color = lightColor || '#000000';
+        break;
+      case 'title':
+        color = lightColor || '#2E2E2E';
+        break;
+      case 'defaultSemiBold':
+        color = lightColor || '#333333';
+        break;
+      case 'subtitle':
+        color = lightColor || '#4A4A4A';
+        break;
+      case 'link':
+        color = lightColor || '#007BFF';
+        break;
+      default:
+        color = lightColor || '#1C1C1C';
+    }
+  } else {
+    switch (type) {
+      case 'default':
+        color = darkColor || '#FFFFFF';
+        break;
+      case 'title':
+        color = darkColor || '#E0E0E0';
+        break;
+      case 'defaultSemiBold':
+        color = darkColor || '#CCCCCC';
+        break;
+      case 'subtitle':
+        color = darkColor || '#B0B0B0';
+        break;
+      case 'link':
+        color = darkColor || '#1E90FF';
+        break;
+      default:
+        color = darkColor || '#FFFFFF';
+    }
+  }
 
   return (
     <Text
