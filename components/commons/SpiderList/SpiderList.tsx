@@ -2,10 +2,12 @@ import React, { useRef, useState } from "react";
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
+import { useUserStore } from "@/store/userStore";
+
+import { Colors, ThemeType } from "@/constants/Colors";
+
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
-import { useUserStore } from "@/store/userStore";
-import { Colors, ThemeType } from "@/constants/Colors";
 
 type Spider = {
   id: string;
