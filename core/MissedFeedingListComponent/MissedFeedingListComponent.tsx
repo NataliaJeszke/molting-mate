@@ -1,5 +1,6 @@
 import React from "react";
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
+import { MissedFeedingListMsg } from "./MissedFeedingList.constants";
 
 const MissedFeedingListComponent = () => {
   const missedFeedingSpiders = [
@@ -15,6 +16,7 @@ const MissedFeedingListComponent = () => {
     <SpiderList
       title="Głodne pająki"
       data={missedFeedingSpiders}
+      info={MissedFeedingListMsg.INFORMATION}
     />
   );
 };

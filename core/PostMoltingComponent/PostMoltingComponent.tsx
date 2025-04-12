@@ -1,5 +1,6 @@
 import React from "react";
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
+import { PostMoltingMsg } from "./PostMolting.constants";
 
 const PostMoltingListComponent = () => {
   const postMoltingSpiders = [
@@ -11,6 +12,7 @@ const PostMoltingListComponent = () => {
     <SpiderList
       title="Pająki po linieniu"
       data={postMoltingSpiders}
+      info={PostMoltingMsg.INFORMATION}
     />
   );
 };

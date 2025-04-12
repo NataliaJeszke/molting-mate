@@ -1,25 +1,10 @@
-import {
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    View,
-  } from "react-native";
-  import SpiderList from "@/components/commons/SpiderList/SpiderList";
-  
-  export default function Collection() {
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <ScrollView>
-            <SpiderList title="Kolekcja" />
-          </ScrollView>
-        </View>
-      </SafeAreaView>
-    );
-  }
-  
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-  });
+import WrapperComponent from "@/components/ui/WrapperComponent";
+import CollectionListComponent from "@/core/CollectionListComponent/CollectionListComponent";
+
+export default function Collection() {
+  return (
+    <WrapperComponent>
+      <CollectionListComponent />
+    </WrapperComponent>
+  );
+}
