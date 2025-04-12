@@ -3,6 +3,8 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
+export type ThemeType = 'light' | 'dark';
+
 const tintColorLight = '#2e1a47';
 const tintColorDark = '#c9a7f5';
 
@@ -18,6 +20,15 @@ export const Colors = {
       backgroundColor: '#ffffff',
       borderColor: '#a855f7',
       borderWidth: 0,
+    },
+    searchBar: {
+      backgroundColor: '#ffffff',
+      borderColor: '#C0C0C0',
+      borderWidth: 0.5,
+    },
+    dot: {
+      inactive: '#C0C0C0',
+      active: '#2e1a47',
     }
   },
   dark: {
@@ -31,6 +42,15 @@ export const Colors = {
       backgroundColor: '#1f1f1f',
       borderColor: '#6a4c9c',
       borderWidth: 0.5,
+    },
+    searchBar: {
+      backgroundColor: '#1f1f1f',
+      borderColor: '#6a4c9c',
+      borderWidth: 0.5,
+    },
+    dot: {
+      inactive: '#C0C0C0',
+      active: '#2e1a47',
     }
   },
 };
