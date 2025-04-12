@@ -1,10 +1,6 @@
-import {
-  StyleSheet,
-  Button,
-  Switch,
-} from "react-native";
+import { StyleSheet, Button, Switch } from "react-native";
 import { useUserStore } from "@/store/userStore";
-import { ThemedText } from "@/components/ThemedText";
+import { ThemedText } from "@/components/ui/ThemedText";
 import WrapperComponent from "@/components/ui/WrapperComponent";
 import { Theme } from "@/constants/Theme.enums";
 import CardComponent from "@/components/ui/CardComponent";

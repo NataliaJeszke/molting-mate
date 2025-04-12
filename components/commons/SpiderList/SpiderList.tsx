@@ -1,4 +1,4 @@
-import { ThemedText } from "@/components/ThemedText";
+import { ThemedText } from "@/components/ui/ThemedText";
 import React from "react";
 import { View, Text, FlatList, Image, StyleSheet } from "react-native";
 
@@ -25,7 +25,10 @@ const SpiderList = ({ title }: SpiderListProps) => (
     <View style={styles.listWrapper}>
       {sampleSpiders.map((spider) => (
         <View key={spider.id} style={styles.spiderContainer}>
-          <Image source={require("@/assets/images/spider.png")} style={styles.spiderImage} />
+          <Image
+            source={require("@/assets/images/spider.png")}
+            style={styles.spiderImage}
+          />
           <ThemedText style={styles.spiderInfo}>{spider.name}</ThemedText>
           <ThemedText style={styles.spiderInfo}>{spider.date}</ThemedText>
         </View>
@@ -56,7 +59,6 @@ const styles = StyleSheet.create({
     marginRight: 8,
     borderRadius: 25,
     backgroundColor: "#f1f1f1",
-
   },
   spiderInfo: {
     marginTop: 4,

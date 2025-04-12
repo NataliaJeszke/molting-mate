@@ -1,8 +1,16 @@
-import { Text, StyleSheet, TextInput, Alert, ScrollView, View, Pressable } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  TextInput,
+  Alert,
+  ScrollView,
+  View,
+  Pressable,
+} from "react-native";
 import { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { Colors } from "@/constants/Colors";
-import { ThemedText } from "@/components/ThemedText";
+import { ThemedText } from "@/components/ui/ThemedText";
 
 export default function NewSpiderScreen() {
   const [name, setName] = useState<string>();
@@ -13,7 +21,14 @@ export default function NewSpiderScreen() {
   const [lastMolt, setLastMolt] = useState<string>();
 
   const handleSubmit = () => {
-    if (!name || !age || !origin || !lastFed || !feedingFrequency || !lastMolt) {
+    if (
+      !name ||
+      !age ||
+      !origin ||
+      !lastFed ||
+      !feedingFrequency ||
+      !lastMolt
+    ) {
       return Alert.alert("Błąd walidacji", "Uzupełnij wszystkie pola.");
     }
 
@@ -37,7 +52,9 @@ export default function NewSpiderScreen() {
     >
       <View style={styles.centered}>
         <ThemedText style={[styles.headerText]}>Dodaj nowego pająka</ThemedText>
-        <ThemedText style={[styles.subHeaderText]}>Uzupełnij informacje o pająku</ThemedText>
+        <ThemedText style={[styles.subHeaderText]}>
+          Uzupełnij informacje o pająku
+        </ThemedText>
       </View>
 
       <ThemedText style={[styles.label]}>Imię</ThemedText>
@@ -50,7 +67,9 @@ export default function NewSpiderScreen() {
         autoCapitalize="words"
       />
 
-      <ThemedText style={[styles.label, { color: Colors.light.text }]}>Wiek</ThemedText>
+      <ThemedText style={[styles.label, { color: Colors.light.text }]}>
+        Wiek
+      </ThemedText>
       <TextInput
         value={age}
         onChangeText={setAge}
@@ -107,7 +126,10 @@ export default function NewSpiderScreen() {
         placeholderTextColor={Colors.light.icon}
       />
 
-      <Pressable style={[styles.button, { backgroundColor: Colors.light.tint }]} onPress={handleSubmit}>
+      <Pressable
+        style={[styles.button, { backgroundColor: Colors.light.tint }]}
+        onPress={handleSubmit}
+      >
         <ThemedText style={styles.buttonText}>Zapisz pająka</ThemedText>
       </Pressable>
     </ScrollView>
