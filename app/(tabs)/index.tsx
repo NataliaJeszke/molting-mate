@@ -13,6 +13,8 @@ import { useUserStore } from "@/store/userStore";
 import { Colors, ThemeType } from "@/constants/Colors";
 import CardComponent from "@/components/ui/CardComponent";
 import SpiderGallery from "@/components/ui/SpiderGallery";
+import MissedFeedingListComponent from "@/core/MissedFeedingListComponent/MissedFeedingListComponent";
+import PostMoltingListComponent from "@/core/PostMoltingComponent/PostMoltingComponent";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -40,9 +42,8 @@ export default function HomeScreen() {
       </CardComponent>
       <ScrollView>
         <SpiderGallery/>
-        <SpiderList title="Przed linieniem" />
-        <SpiderList title="Głodne" />
-        <SpiderList title="Po linieniu" />
+        <MissedFeedingListComponent />
+        <PostMoltingListComponent />
       </ScrollView>
     </WrapperComponent>
   );

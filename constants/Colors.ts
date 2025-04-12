@@ -29,6 +29,12 @@ export const Colors = {
     dot: {
       inactive: '#C0C0C0',
       active: '#2e1a47',
+    },
+    title: '#2e1a47',
+    spiderImage: {
+      backgroundColor: '#ffffff',
+      borderColor: '#a855f7',
+      borderWidth: 0,
     }
   },
   dark: {
@@ -51,6 +57,12 @@ export const Colors = {
     dot: {
       inactive: '#C0C0C0',
       active: '#2e1a47',
+    },
+    title: '#2e1a47',
+    spiderImage: {
+      backgroundColor: '#ffffff',
+      borderColor: '#a855f7',
+      borderWidth: 0,
     }
   },
 };
