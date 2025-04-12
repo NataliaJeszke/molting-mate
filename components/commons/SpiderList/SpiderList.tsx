@@ -44,8 +44,6 @@ const SpiderList = ({ title, data }: SpiderListProps) => {
   const showLeftArrow = scrollPosition > 0;
   const showRightArrow = scrollPosition < maxScroll;
 
-  const themedStyles = styles(currentTheme);
-
   return (
     <CardComponent>
       <Text style={styles(currentTheme).sectionTitle}>{title}</Text>
