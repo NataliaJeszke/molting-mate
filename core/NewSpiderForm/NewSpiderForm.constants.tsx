@@ -13,6 +13,7 @@ export const spiderTypesOptions = [
 
 export const spiderSpeciesByType = {
   tarantula: [
+    { label: "Wybierz...", value: "" },
     { label: "Brachypelma hamorii", value: "brachypelma_hamorii" },
     { label: "Brachypelma albopilosum", value: "brachypelma_albopilosum" },
     {
@@ -25,6 +26,7 @@ export const spiderSpeciesByType = {
     { label: "Lasiodora parahybana", value: "lasiodora_parahybana" },
   ],
   jumping_spider: [
+    { label: "Wybierz...", value: "" },
     { label: "Phidippus regius", value: "phidippus_regius" },
     { label: "Phidippus audax", value: "phidippus_audax" },
     { label: "Salticus scenicus", value: "salticus_scenicus" },
@@ -33,6 +35,7 @@ export const spiderSpeciesByType = {
     { label: "Menemerus semilimbatus", value: "menemerus_semilimbatus" },
   ],
   orb_weaver: [
+    { label: "Wybierz...", value: "" },
     { label: "Araneus diadematus", value: "araneus_diadematus" },
     { label: "Araneus quadratus", value: "araneus_quadratus" },
     { label: "Neoscona crucifera", value: "neoscona_crucifera" },
@@ -40,6 +43,7 @@ export const spiderSpeciesByType = {
     { label: "Zygiella x-notata", value: "zygiella_x_notata" },
   ],
   wolf_spider: [
+    { label: "Wybierz...", value: "" },
     { label: "Lycosa tarantula", value: "lycosa_tarantula" },
     { label: "Lycosa tarentula", value: "lycosa_tarentula" },
     { label: "Hogna radiata", value: "hogna_radiata" },
@@ -47,27 +51,32 @@ export const spiderSpeciesByType = {
     { label: "Pardosa palustris", value: "pardosa_palustris" },
   ],
   funnel_web_spider: [
+    { label: "Wybierz...", value: "" },
     { label: "Agelena labyrinthica", value: "agelena_labyrinthica" },
     { label: "Tegenaria domestica", value: "tegenaria_domestica" },
     { label: "Tegenaria atrica", value: "tegenaria_atrica" },
     { label: "Coelotes terrestris", value: "coelotes_terrestris" },
   ],
   cross_spider: [
+    { label: "Wybierz...", value: "" },
     { label: "Araneus quadratus", value: "araneus_quadratus" },
     { label: "Araneus diadematus", value: "araneus_diadematus" },
     { label: "Araneus marmoreus", value: "araneus_marmoreus" },
   ],
   recluse_spider: [
+    { label: "Wybierz...", value: "" },
     { label: "Loxosceles reclusa", value: "loxosceles_reclusa" },
     { label: "Loxosceles deserta", value: "loxosceles_deserta" },
     { label: "Loxosceles laeta", value: "loxosceles_laeta" },
   ],
   black_widow: [
+    { label: "Wybierz...", value: "" },
     { label: "Latrodectus mactans", value: "latrodectus_mactans" },
     { label: "Latrodectus hesperus", value: "latrodectus_hesperus" },
     { label: "Latrodectus geometricus", value: "latrodectus_geometricus" },
   ],
   diving_bell_spider: [
+    { label: "Wybierz...", value: "" },
     { label: "Argyroneta aquatica", value: "argyroneta_aquatica" },
   ],
 };

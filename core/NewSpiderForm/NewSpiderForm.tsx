@@ -50,17 +50,18 @@ export default function NewSpiderForm() {
 
   const handleSubmit = () => {
     if (
-      !name ||
-      !age ||
-      !spiderType ||
-      !spiderSpecies ||
-      !lastFed ||
-      !feedingFrequency ||
-      !lastMolt
+      !name?.trim() ||
+      !age?.trim() ||
+      !spiderType?.trim() ||
+      !spiderSpecies?.trim() ||
+      !lastFed?.trim() ||
+      !feedingFrequency?.trim() ||
+      !lastMolt?.trim()
     ) {
+        console.log('pokaz wszystkie pola', name, age, spiderType, spiderSpecies, lastFed, feedingFrequency, lastMolt);
       return Alert.alert("Błąd walidacji", "Uzupełnij wszystkie pola.");
     }
-  
+
     const newSpider = {
       name,
       age,
@@ -69,23 +70,24 @@ export default function NewSpiderForm() {
       lastFed,
       feedingFrequency,
       lastMolt,
-      imageUri,
+      imageUri: imageUri || "",
+      isFavourite: false,
     };
-  
+
     addSpider(newSpider);
     Alert.alert("Sukces", `Dodano pająka o imieniu ${name}!`);
-  
+
     clearForm();
   };
 
   const clearForm = () => {
-    setName('');
-    setAge('');
-    setSpiderType('');
-    setSpiderSpecies('');
-    setLastFed('');
-    setFeedingFrequency('');
-    setLastMolt('');
+    setName("");
+    setAge("");
+    setSpiderType("");
+    setSpiderSpecies("");
+    setLastFed("");
+    setFeedingFrequency("");
+    setLastMolt("");
     setImageUri(undefined);
   };
 
@@ -150,7 +152,7 @@ export default function NewSpiderForm() {
         placeholderTextColor={styles(currentTheme)["input"].color}
       />
 
-      <ThemedText style={styles(currentTheme)["label"]}>Pochodzenie</ThemedText>
+      <ThemedText style={styles(currentTheme)["label"]}>Wybierz gatunek</ThemedText>
       <View style={styles(currentTheme)["pickerWrapper"]}>
         <Picker
           selectedValue={spiderType}
