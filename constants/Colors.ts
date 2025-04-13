@@ -44,7 +44,10 @@ export const Colors = {
     picker: {
       background: '#ffffff',
       text: '#151718'
-    }
+    },
+    warning: {
+      text: '#FF0000',
+    },
   },
   dark: {
     text: 'rgb(255, 255, 255)',
@@ -81,7 +84,10 @@ export const Colors = {
     picker: {
       background: '#1f1f1f',
       text: '#ffffff'
-    }
+    },
+    warning: {
+      text: '#FF0000',
+    },
   },
 };
 

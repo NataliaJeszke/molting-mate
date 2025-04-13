@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useUserStore } from "@/store/userStore";
 import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import { useSpidersStore } from "@/store/spidersStore";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
+import { FeedingStatus } from "@/core/FeedingListComponent/FeedingListComponent";
+import ModalInfo from "../Modal/Modal";
 
 type Spider = {
   id: string;
@@ -18,16 +20,16 @@ type Spider = {
   lastMolt: string;
   imageUri: string | undefined;
   isFavourite: boolean;
-  status?: string;
+  status?: FeedingStatus | string;
 };
 
 type SpiderListProps = {
   data: Spider[];
-  info?: string;
   viewType?: string;
+  onAlertPress?:(spiderId: string)=> void;
 };
 
-const SpiderFullList = ({ data, info, viewType }: SpiderListProps) => {
+const SpiderFullList = ({ data, viewType, onAlertPress }: SpiderListProps) => {
   const { currentTheme } = useUserStore();
   const { addToFavorites, removeFromFavorites, removeSpider, spiders } =
     useSpidersStore();
@@ -75,9 +77,25 @@ const SpiderFullList = ({ data, info, viewType }: SpiderListProps) => {
                 </ThemedText>
 
                 {(viewType === "collection" || viewType === "feeding") && (
-                  <ThemedText style={styles(currentTheme)["spider-list__info"]}>
-                    Data karmienia: {item.lastFed}
-                  </ThemedText>
+                  <>
+                    <ThemedText
+                      style={styles(currentTheme)["spider-list__info"]}
+                    >
+                      Data karmienia: {item.lastFed}
+                    </ThemedText>
+
+                    {item.status === "HUNGRY" && (
+                      <TouchableOpacity
+                      onPress={() => onAlertPress && onAlertPress(item.id)}
+                      >
+                        <Feather
+                          size={24}
+                          name="alert-triangle"
+                          color={Colors[currentTheme].warning.text}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </>
                 )}
 
                 {(viewType === "collection" || viewType === "molting") && (

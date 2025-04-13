@@ -19,7 +19,6 @@ const CollectionListComponent = () => {
     <FiltersComponent title="Kolekcja" spiderCount={spiders.length} info="Lista wszystkich pająków"/>
       <SpiderFullList
         data={collectionSpiders}
-        info="Lista wszystkich pająków"
         viewType={viewType}
       />
     </>

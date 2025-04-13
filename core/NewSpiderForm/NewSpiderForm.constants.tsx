@@ -86,7 +86,6 @@ export const feedingFrequencyOptions = [
   { label: "Kilka razy w tygodniu", value: "few_times_week" },
   { label: "Raz w tygodniu", value: "once_week" },
   { label: "Raz na dwa tygodnie", value: "once_two_weeks" },
-  { label: "Dwa razy w miesiącu", value: "twice_month" },
   { label: "Raz w miesiącu", value: "once_month" },
   { label: "Rzadziej", value: "rarely" },
 ];

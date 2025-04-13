@@ -15,7 +15,7 @@ export default function Favourites() {
   return (
     <WrapperComponent>
       <ScrollView>
-        <SpiderFullList data={favouriteSpiders} info="Ulubione pająki" />
+        <SpiderFullList data={favouriteSpiders} />
       </ScrollView>
     </WrapperComponent>
   );
