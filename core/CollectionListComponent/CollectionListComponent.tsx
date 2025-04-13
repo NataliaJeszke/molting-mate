@@ -4,9 +4,11 @@ import { useSpidersStore } from "@/store/spidersStore";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import FiltersComponent from "../FiltersComponent/FiltersComponent";
+import { ViewTypes } from "@/constants/ViewTypes.enums";
 
-const FeedingListComponent = () => {
+const CollectionListComponent = () => {
   const spiders = useSpidersStore((state) => state.spiders); 
+  const viewType = ViewTypes.VIEW_COLLECTION;
   const collectionSpiders = spiders.map((spider) => ({
     ...spider,
     status: "Po linieniu",
@@ -18,9 +20,10 @@ const FeedingListComponent = () => {
       <SpiderFullList
         data={collectionSpiders}
         info="Lista wszystkich pająków"
+        viewType={viewType}
       />
     </>
   );
 };
 
-export default FeedingListComponent;
+export default CollectionListComponent;

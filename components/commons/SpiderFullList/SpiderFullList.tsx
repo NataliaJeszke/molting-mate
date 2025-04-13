@@ -24,16 +24,17 @@ type Spider = {
 type SpiderListProps = {
   data: Spider[];
   info?: string;
+  viewType?: string;
 };
 
-const SpiderFullList = ({ data, info }: SpiderListProps) => {
+const SpiderFullList = ({ data, info, viewType }: SpiderListProps) => {
   const { currentTheme } = useUserStore();
-  const { addToFavorites, removeFromFavorites, removeSpider, spiders } = useSpidersStore();
+  const { addToFavorites, removeFromFavorites, removeSpider, spiders } =
+    useSpidersStore();
 
   useEffect(() => {
     console.log("Spider data:", spiders);
-  }
-  , [spiders]);
+  }, [spiders]);
 
   const toggleFavourite = (spiderId: string, isFavourite: boolean) => {
     if (isFavourite) {
@@ -72,12 +73,18 @@ const SpiderFullList = ({ data, info }: SpiderListProps) => {
                 <ThemedText style={styles(currentTheme)["spider-list__info"]}>
                   {item.name}
                 </ThemedText>
-                <ThemedText style={styles(currentTheme)["spider-list__info"]}>
-                  Data karmienia: {item.lastFed}
-                </ThemedText>
-                <ThemedText style={styles(currentTheme)["spider-list__info"]}>
-                  Data linienia: {item.lastMolt}
-                </ThemedText>
+
+                {(viewType === "collection" || viewType === "feeding") && (
+                  <ThemedText style={styles(currentTheme)["spider-list__info"]}>
+                    Data karmienia: {item.lastFed}
+                  </ThemedText>
+                )}
+
+                {(viewType === "collection" || viewType === "molting") && (
+                  <ThemedText style={styles(currentTheme)["spider-list__info"]}>
+                    Data linienia: {item.lastMolt}
+                  </ThemedText>
+                )}
               </View>
               <TouchableOpacity
                 onPress={() => toggleFavourite(item.id, item.isFavourite)}
