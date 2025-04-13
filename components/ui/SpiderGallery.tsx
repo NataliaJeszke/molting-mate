@@ -3,8 +3,9 @@ import { View, ScrollView, Image, StyleSheet, Dimensions } from "react-native";
 import CardComponent from "@/components/ui/CardComponent";
 import { Colors, ThemeType } from "@/constants/Colors";
 import { useUserStore } from "@/store/userStore";
+import { useSpidersStore } from "@/store/spidersStore";
 
-const spiderImages = [
+const defaultSpiderImages = [
   require("@/assets/images/spider-gallery-1.jpg"),
   require("@/assets/images/spider-gallery-2.jpg"),
   require("@/assets/images/spider-gallery-3.jpg"),
@@ -12,20 +13,35 @@ const spiderImages = [
 
 const { width } = Dimensions.get("window");
 
+const shuffleArray = (array: any[]) => {
+  return [...array].sort(() => Math.random() - 0.5);
+};
+
 const SpiderGallery = () => {
   const scrollRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { currentTheme } = useUserStore();
+  const { spiders } = useSpidersStore();
+
+  const userImages = spiders
+    .map((spider) => spider.imageUri)
+    .filter((uri): uri is string => !!uri);
+
+  const imagesToShow = shuffleArray(
+    userImages.length > 0
+      ? userImages.map((uri) => ({ uri }))
+      : defaultSpiderImages
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const nextIndex = (currentIndex + 1) % spiderImages.length;
+      const nextIndex = (currentIndex + 1) % imagesToShow.length;
       scrollRef.current?.scrollTo({ x: nextIndex * width, animated: true });
       setCurrentIndex(nextIndex);
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [currentIndex]);
+  }, [currentIndex, imagesToShow]);
 
   return (
     <CardComponent>
@@ -37,17 +53,20 @@ const SpiderGallery = () => {
           ref={scrollRef}
           scrollEnabled={false}
         >
-          {spiderImages.map((image, index) => (
+          {imagesToShow.map((image, index) => (
             <View key={index} style={styles(currentTheme).imageContainer}>
               <Image source={image} style={styles(currentTheme).image} resizeMode="cover" />
             </View>
           ))}
         </ScrollView>
         <View style={styles(currentTheme).dotsContainer}>
-          {spiderImages.map((_, index) => (
+          {imagesToShow.map((_, index) => (
             <View
               key={index}
-              style={[styles(currentTheme).dot, currentIndex === index && styles(currentTheme).activeDot]}
+              style={[
+                styles(currentTheme).dot,
+                currentIndex === index && styles(currentTheme).activeDot,
+              ]}
             />
           ))}
         </View>
