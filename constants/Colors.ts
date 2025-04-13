@@ -35,6 +35,15 @@ export const Colors = {
       backgroundColor: '#ffffff',
       borderColor: '#a855f7',
       borderWidth: 0,
+    },
+    button: {
+      text: {
+        color: '#ffffff',
+      }
+    },
+    picker: {
+      background: '#ffffff',
+      text: '#151718'
     }
   },
   dark: {
@@ -63,6 +72,15 @@ export const Colors = {
       backgroundColor: '#ffffff',
       borderColor: '#a855f7',
       borderWidth: 0,
+    },
+    button: {
+      text: {
+        color: '#1f1f1f',
+      }
+    },
+    picker: {
+      background: '#1f1f1f',
+      text: '#ffffff'
     }
   },
 };

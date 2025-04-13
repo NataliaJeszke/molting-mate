@@ -1,16 +1,18 @@
+import { useEffect } from "react";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { useFonts } from "expo-font";
+import "react-native-reanimated";
 import { Stack } from "expo-router";
+import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
-import "react-native-reanimated";
 
 import { useUserStore } from "@/store/userStore";
+
+import { Colors } from "@/constants/Colors";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -57,6 +59,7 @@ export default function RootLayout() {
           options={{
             title: "Ulubione pająki",
             headerBackTitle: "Wstecz",
+            headerTintColor: Colors[currentTheme].tint,
           }}
         />
         <Stack.Screen name="+not-found" />
