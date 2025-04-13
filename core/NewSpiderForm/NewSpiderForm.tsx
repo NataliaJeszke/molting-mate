@@ -1,8 +1,18 @@
 import { useState } from "react";
-import { TextInput, Alert, View, Pressable, StyleSheet } from "react-native";
+import {
+  TextInput,
+  Alert,
+  View,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import * as ImagePicker from "expo-image-picker";
 
 import { useUserStore } from "@/store/userStore";
+import { useSpidersStore } from "@/store/spidersStore";
 
 import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
@@ -12,6 +22,7 @@ import {
   spiderSpeciesByType,
   feedingFrequencyOptions,
 } from "./NewSpiderForm.constants";
+import { SpiderImage } from "@/components/commons/SpiderImage/SpiderImage";
 type PickerItemProps = {
   label: string;
   value: string;
@@ -25,6 +36,9 @@ type PickerOption = {
 };
 
 export default function NewSpiderForm() {
+  const { currentTheme } = useUserStore();
+  const { addSpider } = useSpidersStore();
+
   const [name, setName] = useState<string>();
   const [age, setAge] = useState<string>();
   const [lastFed, setLastFed] = useState<string>();
@@ -32,8 +46,7 @@ export default function NewSpiderForm() {
   const [lastMolt, setLastMolt] = useState<string>();
   const [spiderType, setSpiderType] = useState<string>();
   const [spiderSpecies, setSpiderSpecies] = useState<string>();
-
-  const { currentTheme } = useUserStore();
+  const [imageUri, setImageUri] = useState<string>();
 
   const handleSubmit = () => {
     if (
@@ -47,8 +60,33 @@ export default function NewSpiderForm() {
     ) {
       return Alert.alert("Błąd walidacji", "Uzupełnij wszystkie pola.");
     }
-
+  
+    const newSpider = {
+      name,
+      age,
+      spiderType,
+      spiderSpecies,
+      lastFed,
+      feedingFrequency,
+      lastMolt,
+      imageUri,
+    };
+  
+    addSpider(newSpider);
     Alert.alert("Sukces", `Dodano pająka o imieniu ${name}!`);
+  
+    clearForm();
+  };
+
+  const clearForm = () => {
+    setName('');
+    setAge('');
+    setSpiderType('');
+    setSpiderSpecies('');
+    setLastFed('');
+    setFeedingFrequency('');
+    setLastMolt('');
+    setImageUri(undefined);
   };
 
   const getSpeciesForType = (type: string) => {
@@ -57,6 +95,22 @@ export default function NewSpiderForm() {
         { label: "Brak dostępnych gatunków", value: "" },
       ]
     );
+  };
+
+  const handleChooseImage = async () => {
+    if (Platform.OS === "web") {
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
   };
 
   const ThemedPickerItem = ({ label, value }: PickerItemProps) => (
@@ -70,6 +124,12 @@ export default function NewSpiderForm() {
           Uzupełnij informacje o pająku
         </ThemedText>
       </View>
+
+      <ThemedText style={styles(currentTheme).label}>Zdjęcie pająka</ThemedText>
+
+      <TouchableOpacity onPress={handleChooseImage} activeOpacity={0.8}>
+        <SpiderImage imageUri={imageUri} />
+      </TouchableOpacity>
 
       <ThemedText style={styles(currentTheme)["label"]}>Imię</ThemedText>
       <TextInput
