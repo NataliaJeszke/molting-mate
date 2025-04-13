@@ -1,4 +1,4 @@
-export const spiderSpiciesOptions = [
+export const spiderTypesOptions = [
   { label: "Wybierz...", value: "" },
   { label: "Ptasznik (Theraphosidae)", value: "tarantula" },
   { label: "Skakun (Salticidae)", value: "jumping_spider" },

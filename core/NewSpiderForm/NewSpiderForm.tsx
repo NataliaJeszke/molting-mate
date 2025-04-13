@@ -8,7 +8,7 @@ import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import {
-  spiderSpiciesOptions,
+  spiderTypesOptions,
   spiderSpeciesByType,
   feedingFrequencyOptions,
 } from "./NewSpiderForm.constants";
@@ -27,7 +27,6 @@ type PickerOption = {
 export default function NewSpiderForm() {
   const [name, setName] = useState<string>();
   const [age, setAge] = useState<string>();
-  const [origin, setOrigin] = useState<string>();
   const [lastFed, setLastFed] = useState<string>();
   const [feedingFrequency, setFeedingFrequency] = useState<string>();
   const [lastMolt, setLastMolt] = useState<string>();
@@ -40,7 +39,8 @@ export default function NewSpiderForm() {
     if (
       !name ||
       !age ||
-      !origin ||
+      !spiderType ||
+      !spiderSpecies ||
       !lastFed ||
       !feedingFrequency ||
       !lastMolt
@@ -96,10 +96,10 @@ export default function NewSpiderForm() {
           selectedValue={spiderType}
           onValueChange={(value) => {
             setSpiderType(value);
-            setSpiderSpecies(""); // resetuj gatunek przy zmianie typu
+            setSpiderSpecies("");
           }}
         >
-          {spiderSpiciesOptions.map((option) => (
+          {spiderTypesOptions.map((option) => (
             <Picker.Item
               key={option.value}
               label={option.label}
