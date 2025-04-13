@@ -1,8 +1,10 @@
 import React, { useMemo, useState } from "react";
-import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
-import FiltersComponent from "../FiltersComponent/FiltersComponent";
+
 import { useSpidersStore } from "@/store/spidersStore";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
+
+import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
+import FiltersComponent from "../FiltersComponent/FiltersComponent";
 import ModalInfo from "@/components/commons/Modal/Modal";
 
 export type FeedingStatus = "HUNGRY" | "FEED_TODAY" | null;

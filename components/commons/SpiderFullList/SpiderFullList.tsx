@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
+
+import { AntDesign, Feather } from "@expo/vector-icons";
+
 import { useUserStore } from "@/store/userStore";
+import { useSpidersStore } from "@/store/spidersStore";
 import { Colors, ThemeType } from "@/constants/Colors";
+
+import { FeedingStatus } from "@/core/FeedingListComponent/FeedingListComponent";
+
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
-import { useSpidersStore } from "@/store/spidersStore";
-import { AntDesign, Feather } from "@expo/vector-icons";
-import { FeedingStatus } from "@/core/FeedingListComponent/FeedingListComponent";
-import ModalInfo from "../Modal/Modal";
 
 type Spider = {
   id: string;
