@@ -1,17 +1,17 @@
-import { Redirect, Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
+import { Redirect, Tabs } from "expo-router";
+import { FontAwesome6, MaterialCommunityIcons } from "@expo/vector-icons";
 
+import { useUserStore } from "@/store/userStore";
+
+import { Colors } from "@/constants/Colors";
 import { HapticTab } from "@/components/ui/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { useUserStore } from "@/store/userStore";
-import { FontAwesome6, MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const {currentTheme} = useUserStore();
   const hasFinishedOnboarding = useUserStore(
     (state) => state.hasFinishedOnboarding
   );
@@ -23,7 +23,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: Colors[currentTheme].tint,
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
@@ -31,7 +31,8 @@ export default function TabLayout() {
           ios: {
             position: "absolute",
           },
-          default: {},
+          default: {
+          },
         }),
       }}
     >

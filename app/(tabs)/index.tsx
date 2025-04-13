@@ -24,13 +24,13 @@ export default function HomeScreen() {
   return (
     <WrapperComponent>
       <CardComponent customStyle={styles(currentTheme).topBar}>
-      <TouchableOpacity
+        <TouchableOpacity
           onPress={() => {
             console.log("Ulubione pająki");
             router.push("/favourites");
           }}
         >
-          <AntDesign name="heart" size={24} color="#e63946" />
+          <AntDesign name="heart" size={24} color={Colors[currentTheme].tint} />
         </TouchableOpacity>
 
         <View style={styles(currentTheme).searchWrapper}>
@@ -38,11 +38,15 @@ export default function HomeScreen() {
         </View>
 
         <TouchableOpacity onPress={() => router.push("/newSpider")}>
-          <Feather name="plus-circle" size={28} color="#1a759f" />
+          <Feather
+            name="plus-circle"
+            size={28}
+            color={Colors[currentTheme].tint}
+          />
         </TouchableOpacity>
       </CardComponent>
       <ScrollView>
-        <SpiderGallery/>
+        <SpiderGallery />
         <MissedFeedingListComponent />
         <PostMoltingListComponent />
       </ScrollView>
