@@ -33,15 +33,25 @@ const ModalInfo = ({ isVisible, onClose, onSubmit }: ModalInfoProps) => {
   }, [id, type]);
 
   const handleSubmit = () => {
-    if (date && id && type) {
-      if (type === "feeding") {
-        updateSpider(id as string, { lastFed: date });
-      } else if (type === "molting") {
-        updateSpider(id as string, { lastMolt: date });
-      }
+    let finalDate = date;
+
+    if (!finalDate && status === "FEED_TODAY") {
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2, "0");
+      const month = String(today.getMonth() + 1).padStart(2, "0");
+      const year = today.getFullYear();
+      finalDate = `${day}-${month}-${year}`;
     }
-    onSubmit(date, type as string);
-    onClose();
+
+    if (finalDate && id && type) {
+      if (type === "feeding") {
+        updateSpider(id as string, { lastFed: finalDate });
+      } else if (type === "molting") {
+        updateSpider(id as string, { lastMolt: finalDate });
+      }
+      onSubmit(finalDate, type as string);
+      onClose();
+    }
   };
 
   const renderContent = () => {

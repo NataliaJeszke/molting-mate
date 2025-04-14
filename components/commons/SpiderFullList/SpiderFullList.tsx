@@ -65,7 +65,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                 }
                 style={styles(currentTheme)["spider-list__image"]}
               />
-              <View style={{ marginLeft: 12 }}>
+              <View style={styles(currentTheme)["spider-list__info-container"]}>
                 <ThemedText style={styles(currentTheme)["spider-list__info"]}>
                   {spider.name}
                 </ThemedText>
@@ -156,48 +156,51 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                   </>
                 )}
               </View>
-              <TouchableOpacity
-                onPress={() => toggleFavourite(spider.id, spider.isFavourite)}
-                style={styles(currentTheme)["spider-list__heart-icon"]}
-              >
-                <AntDesign
-                  size={24}
-                  name={spider.isFavourite ? "heart" : "hearto"}
-                  color={Colors[currentTheme].tint}
-                />
-              </TouchableOpacity>
-
-              {viewType === ViewTypes.VIEW_COLLECTION && (
+              
+              <View style={styles(currentTheme)["spider-list__actions-container"]}>
                 <TouchableOpacity
-                  onPress={() => {
-                    router.push({
-                      pathname: "/manageAlertModal",
-                      params: {
-                        id: spider.id,
-                        type: ViewTypes.VIEW_COLLECTION,
-                      },
-                    });
-                  }}
-                  style={styles(currentTheme)["spider-list__edit-icon"]}
+                  style={styles(currentTheme)["spider-list__action-button"]}
+                  onPress={() => toggleFavourite(spider.id, spider.isFavourite)}
                 >
-                  <Feather
+                  <AntDesign
                     size={24}
-                    name="edit"
-                    color={Colors[currentTheme].info.text}
+                    name={spider.isFavourite ? "heart" : "hearto"}
+                    color={Colors[currentTheme].tint}
                   />
                 </TouchableOpacity>
-              )}
 
-              <TouchableOpacity
-                onPress={() => handleRemoveSpider(spider.id)}
-                style={styles(currentTheme)["spider-list__trash-icon"]}
-              >
-                <AntDesign
-                  size={24}
-                  name="delete"
-                  color={Colors[currentTheme].tint}
-                />
-              </TouchableOpacity>
+                {(viewType === ViewTypes.VIEW_COLLECTION || viewType === ViewTypes.VIEW_FEEDING) && (
+                  <TouchableOpacity
+                    style={styles(currentTheme)["spider-list__action-button"]}
+                    onPress={() => {
+                      router.push({
+                        pathname: "/manageAlertModal",
+                        params: {
+                          id: spider.id,
+                          type: ViewTypes.VIEW_COLLECTION,
+                        },
+                      });
+                    }}
+                  >
+                    <Feather
+                      size={24}
+                      name="edit"
+                      color={Colors[currentTheme].info.text}
+                    />
+                  </TouchableOpacity>
+                )}
+
+                <TouchableOpacity
+                  style={styles(currentTheme)["spider-list__action-button"]}
+                  onPress={() => handleRemoveSpider(spider.id)}
+                >
+                  <AntDesign
+                    size={24}
+                    name="delete"
+                    color={Colors[currentTheme].tint}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         ))}
@@ -215,7 +218,7 @@ const styles = (theme: ThemeType) =>
       flexDirection: "row",
       alignItems: "center",
       position: "relative",
-      marginBottom: 12,
+      marginBottom: 20,
     },
     "spider-list__separator": {
       borderBottomWidth: 1,
@@ -228,27 +231,27 @@ const styles = (theme: ThemeType) =>
       borderRadius: 25,
       backgroundColor: Colors[theme].spiderImage.backgroundColor,
     },
+    "spider-list__info-container": {
+      flex: 1,
+      marginLeft: 12,
+    },
     "spider-list__info": {
       fontSize: 12,
       fontWeight: "500",
       textAlign: "left",
       marginBottom: 2,
     },
-    "spider-list__heart-icon": {
-      position: "absolute",
-      top: -10,
-      right: 0,
+    "spider-list__actions-container": {
+      flexDirection: "column",
+      justifyContent: "space-between",
+      alignItems: "center",
+      height: 120,
+      marginLeft: 10,
+      paddingVertical: 8,
     },
-    "spider-list__edit-icon": {
-      position: "absolute",
-      top: 25,
-      right: 0,
-    },
-    "spider-list__trash-icon": {
-      position: "absolute",
-      bottom: -10,
-      right: 0,
-    },
+    "spider-list__action-button": {
+      padding: 8,
+    }
   });
 
 export default SpiderFullList;
