@@ -22,13 +22,16 @@ const SpiderGallery = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { currentTheme } = useUserStore();
   const { spiders } = useSpidersStore();
-  const [imagesToShow, setImagesToShow] = useState(() =>
-    spiders.length > 0 ? getRandomUserImages(spiders) : defaultSpiderImages
-  );
-
+  const [imagesToShow, setImagesToShow] = useState(() => {
+    const spidersWithImages = spiders.filter((spider) => spider.imageUri);
+    return spidersWithImages.length > 0
+      ? getRandomUserImages(spidersWithImages)
+      : defaultSpiderImages;
+  });
   useEffect(() => {
-    if (spiders.length > 0) {
-      setImagesToShow(getRandomUserImages(spiders));
+    const spidersWithImages = spiders.filter((spider) => spider.imageUri);
+    if (spidersWithImages.length > 0) {
+      setImagesToShow(getRandomUserImages(spidersWithImages));
     } else {
       setImagesToShow(defaultSpiderImages);
     }
@@ -56,7 +59,11 @@ const SpiderGallery = () => {
         >
           {imagesToShow.map((image, index) => (
             <View key={index} style={styles(currentTheme).imageContainer}>
-              <Image source={image} style={styles(currentTheme).image} resizeMode="cover" />
+              <Image
+                source={image}
+                style={styles(currentTheme).image}
+                resizeMode="cover"
+              />
             </View>
           ))}
         </ScrollView>
@@ -76,38 +83,39 @@ const SpiderGallery = () => {
   );
 };
 
-const styles = (theme: ThemeType) => StyleSheet.create({
-  container: {
-    height: 200,
-    marginBottom: 16,
-  },
-  imageContainer: {
-    width: width,
-    height: 200,
-    overflow: "hidden",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-  },
-  dotsContainer: {
-    position: "absolute",
-    bottom: -20,
-    left: 0,
-    right: 0,
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 8,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: Colors[theme].dot.inactive,
-  },
-  activeDot: {
-    backgroundColor: Colors[theme].dot.active,
-  },
-});
+const styles = (theme: ThemeType) =>
+  StyleSheet.create({
+    container: {
+      height: 200,
+      marginBottom: 16,
+    },
+    imageContainer: {
+      width: width,
+      height: 200,
+      overflow: "hidden",
+    },
+    image: {
+      width: "100%",
+      height: "100%",
+    },
+    dotsContainer: {
+      position: "absolute",
+      bottom: -20,
+      left: 0,
+      right: 0,
+      flexDirection: "row",
+      justifyContent: "center",
+      gap: 8,
+    },
+    dot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: Colors[theme].dot.inactive,
+    },
+    activeDot: {
+      backgroundColor: Colors[theme].dot.active,
+    },
+  });
 
 export default SpiderGallery;
