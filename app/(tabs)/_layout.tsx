@@ -50,7 +50,7 @@ export default function TabLayout() {
         options={{
           title: "Linienie",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="tshirt.fill" color={color} />
+            <MaterialCommunityIcons size={28} name="tshirt-v" color={color} />
           ),
         }}
       />
