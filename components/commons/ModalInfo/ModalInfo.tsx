@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Modal, View, TouchableOpacity, Text, TextInput, StyleSheet, Dimensions, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  Modal,
+  View,
+  TouchableOpacity,
+  Text,
+  TextInput,
+  StyleSheet,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { useLocalSearchParams } from "expo-router";
+import { useSpidersStore } from "@/store/spidersStore";
+
+import { ThemedText } from "@/components/ui/ThemedText";
 
 interface ModalInfoProps {
   isVisible: boolean;
@@ -8,8 +21,9 @@ interface ModalInfoProps {
   onSubmit: (date: string, type: string) => void;
 }
 
-const ModalInfo: React.FC<ModalInfoProps> = ({ isVisible, onClose, onSubmit }) => {
-  const { id, type } = useLocalSearchParams();
+const ModalInfo = ({ isVisible, onClose, onSubmit }: ModalInfoProps) => {
+  const { id, type, status } = useLocalSearchParams();
+  const updateSpider = useSpidersStore((state) => state.updateSpider);
   const [date, setDate] = useState("");
 
   useEffect(() => {
@@ -18,45 +32,70 @@ const ModalInfo: React.FC<ModalInfoProps> = ({ isVisible, onClose, onSubmit }) =
     console.log("type:", type);
   }, [id, type]);
 
-  const handleOkClick = () => {
-    if (date) {
-      onSubmit(date, type as string);
+  const handleSubmit = () => {
+    if (date && id && type) {
+      if (type === "feeding") {
+        updateSpider(id as string, { lastFed: date });
+      } else if (type === "molting") {
+        updateSpider(id as string, { lastMolt: date });
+      }
     }
+    onSubmit(date, type as string);
     onClose();
   };
 
   const renderContent = () => {
+    const showInput = status !== "FEED_TODAY";
+
     switch (type) {
       case "feeding":
         return (
           <>
-            <Text style={styles.modalTitle}>Karmienie</Text>
-            <Text style={styles.modalText}>Czy nakarmiłeś pająka dzisiaj?</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Wpisz datę karmienia (dd-mm-rrrr)"
-              value={date}
-              onChangeText={setDate}
-            />
+            <ThemedText type="title" style={styles.modalTitle}>
+              Karmienie
+            </ThemedText>
+            <ThemedText type="subtitle" style={styles.modalText}>
+              Czy nakarmiłeś pająka?
+            </ThemedText>
+            <ThemedText style={styles.modalText}>
+              {showInput
+                ? "Jeśli nakarmiłeś w innym terminie, wpisz datę i kliknij 'Zatwierdź'"
+                : "Kliknij 'Zatwierdź', aby potwierdzić karmienie dzisiaj"}
+            </ThemedText>
+            {showInput && (
+              <TextInput
+                style={styles.input}
+                placeholder="Wpisz datę karmienia (dd-mm-rrrr)"
+                value={date}
+                onChangeText={setDate}
+              />
+            )}
           </>
         );
       case "molting":
         return (
           <>
-            <Text style={styles.modalTitle}>Linienie</Text>
-            <Text style={styles.modalText}>Czy pająk przepoczwarzył się?</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Wpisz datę linienia (dd-mm-rrrr)"
-              value={date}
-              onChangeText={setDate}
-            />
+            <ThemedText style={styles.modalTitle}>Linienie</ThemedText>
+            <ThemedText style={styles.modalText}>
+              Czy pająk przeszedł linienie?
+            </ThemedText>
+            <ThemedText style={styles.modalText}>
+              {showInput
+                ? "Jeśli w innym dniu, wprowadź datę i kliknij 'Zatwierdź'"
+                : "Kliknij 'Zatwierdź', aby potwierdzić linienie dzisiaj"}
+            </ThemedText>
+            {showInput && (
+              <TextInput
+                style={styles.input}
+                placeholder="Wpisz datę linienia (dd-mm-rrrr)"
+                value={date}
+                onChangeText={setDate}
+              />
+            )}
           </>
         );
       default:
-        return (
-          <Text style={styles.modalText}>Nieznany typ: {type}</Text>
-        );
+        return <Text style={styles.modalText}>Nieznany typ: {type}</Text>;
     }
   };
 
@@ -68,7 +107,7 @@ const ModalInfo: React.FC<ModalInfoProps> = ({ isVisible, onClose, onSubmit }) =
       onRequestClose={onClose}
       statusBarTranslucent={true}
     >
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.container}
       >
@@ -81,11 +120,17 @@ const ModalInfo: React.FC<ModalInfoProps> = ({ isVisible, onClose, onSubmit }) =
           <View style={styles.modalView}>
             {renderContent()}
             <View style={styles.buttonContainer}>
-              <TouchableOpacity onPress={onClose} style={[styles.button, styles.cancelButton]}>
-                <Text style={styles.buttonText}>Anuluj</Text>
+              <TouchableOpacity
+                onPress={onClose}
+                style={[styles.button, styles.cancelButton]}
+              >
+                <ThemedText style={styles.buttonText}>Anuluj</ThemedText>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleOkClick} style={[styles.button, styles.confirmButton]}>
-                <Text style={styles.buttonText}>Zatwierdź</Text>
+              <TouchableOpacity
+                onPress={handleSubmit}
+                style={[styles.button, styles.confirmButton]}
+              >
+                <ThemedText style={styles.buttonText}>Zatwierdź</ThemedText>
               </TouchableOpacity>
             </View>
           </View>
@@ -95,7 +140,7 @@ const ModalInfo: React.FC<ModalInfoProps> = ({ isVisible, onClose, onSubmit }) =
   );
 };
 
-const windowWidth = Dimensions.get('window').width;
+const windowWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
   container: {
@@ -103,25 +148,25 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
   },
   backdrop: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalView: {
     width: windowWidth * 0.8,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 12,
     padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -133,45 +178,45 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
   modalText: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   input: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 5,
-    width: '100%',
+    width: "100%",
     marginBottom: 20,
     paddingHorizontal: 10,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
   },
   button: {
     padding: 10,
     borderRadius: 5,
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     marginHorizontal: 5,
   },
   confirmButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
   },
   cancelButton: {
-    backgroundColor: '#f44336',
+    backgroundColor: "#f44336",
   },
   buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
 });
 

@@ -1,8 +1,8 @@
-import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
-import { Spider } from "@/models/Spiders.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+
+import { Spider } from "@/models/Spiders.model";
 
 type SpidersState = {
   nextId: number;
@@ -11,6 +11,7 @@ type SpidersState = {
   removeSpider: (spiderId: string) => void;
   addToFavorites: (spiderId: string) => void;
   removeFromFavorites: (spiderId: string) => void;
+  updateSpider: (spiderId: string, updates: Partial<Spider>) => void;
 };
 
 export const useSpidersStore = create(
@@ -40,9 +41,7 @@ export const useSpidersStore = create(
         set((state) => ({
           ...state,
           spiders: state.spiders.map((spider) =>
-            spider.id === spiderId
-              ? { ...spider, isFavourite: true }
-              : spider
+            spider.id === spiderId ? { ...spider, isFavourite: true } : spider
           ),
         })),
 
@@ -50,9 +49,14 @@ export const useSpidersStore = create(
         set((state) => ({
           ...state,
           spiders: state.spiders.map((spider) =>
-            spider.id === spiderId
-              ? { ...spider, isFavourite: false }
-              : spider
+            spider.id === spiderId ? { ...spider, isFavourite: false } : spider
+          ),
+        })),
+      updateSpider: (spiderId, updates) =>
+        set((state) => ({
+          ...state,
+          spiders: state.spiders.map((spider) =>
+            spider.id === spiderId ? { ...spider, ...updates } : spider
           ),
         })),
     }),

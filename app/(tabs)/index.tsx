@@ -8,7 +8,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useUserStore } from "@/store/userStore";
 
 import SearchComponent from "@/core/SearchComponent/SearchComponent";
-import MissedFeedingListComponent from "@/core/MissedFeedingListComponent/MissedFeedingListComponent";
+import PostFeedingListComponent from "@/core/PostFeedingComponent/PostFeedingComponent";
 import PostMoltingListComponent from "@/core/PostMoltingComponent/PostMoltingComponent";
 
 import { Colors, ThemeType } from "@/constants/Colors";
@@ -47,7 +47,7 @@ export default function HomeScreen() {
       </CardComponent>
       <ScrollView>
         <SpiderGallery />
-        <MissedFeedingListComponent />
+        <PostFeedingListComponent />
         <PostMoltingListComponent />
       </ScrollView>
     </WrapperComponent>

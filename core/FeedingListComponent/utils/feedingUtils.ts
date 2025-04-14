@@ -2,7 +2,6 @@ import { convertToISODate } from "@/utils/dateUtils";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 
-
 export const getFeedingStatus = (
   lastFed: string,
   frequencyInDays: FeedingFrequency
@@ -27,11 +26,13 @@ export const getFeedingStatus = (
   };
 
   const frequency = frequencyMap[frequencyInDays];
-  const daysSinceLastFed =
-    (today.getTime() - lastFedDate.getTime()) / (1000 * 60 * 60 * 24);
 
-  if (daysSinceLastFed < 1) return FeedingStatus.FEED_TODAY;
-  if (daysSinceLastFed >= frequency) return FeedingStatus.HUNGRY;
+  const daysSinceLastFed = Math.floor(
+    (today.getTime() - lastFedDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
 
-  return null;
+  if (daysSinceLastFed === frequency) return FeedingStatus.FEED_TODAY;
+  if (daysSinceLastFed > frequency) return FeedingStatus.HUNGRY;
+
+  return FeedingStatus.NOT_HUNGRY;
 };

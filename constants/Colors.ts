@@ -52,6 +52,9 @@ export const Colors = {
     warning: {
       text: "#FF0000",
     },
+    info: {
+      text: tintColorLight,
+    },
     input: {
       label: "#6e6e6e",
       placeholder: "#6e6e6e",
@@ -99,6 +102,9 @@ export const Colors = {
     },
     warning: {
       text: "#FF0000",
+    },
+    info: {
+      text: tintColorDark,
     },
     input: {
       label: "#c0c0c0",

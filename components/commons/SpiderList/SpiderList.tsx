@@ -7,29 +7,28 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-
+import { MaterialIcons } from "@expo/vector-icons";
 import { useUserStore } from "@/store/userStore";
-
 import { Colors, ThemeType } from "@/constants/Colors";
-
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
+import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 
-import { Modal, TouchableWithoutFeedback } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-
-type Spider = {
+type SpiderList = {
   id: string;
   name: string;
   date: string;
-  status: string;
+  imageUri?: string | null;
+  status?: FeedingStatus | string | null;
 };
 
 type SpiderListProps = {
   title: string;
-  data: Spider[];
+  data: SpiderList[];
   info?: string;
 };
 
@@ -125,7 +124,11 @@ const SpiderList = ({ title, data, info }: SpiderListProps) => {
               style={styles(currentTheme)["spider-list__item"]}
             >
               <Image
-                source={require("@/assets/images/spider.png")}
+                source={
+                  item.imageUri
+                    ? { uri: item.imageUri }
+                    : require("@/assets/images/spider.png")
+                }
                 style={styles(currentTheme)["spider-list__image"]}
               />
               <ThemedText style={styles(currentTheme)["spider-list__info"]}>
@@ -134,6 +137,7 @@ const SpiderList = ({ title, data, info }: SpiderListProps) => {
               <ThemedText style={styles(currentTheme)["spider-list__info"]}>
                 {item.date}
               </ThemedText>
+              
               <ThemedText style={styles(currentTheme)["spider-list__info"]}>
                 {item.status}
               </ThemedText>
