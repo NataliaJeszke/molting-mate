@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   TextInput,
   Alert,
@@ -19,16 +19,18 @@ import {
   spiderTypesOptions,
   spiderSpeciesByType,
   feedingFrequencyOptions,
-} from "./NewSpiderForm.constants";
+} from "./SpiderForm.constants";
 
 import CardComponent from "@/components/ui/CardComponent";
 import ThemedPicker from "@/components/ui/ThemedPicker";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { SpiderImage } from "@/components/commons/SpiderImage/SpiderImage";
+import { useLocalSearchParams } from "expo-router";
 
-export default function NewSpiderForm() {
+export default function SpiderForm() {
+  const { id } = useLocalSearchParams<{ id?: string }>();
   const { currentTheme } = useUserStore();
-  const { addSpider } = useSpidersStore();
+  const { addSpider, updateSpider, spiders } = useSpidersStore();
 
   const [name, setName] = useState<string>();
   const [age, setAge] = useState<string>();
@@ -38,6 +40,22 @@ export default function NewSpiderForm() {
   const [spiderType, setSpiderType] = useState<string>();
   const [spiderSpecies, setSpiderSpecies] = useState<string>();
   const [imageUri, setImageUri] = useState<string>();
+
+  useEffect(() => {
+    if (id) {
+      const spiderToEdit = spiders.find((s) => s.id === id);
+      if (spiderToEdit) {
+        setName(spiderToEdit.name);
+        setAge(spiderToEdit.age);
+        setSpiderType(spiderToEdit.spiderType);
+        setSpiderSpecies(spiderToEdit.spiderSpecies);
+        setLastFed(spiderToEdit.lastFed);
+        setFeedingFrequency(spiderToEdit.feedingFrequency);
+        setLastMolt(spiderToEdit.lastMolt);
+        setImageUri(spiderToEdit.imageUri);
+      }
+    }
+  }, [id]);
 
   const handleSubmit = () => {
     if (
@@ -49,20 +67,11 @@ export default function NewSpiderForm() {
       !feedingFrequency?.trim() ||
       !lastMolt?.trim()
     ) {
-      console.log(
-        "pokaz wszystkie pola",
-        name,
-        age,
-        spiderType,
-        spiderSpecies,
-        lastFed,
-        feedingFrequency,
-        lastMolt
-      );
       return Alert.alert("Błąd walidacji", "Uzupełnij wszystkie pola.");
     }
-
-    const newSpider = {
+  
+    const spiderData = {
+      id: id || Date.now().toString(),
       name,
       age,
       spiderType,
@@ -73,12 +82,18 @@ export default function NewSpiderForm() {
       imageUri: imageUri || "",
       isFavourite: false,
     };
-
-    addSpider(newSpider);
-    Alert.alert("Sukces", `Dodano pająka o imieniu ${name}!`);
-
+  
+    if (id) {
+      updateSpider(id, spiderData);
+      Alert.alert("Sukces", `Zaktualizowano pająka o imieniu ${name}!`);
+    } else {
+      addSpider(spiderData);
+      Alert.alert("Sukces", `Dodano pająka o imieniu ${name}!`);
+    }
+  
     clearForm();
   };
+  
 
   const clearForm = () => {
     setName("");
