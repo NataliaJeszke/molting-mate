@@ -6,5 +6,3 @@ export enum ViewTypes {
     VIEW_MOLTING = "molting",
     VIEW_FEEDING = "feeding",
   }
-  
-  export type ViewConfigType = keyof typeof ViewTypes;

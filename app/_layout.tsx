@@ -62,6 +62,13 @@ export default function RootLayout() {
             headerTintColor: Colors[currentTheme].tint,
           }}
         />
+        <Stack.Screen
+          name="manageAlertModal"
+          options={{
+            presentation: "modal",
+            title: "Alert",
+          }}
+        />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

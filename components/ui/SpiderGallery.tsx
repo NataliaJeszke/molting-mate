@@ -1,10 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import { View, ScrollView, Image, StyleSheet, Dimensions } from "react-native";
-import CardComponent from "@/components/ui/CardComponent";
-import { Colors, ThemeType } from "@/constants/Colors";
+
 import { useUserStore } from "@/store/userStore";
 import { useSpidersStore } from "@/store/spidersStore";
+
 import { getRandomUserImages } from "@/utils/getRandomUserImages";
+import { Colors, ThemeType } from "@/constants/Colors";
+
+import CardComponent from "@/components/ui/CardComponent";
 
 const defaultSpiderImages = [
   require("@/assets/images/spider-gallery-1.jpg"),

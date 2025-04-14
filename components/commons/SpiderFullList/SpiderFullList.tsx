@@ -1,16 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 
+import { router } from "expo-router";
 import { AntDesign, Feather } from "@expo/vector-icons";
 
 import { useUserStore } from "@/store/userStore";
 import { useSpidersStore } from "@/store/spidersStore";
 import { Colors, ThemeType } from "@/constants/Colors";
-
-import { FeedingStatus } from "@/core/FeedingListComponent/FeedingListComponent";
+import { FeedingStatus } from "@/constants/FeedingStatus.enums";
+import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
+import { ViewTypes } from "@/constants/ViewTypes.enums";
 
 type Spider = {
   id: string;
@@ -19,20 +21,20 @@ type Spider = {
   spiderType: string;
   spiderSpecies: string;
   lastFed: string;
-  feedingFrequency: string;
+  feedingFrequency: FeedingFrequency;
   lastMolt: string;
   imageUri: string | undefined;
   isFavourite: boolean;
-  status?: FeedingStatus | string;
+  status?: FeedingStatus | null;
 };
 
 type SpiderListProps = {
   data: Spider[];
-  viewType?: string;
-  onAlertPress?:(spiderId: string)=> void;
+  viewType?: ViewTypes;
+
 };
 
-const SpiderFullList = ({ data, viewType, onAlertPress }: SpiderListProps) => {
+const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
   const { currentTheme } = useUserStore();
   const { addToFavorites, removeFromFavorites, removeSpider, spiders } =
     useSpidersStore();
@@ -56,9 +58,9 @@ const SpiderFullList = ({ data, viewType, onAlertPress }: SpiderListProps) => {
   return (
     <CardComponent>
       <View>
-        {data.map((item, index) => (
+        {data.map((spider, index) => (
           <View
-            key={item.id}
+            key={spider.id}
             style={[
               styles(currentTheme)["spider-list__item"],
               index !== data.length - 1 &&
@@ -68,28 +70,33 @@ const SpiderFullList = ({ data, viewType, onAlertPress }: SpiderListProps) => {
             <View style={styles(currentTheme)["spider-list__item-content"]}>
               <Image
                 source={
-                  item.imageUri
-                    ? { uri: item.imageUri }
+                  spider.imageUri
+                    ? { uri: spider.imageUri }
                     : require("@/assets/images/spider.png")
                 }
                 style={styles(currentTheme)["spider-list__image"]}
               />
               <View style={{ marginLeft: 12 }}>
                 <ThemedText style={styles(currentTheme)["spider-list__info"]}>
-                  {item.name}
+                  {spider.name}
                 </ThemedText>
 
-                {(viewType === "collection" || viewType === "feeding") && (
+                {(viewType === ViewTypes.VIEW_COLLECTION || ViewTypes.VIEW_FEEDING ) && (
                   <>
                     <ThemedText
                       style={styles(currentTheme)["spider-list__info"]}
                     >
-                      Data karmienia: {item.lastFed}
+                      Data karmienia: {spider.lastFed}
                     </ThemedText>
 
-                    {item.status === "HUNGRY" && (
+                    {spider.status === FeedingStatus.HUNGRY && (
                       <TouchableOpacity
-                      onPress={() => onAlertPress && onAlertPress(item.id)}
+                        onPress={() => {
+                          router.push({
+                            pathname: "/manageAlertModal",
+                            params: { id: spider.id, type: ViewTypes.VIEW_FEEDING },
+                          });
+                        }}
                       >
                         <Feather
                           size={24}
@@ -101,25 +108,25 @@ const SpiderFullList = ({ data, viewType, onAlertPress }: SpiderListProps) => {
                   </>
                 )}
 
-                {(viewType === "collection" || viewType === "molting") && (
+                {(viewType === ViewTypes.VIEW_COLLECTION || viewType === ViewTypes.VIEW_MOLTING) && (
                   <ThemedText style={styles(currentTheme)["spider-list__info"]}>
-                    Data linienia: {item.lastMolt}
+                    Data linienia: {spider.lastMolt}
                   </ThemedText>
                 )}
               </View>
               <TouchableOpacity
-                onPress={() => toggleFavourite(item.id, item.isFavourite)}
+                onPress={() => toggleFavourite(spider.id, spider.isFavourite)}
                 style={styles(currentTheme)["spider-list__heart-icon"]}
               >
                 <AntDesign
                   size={24}
-                  name={item.isFavourite ? "heart" : "hearto"}
+                  name={spider.isFavourite ? "heart" : "hearto"}
                   color={Colors[currentTheme].tint}
                 />
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={() => handleRemoveSpider(item.id)}
+                onPress={() => handleRemoveSpider(spider.id)}
                 style={styles(currentTheme)["spider-list__trash-icon"]}
               >
                 <AntDesign

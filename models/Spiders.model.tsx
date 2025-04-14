@@ -1,4 +1,5 @@
-import { FeedingStatus } from "@/core/FeedingListComponent/FeedingListComponent";
+import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
+import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 
 export type Spider = {
     id: string;
@@ -7,7 +8,7 @@ export type Spider = {
     spiderType: string;
     spiderSpecies: string;
     lastFed: string;
-    feedingFrequency: string;
+    feedingFrequency: FeedingFrequency;
     lastMolt: string;
     imageUri: string | undefined;
     isFavourite: boolean;
