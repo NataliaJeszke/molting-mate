@@ -4,6 +4,7 @@ import CardComponent from "@/components/ui/CardComponent";
 import { Colors, ThemeType } from "@/constants/Colors";
 import { useUserStore } from "@/store/userStore";
 import { useSpidersStore } from "@/store/spidersStore";
+import { getRandomUserImages } from "@/utils/getRandomUserImages";
 
 const defaultSpiderImages = [
   require("@/assets/images/spider-gallery-1.jpg"),
@@ -13,25 +14,22 @@ const defaultSpiderImages = [
 
 const { width } = Dimensions.get("window");
 
-const shuffleArray = (array: any[]) => {
-  return [...array].sort(() => Math.random() - 0.5);
-};
-
 const SpiderGallery = () => {
   const scrollRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { currentTheme } = useUserStore();
   const { spiders } = useSpidersStore();
-
-  const userImages = spiders
-    .map((spider) => spider.imageUri)
-    .filter((uri): uri is string => !!uri);
-
-  const imagesToShow = shuffleArray(
-    userImages.length > 0
-      ? userImages.map((uri) => ({ uri }))
-      : defaultSpiderImages
+  const [imagesToShow, setImagesToShow] = useState(() =>
+    spiders.length > 0 ? getRandomUserImages(spiders) : defaultSpiderImages
   );
+
+  useEffect(() => {
+    if (spiders.length > 0) {
+      setImagesToShow(getRandomUserImages(spiders));
+    } else {
+      setImagesToShow(defaultSpiderImages);
+    }
+  }, [spiders]);
 
   useEffect(() => {
     const interval = setInterval(() => {
