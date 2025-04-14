@@ -18,7 +18,7 @@ const PostFeedingListComponent = () => {
         name: spider.name,
         date: spider.lastFed,
         imageUri: spider.imageUri,
-        status: getFeedingStatus(spider.lastFed, spider.feedingFrequency),
+        status: "GŁODNY",
       }));
   }, [spiders]);
 

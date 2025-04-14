@@ -59,6 +59,10 @@ const SpiderList = ({ title, data, info }: SpiderListProps) => {
   const showLeftArrow = scrollPosition > 0;
   const showRightArrow = scrollPosition < maxScroll;
 
+  const truncateText = (text: string, maxLength: number) => {
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+  };
+
   return (
     <CardComponent>
       <View style={styles(currentTheme)["spider-list__wrapper"]}>
@@ -118,28 +122,28 @@ const SpiderList = ({ title, data, info }: SpiderListProps) => {
           }}
           scrollEventThrottle={16}
         >
-          {data.map((item) => (
+          {data.map((spider) => (
             <View
-              key={item.id}
+              key={spider.id}
               style={styles(currentTheme)["spider-list__item"]}
             >
               <Image
                 source={
-                  item.imageUri
-                    ? { uri: item.imageUri }
+                  spider.imageUri
+                    ? { uri: spider.imageUri }
                     : require("@/assets/images/spider.png")
                 }
                 style={styles(currentTheme)["spider-list__image"]}
               />
               <ThemedText style={styles(currentTheme)["spider-list__info"]}>
-                {item.name}
+                {truncateText(spider.name, 12)}
               </ThemedText>
               <ThemedText style={styles(currentTheme)["spider-list__info"]}>
-                {item.date}
+                {spider.date}
               </ThemedText>
-              
+
               <ThemedText style={styles(currentTheme)["spider-list__info"]}>
-                {item.status}
+                {spider.status}
               </ThemedText>
             </View>
           ))}
