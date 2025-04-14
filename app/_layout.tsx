@@ -65,8 +65,10 @@ export default function RootLayout() {
         <Stack.Screen
           name="manageAlertModal"
           options={{
-            presentation: "modal",
-            title: "Alert",
+            presentation: "transparentModal",
+            title: "Wymagana akcja",
+            headerShown: false,
+            contentStyle: { backgroundColor: "transparent" },
           }}
         />
         <Stack.Screen name="+not-found" />
