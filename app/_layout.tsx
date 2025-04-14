@@ -48,7 +48,7 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
-          name="newSpider"
+          name="spiderForm"
           options={{
             presentation: "modal",
             title: "Dodaj pająka do kolekcji",

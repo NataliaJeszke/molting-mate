@@ -37,7 +37,7 @@ export default function HomeScreen() {
           <SearchComponent />
         </View>
 
-        <TouchableOpacity onPress={() => router.push("/newSpider")}>
+        <TouchableOpacity onPress={() => router.push("/spiderForm")}>
           <Feather
             name="plus-circle"
             size={28}

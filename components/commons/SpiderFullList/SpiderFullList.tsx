@@ -174,7 +174,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                     style={styles(currentTheme)["spider-list__action-button"]}
                     onPress={() => {
                       router.push({
-                        pathname: "/manageAlertModal",
+                        pathname: "/spiderForm",
                         params: {
                           id: spider.id,
                           type: ViewTypes.VIEW_COLLECTION,
