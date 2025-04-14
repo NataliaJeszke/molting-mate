@@ -12,5 +12,5 @@ export type Spider = {
     lastMolt: string;
     imageUri: string | undefined;
     isFavourite: boolean;
-    status?: FeedingStatus | string;
+    status?: FeedingStatus | string | null;
   };

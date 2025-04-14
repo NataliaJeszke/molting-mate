@@ -8,6 +8,7 @@ import { getFeedingStatus } from "./utils/feedingUtils";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import FiltersComponent from "../FiltersComponent/FiltersComponent";
+import { ScrollView } from "react-native";
 
 const FeedingListComponent = () => {
   const spiders = useSpidersStore((state) => state.spiders);
@@ -34,7 +35,9 @@ const FeedingListComponent = () => {
         spiderCount={sortedSpidersWithStatus.length}
         info="Lista pająków według karmienia."
       />
-      <SpiderFullList data={sortedSpidersWithStatus} viewType={viewType} />
+      <ScrollView>
+        <SpiderFullList data={sortedSpidersWithStatus} viewType={viewType} />
+      </ScrollView>
     </>
   );
 };
