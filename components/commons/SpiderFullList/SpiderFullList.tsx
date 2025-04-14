@@ -129,11 +129,11 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                     >
                       Data linienia: {spider.lastMolt}
                     </ThemedText>
-                    <ThemedText
+                    {/* <ThemedText
                       style={styles(currentTheme)["spider-list__info"]}
                     >
                       Predykcja Linienia: {spider.status}
-                    </ThemedText>
+                    </ThemedText> */}
                     {viewType === ViewTypes.VIEW_MOLTING && (
                       <TouchableOpacity
                         onPress={() => {
@@ -236,7 +236,7 @@ const styles = (theme: ThemeType) =>
       marginLeft: 12,
     },
     "spider-list__info": {
-      fontSize: 12,
+      fontSize: 14,
       fontWeight: "500",
       textAlign: "left",
       marginBottom: 2,

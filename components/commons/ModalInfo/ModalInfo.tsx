@@ -15,7 +15,7 @@ import { useSpidersStore } from "@/store/spidersStore";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 
-interface ModalInfoProps {
+type ModalInfoProps = {
   isVisible: boolean;
   onClose: () => void;
   onSubmit: (date: string, type: string) => void;
@@ -24,6 +24,7 @@ interface ModalInfoProps {
 const ModalInfo = ({ isVisible, onClose, onSubmit }: ModalInfoProps) => {
   const { id, type, status } = useLocalSearchParams();
   const updateSpider = useSpidersStore((state) => state.updateSpider);
+  const spiders = useSpidersStore((state) => state.spiders);
   const [date, setDate] = useState("");
 
   useEffect(() => {
@@ -32,23 +33,50 @@ const ModalInfo = ({ isVisible, onClose, onSubmit }: ModalInfoProps) => {
     console.log("type:", type);
   }, [id, type]);
 
+  const getTodayDate = () => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const year = today.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
   const handleSubmit = () => {
-    let finalDate = date;
-
-    if (!finalDate && status === "FEED_TODAY") {
-      const today = new Date();
-      const day = String(today.getDate()).padStart(2, "0");
-      const month = String(today.getMonth() + 1).padStart(2, "0");
-      const year = today.getFullYear();
-      finalDate = `${day}-${month}-${year}`;
-    }
-
+    let finalDate = date.trim() || getTodayDate();
+    
     if (finalDate && id && type) {
-      if (type === "feeding") {
-        updateSpider(id as string, { lastFed: finalDate });
-      } else if (type === "molting") {
-        updateSpider(id as string, { lastMolt: finalDate });
+      const currentSpider = spiders.find(spider => spider.id === id);
+      
+      if (currentSpider) {
+        if (type === "feeding") {
+          const currentFeedingHistory = currentSpider.feedingHistoryData || [];
+          
+          if (!currentFeedingHistory.includes(finalDate)) {
+            const newFeedingHistory = [...currentFeedingHistory, finalDate];
+            
+            updateSpider(id as string, {
+              lastFed: finalDate,
+              feedingHistoryData: newFeedingHistory
+            });
+          } else {
+            updateSpider(id as string, { lastFed: finalDate });
+          }
+        } else if (type === "molting") {
+          const currentMoltingHistory = currentSpider.moltingHistoryData || [];
+        
+          if (!currentMoltingHistory.includes(finalDate)) {
+            const newMoltingHistory = [...currentMoltingHistory, finalDate];
+          
+            updateSpider(id as string, {
+              lastMolt: finalDate,
+              moltingHistoryData: newMoltingHistory
+            });
+          } else {
+            updateSpider(id as string, { lastMolt: finalDate });
+          }
+        }
       }
+      
       onSubmit(finalDate, type as string);
       onClose();
     }
@@ -69,13 +97,13 @@ const ModalInfo = ({ isVisible, onClose, onSubmit }: ModalInfoProps) => {
             </ThemedText>
             <ThemedText style={styles.modalText}>
               {showInput
-                ? "Jeśli nakarmiłeś w innym terminie, wpisz datę i kliknij 'Zatwierdź'"
+                ? "Jeśli nakarmiłeś w innym terminie, wpisz datę i kliknij 'Zatwierdź'. W przeciwnym razie zostanie użyta dzisiejsza data."
                 : "Kliknij 'Zatwierdź', aby potwierdzić karmienie dzisiaj"}
             </ThemedText>
             {showInput && (
               <TextInput
                 style={styles.input}
-                placeholder="Wpisz datę karmienia (dd-mm-rrrr)"
+                placeholder="Wpisz datę karmienia (dd-mm-rrrr) lub pozostaw puste dla dzisiaj"
                 value={date}
                 onChangeText={setDate}
               />
@@ -91,13 +119,13 @@ const ModalInfo = ({ isVisible, onClose, onSubmit }: ModalInfoProps) => {
             </ThemedText>
             <ThemedText style={styles.modalText}>
               {showInput
-                ? "Jeśli w innym dniu, wprowadź datę i kliknij 'Zatwierdź'"
+                ? "Jeśli w innym dniu, wprowadź datę i kliknij 'Zatwierdź'. W przeciwnym razie zostanie użyta dzisiejsza data."
                 : "Kliknij 'Zatwierdź', aby potwierdzić linienie dzisiaj"}
             </ThemedText>
             {showInput && (
               <TextInput
                 style={styles.input}
-                placeholder="Wpisz datę linienia (dd-mm-rrrr)"
+                placeholder="Wpisz datę linienia (dd-mm-rrrr) lub pozostaw puste dla dzisiaj"
                 value={date}
                 onChangeText={setDate}
               />

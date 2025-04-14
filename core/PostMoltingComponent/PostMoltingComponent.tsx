@@ -1,16 +1,32 @@
-import React from "react";
+import React, { useMemo } from "react";
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
 import { PostMoltingMsg } from "./PostMolting.constants";
+import { useSpidersStore } from "@/store/spidersStore";
+import { convertToISODate } from "@/utils/dateUtils";
 
+//This component is to change when there is data from AI about molting predictions
 const PostMoltingListComponent = () => {
-  const postMoltingSpiders = [
-    { id: "1", name: "Pająk 1", date: "2024-03-30", status: "Po linieniu" },
-    { id: "2", name: "Pająk 2", date: "2024-03-28", status: "Po linieniu" },
-  ];
+  const spiders = useSpidersStore((state) => state.spiders);
+
+  const postMoltingSpiders = useMemo(() => {
+    return spiders
+      .filter((spider) => spider.lastMolt && new Date(spider.lastMolt) < new Date())
+      .sort((a, b) => {
+        const dateA = new Date(convertToISODate(a.lastMolt)).getTime();
+        const dateB = new Date(convertToISODate(b.lastMolt)).getTime();
+        return dateB - dateA;
+      })
+      .map((spider) => ({
+        id: spider.id,
+        name: spider.name,
+        date: spider.lastMolt,
+        imageUri: spider.imageUri,
+      }));
+  }, [spiders]);
 
   return (
     <SpiderList
-      title="Pająki po linieniu"
+      title="Linienie"
       data={postMoltingSpiders}
       info={PostMoltingMsg.INFORMATION}
     />

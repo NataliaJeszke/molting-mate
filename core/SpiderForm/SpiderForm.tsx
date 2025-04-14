@@ -7,6 +7,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Platform,
+  KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
@@ -69,9 +71,26 @@ export default function SpiderForm() {
     ) {
       return Alert.alert("Błąd walidacji", "Uzupełnij wszystkie pola.");
     }
-  
+
+    const existingSpider = id ? spiders.find((s) => s.id === id) : null;
+
+    const updatedMoltingHistory = existingSpider?.moltingHistoryData
+      ? [...existingSpider.moltingHistoryData]
+      : [];
+    const updatedFeedingHistory = existingSpider?.feedingHistoryData
+      ? [...existingSpider.feedingHistoryData]
+      : [];
+
+    if (!updatedMoltingHistory.includes(lastMolt)) {
+      updatedMoltingHistory.push(lastMolt);
+    }
+
+    if (!updatedFeedingHistory.includes(lastFed)) {
+      updatedFeedingHistory.push(lastFed);
+    }
+
     const spiderData = {
-      id: id || Date.now().toString(),
+      id: id ? id : Date.now().toString(),
       name,
       age,
       spiderType,
@@ -80,9 +99,11 @@ export default function SpiderForm() {
       feedingFrequency: feedingFrequency as FeedingFrequency,
       lastMolt,
       imageUri: imageUri || "",
-      isFavourite: false,
+      isFavourite: existingSpider?.isFavourite ?? false,
+      moltingHistoryData: updatedMoltingHistory,
+      feedingHistoryData: updatedFeedingHistory,
     };
-  
+
     if (id) {
       updateSpider(id, spiderData);
       Alert.alert("Sukces", `Zaktualizowano pająka o imieniu ${name}!`);
@@ -90,10 +111,9 @@ export default function SpiderForm() {
       addSpider(spiderData);
       Alert.alert("Sukces", `Dodano pająka o imieniu ${name}!`);
     }
-  
+
     clearForm();
   };
-  
 
   const clearForm = () => {
     setName("");
@@ -131,106 +151,122 @@ export default function SpiderForm() {
   };
 
   return (
-    <CardComponent>
-      <View style={styles(currentTheme)["centered"]}>
-        <ThemedText style={styles(currentTheme)["subHeaderText"]}>
-          Uzupełnij informacje o pająku
-        </ThemedText>
-      </View>
-
-      <ThemedText style={styles(currentTheme).label}>Zdjęcie pająka</ThemedText>
-
-      <TouchableOpacity
-        onPress={handleChooseImage}
-        activeOpacity={0.8}
-        style={styles(currentTheme).imageWrapper}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={100}
+    >
+      <ScrollView
+        contentContainerStyle={{ padding: 4 }}
+        keyboardShouldPersistTaps="handled"
       >
-        <SpiderImage imageUri={imageUri} />
-      </TouchableOpacity>
+        <CardComponent>
+          <View style={styles(currentTheme)["centered"]}>
+            <ThemedText style={styles(currentTheme)["subHeaderText"]}>
+              Uzupełnij informacje o pająku
+            </ThemedText>
+          </View>
 
-      <ThemedText style={styles(currentTheme)["label"]}>Imię</ThemedText>
-      <TextInput
-        value={name}
-        onChangeText={setName}
-        style={styles(currentTheme)["input"]}
-        placeholder="Zyzio"
-        placeholderTextColor={Colors[currentTheme].input.placeholder}
-        autoCapitalize="words"
-      />
+          <ThemedText style={styles(currentTheme).label}>
+            Zdjęcie pająka
+          </ThemedText>
 
-      <ThemedText style={styles(currentTheme)["label"]}>Wiek</ThemedText>
-      <TextInput
-        value={age}
-        onChangeText={setAge}
-        style={styles(currentTheme)["input"]}
-        placeholder="L1"
-        placeholderTextColor={Colors[currentTheme].input.placeholder}
-      />
+          <TouchableOpacity
+            onPress={handleChooseImage}
+            activeOpacity={0.8}
+            style={styles(currentTheme).imageWrapper}
+          >
+            <SpiderImage imageUri={imageUri} />
+          </TouchableOpacity>
 
-      <ThemedText style={styles(currentTheme)["label"]}>
-        Rodzina i gatunek
-      </ThemedText>
-      <View style={styles(currentTheme)["pickerWrapper"]}>
-        <ThemedPicker
-          label="Wybierz rodzinę"
-          selectedValue={spiderType || ""}
-          onValueChange={(value) => {
-            setSpiderType(value);
-            setSpiderSpecies("");
-          }}
-          options={spiderTypesOptions}
-          theme={currentTheme}
-        />
-        <ThemedPicker
-          label="Wybierz gatunek"
-          selectedValue={spiderSpecies || ""}
-          onValueChange={(value) => setSpiderSpecies(value)}
-          options={getSpeciesForType(spiderType || "")}
-          theme={currentTheme}
-        />
-      </View>
+          <ThemedText style={styles(currentTheme)["label"]}>Imię</ThemedText>
+          <TextInput
+            value={name}
+            onChangeText={setName}
+            style={styles(currentTheme)["input"]}
+            placeholder="Zyzio"
+            placeholderTextColor={Colors[currentTheme].input.placeholder}
+            autoCapitalize="words"
+          />
 
-      <ThemedText style={styles(currentTheme)["label"]}>
-        Ostatnio karmiony
-      </ThemedText>
-      <TextInput
-        value={lastFed}
-        onChangeText={setLastFed}
-        style={styles(currentTheme)["input"]}
-        placeholder="dd-mm-rrrr"
-        placeholderTextColor={Colors[currentTheme].input.placeholder}
-      />
+          <ThemedText style={styles(currentTheme)["label"]}>Wiek</ThemedText>
+          <TextInput
+            value={age}
+            onChangeText={setAge}
+            style={styles(currentTheme)["input"]}
+            placeholder="L1"
+            placeholderTextColor={Colors[currentTheme].input.placeholder}
+          />
 
-      <ThemedText style={styles(currentTheme)["label"]}>
-        Częstotliwość karmienia
-      </ThemedText>
-      <View style={styles(currentTheme)["pickerWrapper"]}>
-        <ThemedPicker
-          label="Wybierz częstotliwość karmienia"
-          selectedValue={feedingFrequency || ""}
-          onValueChange={(value) => setFeedingFrequency(value)}
-          options={feedingFrequencyOptions}
-          theme={currentTheme}
-        />
-      </View>
+          <ThemedText style={styles(currentTheme)["label"]}>
+            Rodzina i gatunek
+          </ThemedText>
+          <View style={styles(currentTheme)["pickerWrapper"]}>
+            <ThemedPicker
+              label="Wybierz rodzinę"
+              selectedValue={spiderType || ""}
+              onValueChange={(value) => {
+                setSpiderType(value);
+                setSpiderSpecies("");
+              }}
+              options={spiderTypesOptions}
+              theme={currentTheme}
+            />
+            <ThemedPicker
+              label="Wybierz gatunek"
+              selectedValue={spiderSpecies || ""}
+              onValueChange={(value) => setSpiderSpecies(value)}
+              options={getSpeciesForType(spiderType || "")}
+              theme={currentTheme}
+            />
+          </View>
 
-      <ThemedText style={styles(currentTheme)["label"]}>
-        Data ostatniego linienia
-      </ThemedText>
-      <TextInput
-        value={lastMolt}
-        onChangeText={setLastMolt}
-        style={styles(currentTheme)["input"]}
-        placeholder="dd-mm-rrrr"
-        placeholderTextColor={Colors[currentTheme].input.placeholder}
-      />
+          <ThemedText style={styles(currentTheme)["label"]}>
+            Ostatnio karmiony
+          </ThemedText>
+          <TextInput
+            value={lastFed}
+            onChangeText={setLastFed}
+            style={styles(currentTheme)["input"]}
+            placeholder="dd-mm-rrrr"
+            placeholderTextColor={Colors[currentTheme].input.placeholder}
+          />
 
-      <Pressable style={styles(currentTheme)["button"]} onPress={handleSubmit}>
-        <ThemedText style={styles(currentTheme)["buttonText"]}>
-          Zapisz pająka
-        </ThemedText>
-      </Pressable>
-    </CardComponent>
+          <ThemedText style={styles(currentTheme)["label"]}>
+            Częstotliwość karmienia
+          </ThemedText>
+          <View style={styles(currentTheme)["pickerWrapper"]}>
+            <ThemedPicker
+              label="Wybierz częstotliwość karmienia"
+              selectedValue={feedingFrequency || ""}
+              onValueChange={(value) => setFeedingFrequency(value)}
+              options={feedingFrequencyOptions}
+              theme={currentTheme}
+            />
+          </View>
+
+          <ThemedText style={styles(currentTheme)["label"]}>
+            Data ostatniego linienia
+          </ThemedText>
+          <TextInput
+            value={lastMolt}
+            onChangeText={setLastMolt}
+            style={styles(currentTheme)["input"]}
+            placeholder="dd-mm-rrrr"
+            placeholderTextColor={Colors[currentTheme].input.placeholder}
+          />
+
+          <Pressable
+            style={styles(currentTheme)["button"]}
+            onPress={handleSubmit}
+          >
+            <ThemedText style={styles(currentTheme)["buttonText"]}>
+              Zapisz pająka
+            </ThemedText>
+          </Pressable>
+        </CardComponent>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
