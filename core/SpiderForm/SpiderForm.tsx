@@ -55,7 +55,6 @@ export default function SpiderForm() {
       if (spiderToEdit) {
         setName(spiderToEdit.name);
         setAge(spiderToEdit.age);
-        setSpiderType(spiderToEdit.spiderType);
         setSpiderSpecies(spiderToEdit.spiderSpecies);
         setLastFed(spiderToEdit.lastFed);
         setFeedingFrequency(spiderToEdit.feedingFrequency);
@@ -66,10 +65,11 @@ export default function SpiderForm() {
   }, [id]);
 
   const handleSubmit = () => {
+    console.log("Submitting spider data...");
+    console.log(name, age, spiderSpecies, lastFed, feedingFrequency, lastMolt, imageUri);
     if (
       !name?.trim() ||
       !age?.trim() ||
-      !spiderType?.trim() ||
       !spiderSpecies?.trim() ||
       !lastFed?.trim() ||
       !feedingFrequency?.trim() ||
