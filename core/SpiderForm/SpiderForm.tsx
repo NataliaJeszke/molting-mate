@@ -19,10 +19,7 @@ import { useSpidersStore } from "@/store/spidersStore";
 
 import { Colors, ThemeType } from "@/constants/Colors";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
-import {
-  spiderSpeciesByType,
-  feedingFrequencyOptions,
-} from "./SpiderForm.constants";
+import { feedingFrequencyOptions } from "./SpiderForm.constants";
 
 import CardComponent from "@/components/ui/CardComponent";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
@@ -40,7 +37,6 @@ export default function SpiderForm() {
   const [lastFed, setLastFed] = useState<string>();
   const [feedingFrequency, setFeedingFrequency] = useState<string>();
   const [lastMolt, setLastMolt] = useState<string>();
-  const [spiderType, setSpiderType] = useState<string>();
   const [spiderSpecies, setSpiderSpecies] = useState<string>("");
   const [imageUri, setImageUri] = useState<string>();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -66,7 +62,15 @@ export default function SpiderForm() {
 
   const handleSubmit = () => {
     console.log("Submitting spider data...");
-    console.log(name, age, spiderSpecies, lastFed, feedingFrequency, lastMolt, imageUri);
+    console.log(
+      name,
+      age,
+      spiderSpecies,
+      lastFed,
+      feedingFrequency,
+      lastMolt,
+      imageUri
+    );
     if (
       !name?.trim() ||
       !age?.trim() ||
@@ -123,20 +127,11 @@ export default function SpiderForm() {
   const clearForm = () => {
     setName("");
     setAge("");
-    setSpiderType("");
     setSpiderSpecies("");
     setLastFed("");
     setFeedingFrequency("");
     setLastMolt("");
     setImageUri(undefined);
-  };
-
-  const getSpeciesForType = (type: string) => {
-    return (
-      spiderSpeciesByType[type as keyof typeof spiderSpeciesByType] || [
-        { label: "Brak dostępnych gatunków", value: "" },
-      ]
-    );
   };
 
   const handleChooseImage = async () => {
