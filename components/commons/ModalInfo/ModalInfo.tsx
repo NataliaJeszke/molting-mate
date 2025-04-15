@@ -18,10 +18,9 @@ import { ThemedText } from "@/components/ui/ThemedText";
 type ModalInfoProps = {
   isVisible: boolean;
   onClose: () => void;
-  onSubmit: (date: string, type: string) => void;
 }
 
-const ModalInfo = ({ isVisible, onClose, onSubmit }: ModalInfoProps) => {
+const ModalInfo = ({ isVisible, onClose }: ModalInfoProps) => {
   const { id, type, status } = useLocalSearchParams();
   const updateSpider = useSpidersStore((state) => state.updateSpider);
   const spiders = useSpidersStore((state) => state.spiders);
@@ -76,8 +75,6 @@ const ModalInfo = ({ isVisible, onClose, onSubmit }: ModalInfoProps) => {
           }
         }
       }
-      
-      onSubmit(finalDate, type as string);
       onClose();
     }
   };

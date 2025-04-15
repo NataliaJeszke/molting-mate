@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { act, useEffect } from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 
 import { router } from "expo-router";
@@ -40,10 +40,6 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
     }
   };
 
-  const handleRemoveSpider = (spiderId: string) => {
-    removeSpider(spiderId);
-  };
-
   return (
     <CardComponent>
       <View>
@@ -83,10 +79,11 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                       <TouchableOpacity
                         onPress={() => {
                           router.push({
-                            pathname: "/manageAlertModal",
+                            pathname: "/manageModal",
                             params: {
                               id: spider.id,
                               type: ViewTypes.VIEW_FEEDING,
+                              action: "edit",
                             },
                           });
                         }}
@@ -102,11 +99,12 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                       <TouchableOpacity
                         onPress={() => {
                           router.push({
-                            pathname: "/manageAlertModal",
+                            pathname: "/manageModal",
                             params: {
                               id: spider.id,
                               type: ViewTypes.VIEW_FEEDING,
-                              status: spider.status
+                              status: spider.status,
+                              action: "edit",
                             },
                           });
                         }}
@@ -114,6 +112,28 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                         <Feather
                           size={24}
                           name="alert-octagon"
+                          color={Colors[currentTheme].info.text}
+                        />
+                      </TouchableOpacity>
+                    )}
+                    {(spider.status !== FeedingStatus.HUNGRY && 
+                      spider.status !== FeedingStatus.FEED_TODAY && 
+                      viewType !== ViewTypes.VIEW_COLLECTION) && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          router.push({
+                            pathname: "/manageModal",
+                            params: {
+                              id: spider.id,
+                              type: ViewTypes.VIEW_FEEDING,
+                              action: "edit",
+                            },
+                          });
+                        }}
+                      >
+                        <Feather
+                          size={24}
+                          name="edit-3"
                           color={Colors[currentTheme].info.text}
                         />
                       </TouchableOpacity>
@@ -138,10 +158,11 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                       <TouchableOpacity
                         onPress={() => {
                           router.push({
-                            pathname: "/manageAlertModal",
+                            pathname: "/manageModal",
                             params: {
                               id: spider.id,
                               type: ViewTypes.VIEW_MOLTING,
+                              action: "edit",
                             },
                           });
                         }}
@@ -156,8 +177,10 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                   </>
                 )}
               </View>
-              
-              <View style={styles(currentTheme)["spider-list__actions-container"]}>
+
+              <View
+                style={styles(currentTheme)["spider-list__actions-container"]}
+              >
                 <TouchableOpacity
                   style={styles(currentTheme)["spider-list__action-button"]}
                   onPress={() => toggleFavourite(spider.id, spider.isFavourite)}
@@ -169,7 +192,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                   />
                 </TouchableOpacity>
 
-                {(viewType === ViewTypes.VIEW_COLLECTION || viewType === ViewTypes.VIEW_FEEDING) && (
+                {viewType === ViewTypes.VIEW_COLLECTION && (
                   <TouchableOpacity
                     style={styles(currentTheme)["spider-list__action-button"]}
                     onPress={() => {
@@ -178,6 +201,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                         params: {
                           id: spider.id,
                           type: ViewTypes.VIEW_COLLECTION,
+                          action: "edit",
                         },
                       });
                     }}
@@ -192,7 +216,15 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
 
                 <TouchableOpacity
                   style={styles(currentTheme)["spider-list__action-button"]}
-                  onPress={() => handleRemoveSpider(spider.id)}
+                  onPress={() => {
+                    router.push({
+                      pathname: "/manageModal",
+                      params: {
+                        id: spider.id,
+                        action: "delete",
+                      },
+                    });
+                  }}
                 >
                   <AntDesign
                     size={24}
@@ -251,7 +283,7 @@ const styles = (theme: ThemeType) =>
     },
     "spider-list__action-button": {
       padding: 8,
-    }
+    },
   });
 
 export default SpiderFullList;
