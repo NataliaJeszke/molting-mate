@@ -20,13 +20,11 @@ import { useSpidersStore } from "@/store/spidersStore";
 import { Colors, ThemeType } from "@/constants/Colors";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import {
-  spiderTypesOptions,
   spiderSpeciesByType,
   feedingFrequencyOptions,
 } from "./SpiderForm.constants";
 
 import CardComponent from "@/components/ui/CardComponent";
-import ThemedPicker from "@/components/ui/ThemedPicker";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { SpiderImage } from "@/components/commons/SpiderImage/SpiderImage";
@@ -188,9 +186,9 @@ export default function SpiderForm() {
       keyboardVerticalOffset={100}
     >
       <ScrollView
-      contentContainerStyle={{ paddingBottom: 100 }}
-      showsVerticalScrollIndicator={false}
-    >
+        contentContainerStyle={{ paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+      >
         <CardComponent>
           <View style={styles(currentTheme)["centered"]}>
             <ThemedText style={styles(currentTheme)["subHeaderText"]}>
@@ -229,9 +227,7 @@ export default function SpiderForm() {
             placeholderTextColor={Colors[currentTheme].input.placeholder}
           />
 
-          <ThemedText style={styles(currentTheme)["label"]}>
-            Gatunek
-          </ThemedText>
+          <ThemedText style={styles(currentTheme)["label"]}>Gatunek</ThemedText>
           <View style={styles(currentTheme)["pickerWrapper"]}>
             <AutocompleteSpeciesInput
               value={spiderSpecies}
@@ -240,6 +236,9 @@ export default function SpiderForm() {
             />
           </View>
 
+          <ThemedText style={styles(currentTheme)["label"]}>
+            Data ostatniego karmienia
+          </ThemedText>
           <TouchableOpacity
             onPress={() => showDatePicker("lastFed")}
             style={styles(currentTheme)["input"]}
@@ -259,20 +258,9 @@ export default function SpiderForm() {
               onCancel={hideDatePicker}
             />
           )}
-
           <ThemedText style={styles(currentTheme)["label"]}>
-            Częstotliwość karmienia
+            Data ostatniego linienia
           </ThemedText>
-          <View style={styles(currentTheme)["pickerWrapper"]}>
-            <ThemedPicker
-              label="Wybierz częstotliwość karmienia"
-              selectedValue={feedingFrequency || ""}
-              onValueChange={(value) => setFeedingFrequency(value)}
-              options={feedingFrequencyOptions}
-              theme={currentTheme}
-            />
-          </View>
-
           <TouchableOpacity
             onPress={() => showDatePicker("lastMolt")}
             style={styles(currentTheme)["input"]}
@@ -292,6 +280,33 @@ export default function SpiderForm() {
               onCancel={hideDatePicker}
             />
           )}
+
+          <ThemedText style={styles(currentTheme).label}>
+            Częstotliwość karmienia
+          </ThemedText>
+          <View style={styles(currentTheme).pickerWrapper}>
+            {feedingFrequencyOptions.map((option) => {
+              const isSelected = feedingFrequency === option.value;
+              return (
+                <TouchableOpacity
+                  key={option.value}
+                  onPress={() => setFeedingFrequency(option.value)}
+                  style={[
+                    styles(currentTheme).radioButton,
+                    isSelected && styles(currentTheme).selectedRadioButton,
+                  ]}
+                >
+                  <ThemedText
+                    style={
+                      isSelected ? styles(currentTheme).selectedText : undefined
+                    }
+                  >
+                    {option.label}
+                  </ThemedText>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
           <Pressable
             style={styles(currentTheme)["button"]}
             onPress={handleSubmit}
@@ -326,13 +341,13 @@ const styles = (theme: ThemeType) =>
       alignItems: "center",
       marginBottom: 24,
     },
-    pickerWrapper: {
-    },
+    pickerWrapper: {},
     button: {
       padding: 16,
       borderRadius: 8,
       alignItems: "center",
       backgroundColor: Colors[theme].tint,
+      marginTop: 24,
     },
     buttonText: {
       fontSize: 18,
@@ -344,5 +359,21 @@ const styles = (theme: ThemeType) =>
     imageWrapper: {
       alignItems: "center",
       marginBottom: 24,
+    },
+    radioButton: {
+      padding: 12,
+      marginBottom: 12,
+      borderRadius: 6,
+      borderWidth: 0.5,
+      borderColor: Colors[theme].card.borderColor,
+      alignItems: "center",
+    },
+    selectedRadioButton: {
+      backgroundColor: "#4CAF50",
+    },
+
+    selectedText: {
+      color: "#fff",
+      fontWeight: "bold",
     },
   });

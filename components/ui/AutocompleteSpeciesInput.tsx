@@ -18,7 +18,11 @@ type Props = {
   theme: ThemeType;
 };
 
-export default function AutocompleteSpeciesInput({ value, onSelect, theme }: Props) {
+export default function AutocompleteSpeciesInput({
+  value,
+  onSelect,
+  theme,
+}: Props) {
   const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState(spiderSpeciesList);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
@@ -65,7 +69,7 @@ export default function AutocompleteSpeciesInput({ value, onSelect, theme }: Pro
         />
         {isDropdownVisible && (
           <ScrollView
-          style={styles(theme)["resultsContainer"]}
+            style={styles(theme)["resultsContainer"]}
             keyboardShouldPersistTaps="handled"
           >
             {filteredData.map((item) => (
@@ -97,19 +101,20 @@ const styles = (theme: ThemeType) =>
       padding: 9,
     },
     input: {
-      backgroundColor: "#fff",
+      backgroundColor: Colors[theme].picker.background,
       padding: 4,
       borderRadius: 10,
       fontSize: 16,
+      color: Colors[theme].picker.text,
     },
     resultsContainer: {
       maxHeight: 200,
       marginTop: 4,
+      backgroundColor: Colors[theme].picker.background,
     },
     item: {
       padding: 12,
-      backgroundColor: "#f0f0f0",
+      backgroundColor: Colors[theme].picker.background,
       borderBottomWidth: 1,
-      borderBottomColor: "#ddd",
     },
   });

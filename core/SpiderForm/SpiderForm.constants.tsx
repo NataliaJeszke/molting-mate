@@ -82,7 +82,6 @@ export const spiderSpeciesByType = {
 };
 
 export const feedingFrequencyOptions = [
-  { label: "Wybierz...", value: "" },
   { label: "Kilka razy w tygodniu", value: "few_times_week" },
   { label: "Raz w tygodniu", value: "once_week" },
   { label: "Raz na dwa tygodnie", value: "once_two_weeks" },
