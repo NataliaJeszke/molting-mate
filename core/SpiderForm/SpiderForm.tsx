@@ -30,7 +30,7 @@ import ThemedPicker from "@/components/ui/ThemedPicker";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { SpiderImage } from "@/components/commons/SpiderImage/SpiderImage";
-
+import AutocompleteSpeciesInput from "@/components/ui/AutocompleteSpeciesInput";
 
 export default function SpiderForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -43,7 +43,7 @@ export default function SpiderForm() {
   const [feedingFrequency, setFeedingFrequency] = useState<string>();
   const [lastMolt, setLastMolt] = useState<string>();
   const [spiderType, setSpiderType] = useState<string>();
-  const [spiderSpecies, setSpiderSpecies] = useState<string>();
+  const [spiderSpecies, setSpiderSpecies] = useState<string>("");
   const [imageUri, setImageUri] = useState<string>();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [activeDateField, setActiveDateField] = useState<
@@ -207,7 +207,7 @@ export default function SpiderForm() {
             activeOpacity={0.8}
             style={styles(currentTheme).imageWrapper}
           >
-            <SpiderImage imageUri={imageUri} />
+            <SpiderImage size={100} imageUri={imageUri} />
           </TouchableOpacity>
 
           <ThemedText style={styles(currentTheme)["label"]}>Imię</ThemedText>
@@ -233,7 +233,7 @@ export default function SpiderForm() {
             Rodzina i gatunek
           </ThemedText>
           <View style={styles(currentTheme)["pickerWrapper"]}>
-            <ThemedPicker
+            {/* <ThemedPicker
               label="Wybierz rodzinę"
               selectedValue={spiderType || ""}
               onValueChange={(value) => {
@@ -249,6 +249,10 @@ export default function SpiderForm() {
               onValueChange={(value) => setSpiderSpecies(value)}
               options={getSpeciesForType(spiderType || "")}
               theme={currentTheme}
+            /> */}
+            <AutocompleteSpeciesInput
+              value={spiderSpecies}
+              onSelect={(value) => setSpiderSpecies(value)}
             />
           </View>
 
@@ -263,6 +267,7 @@ export default function SpiderForm() {
             <ThemedDatePicker
               isVisible={isDatePickerVisible}
               initialDate={selectedDate}
+              theme={currentTheme}
               onConfirm={(formattedDate) => {
                 setLastFed(formattedDate);
                 hideDatePicker();
@@ -295,6 +300,7 @@ export default function SpiderForm() {
             <ThemedDatePicker
               isVisible={isDatePickerVisible}
               initialDate={selectedDate}
+              theme={currentTheme}
               onConfirm={(formattedDate) => {
                 setLastMolt(formattedDate);
                 hideDatePicker();

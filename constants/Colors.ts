@@ -59,6 +59,13 @@ export const Colors = {
       label: "#6e6e6e",
       placeholder: "#6e6e6e",
     },
+    datepicker: {
+      button: {
+        confirm: tintColorLight,
+        cancel: "#151718",
+      },
+      background: "#ffffff",
+    },
   },
   dark: {
     text: "rgb(255, 255, 255)",
@@ -109,6 +116,13 @@ export const Colors = {
     input: {
       label: "#c0c0c0",
       placeholder: "#c0c0c0",
+    },
+    datepicker: {
+      button: {
+        confirm: tintColorDark,
+        cancel: "#151718",
+      },
+      background: "#1f1f1f",
     },
   },
 };
