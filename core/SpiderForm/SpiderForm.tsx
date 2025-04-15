@@ -10,7 +10,9 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from "react-native";
+import { useLocalSearchParams } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
+import { parse } from "date-fns";
 
 import { useUserStore } from "@/store/userStore";
 import { useSpidersStore } from "@/store/spidersStore";
@@ -25,9 +27,10 @@ import {
 
 import CardComponent from "@/components/ui/CardComponent";
 import ThemedPicker from "@/components/ui/ThemedPicker";
+import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { SpiderImage } from "@/components/commons/SpiderImage/SpiderImage";
-import { useLocalSearchParams } from "expo-router";
+
 
 export default function SpiderForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -42,6 +45,11 @@ export default function SpiderForm() {
   const [spiderType, setSpiderType] = useState<string>();
   const [spiderSpecies, setSpiderSpecies] = useState<string>();
   const [imageUri, setImageUri] = useState<string>();
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [activeDateField, setActiveDateField] = useState<
+    "lastFed" | "lastMolt" | null
+  >(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   useEffect(() => {
     if (id) {
@@ -150,6 +158,29 @@ export default function SpiderForm() {
     }
   };
 
+  const parseDate = (dateStr: string): Date => {
+    return parse(dateStr, "dd-MM-yyyy", new Date());
+  };
+
+  const showDatePicker = (field: "lastFed" | "lastMolt") => {
+    setActiveDateField(field);
+
+    const dateToSet =
+      field === "lastFed" && lastFed
+        ? parseDate(lastFed)
+        : field === "lastMolt" && lastMolt
+        ? parseDate(lastMolt)
+        : new Date();
+
+    setSelectedDate(dateToSet);
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+    setActiveDateField(null);
+  };
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -221,16 +252,24 @@ export default function SpiderForm() {
             />
           </View>
 
-          <ThemedText style={styles(currentTheme)["label"]}>
-            Ostatnio karmiony
-          </ThemedText>
-          <TextInput
-            value={lastFed}
-            onChangeText={setLastFed}
+          <TouchableOpacity
+            onPress={() => showDatePicker("lastFed")}
             style={styles(currentTheme)["input"]}
-            placeholder="dd-mm-rrrr"
-            placeholderTextColor={Colors[currentTheme].input.placeholder}
-          />
+          >
+            <ThemedText>{lastFed || "Wybierz datę"}</ThemedText>
+          </TouchableOpacity>
+
+          {isDatePickerVisible && activeDateField === "lastFed" && (
+            <ThemedDatePicker
+              isVisible={isDatePickerVisible}
+              initialDate={selectedDate}
+              onConfirm={(formattedDate) => {
+                setLastFed(formattedDate);
+                hideDatePicker();
+              }}
+              onCancel={hideDatePicker}
+            />
+          )}
 
           <ThemedText style={styles(currentTheme)["label"]}>
             Częstotliwość karmienia
@@ -245,17 +284,24 @@ export default function SpiderForm() {
             />
           </View>
 
-          <ThemedText style={styles(currentTheme)["label"]}>
-            Data ostatniego linienia
-          </ThemedText>
-          <TextInput
-            value={lastMolt}
-            onChangeText={setLastMolt}
+          <TouchableOpacity
+            onPress={() => showDatePicker("lastMolt")}
             style={styles(currentTheme)["input"]}
-            placeholder="dd-mm-rrrr"
-            placeholderTextColor={Colors[currentTheme].input.placeholder}
-          />
+          >
+            <ThemedText>{lastMolt || "Wybierz datę"}</ThemedText>
+          </TouchableOpacity>
 
+          {isDatePickerVisible && activeDateField === "lastMolt" && (
+            <ThemedDatePicker
+              isVisible={isDatePickerVisible}
+              initialDate={selectedDate}
+              onConfirm={(formattedDate) => {
+                setLastMolt(formattedDate);
+                hideDatePicker();
+              }}
+              onCancel={hideDatePicker}
+            />
+          )}
           <Pressable
             style={styles(currentTheme)["button"]}
             onPress={handleSubmit}
