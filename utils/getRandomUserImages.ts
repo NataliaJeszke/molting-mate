@@ -1,4 +1,4 @@
-import { Spider } from "@/models/Spiders.model";
+import { Spider } from "@/models/Spider.model";
 
 export const getRandomUserImages = (spiders: Spider[]) => {
   const userImages = spiders
@@ -11,7 +11,7 @@ export const getRandomUserImages = (spiders: Spider[]) => {
   return selected.map((uri) => ({ uri }));
 };
 
-const shuffleArray = <T,>(array: T[]): T[] => {
+const shuffleArray = <T>(array: T[]): T[] => {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

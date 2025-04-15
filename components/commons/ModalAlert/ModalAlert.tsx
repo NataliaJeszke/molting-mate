@@ -14,13 +14,13 @@ import { ThemedText } from "@/components/ui/ThemedText";
 type ModalAlertProps = {
   isVisible: boolean;
   onClose: () => void;
-}
+};
 
 const ModalAlert = ({ isVisible, onClose }: ModalAlertProps) => {
   const { id } = useLocalSearchParams();
   const spiders = useSpidersStore((state) => state.spiders);
   const deleteSpider = useSpidersStore((state) => state.removeSpider);
-  
+
   const handleConfirm = () => {
     if (id) {
       deleteSpider(id as string);
@@ -30,7 +30,7 @@ const ModalAlert = ({ isVisible, onClose }: ModalAlertProps) => {
     }
   };
 
-  const spiderName = id ? spiders.find(spider => spider.id === id)?.name : "";
+  const spiderName = id ? spiders.find((spider) => spider.id === id)?.name : "";
 
   return (
     <Modal
@@ -55,7 +55,8 @@ const ModalAlert = ({ isVisible, onClose }: ModalAlertProps) => {
               Czy na pewno chcesz usunąć {spiderName} z bazy danych?
             </ThemedText>
             <ThemedText style={styles.modalText}>
-              Ta operacja jest nieodwracalna. Wszystkie dane dotyczące tego pająka zostaną trwale usunięte.
+              Ta operacja jest nieodwracalna. Wszystkie dane dotyczące tego
+              pająka zostaną trwale usunięte.
             </ThemedText>
             <View style={styles.buttonContainer}>
               <TouchableOpacity

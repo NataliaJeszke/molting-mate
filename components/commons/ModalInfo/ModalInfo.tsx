@@ -18,7 +18,7 @@ import { ThemedText } from "@/components/ui/ThemedText";
 type ModalInfoProps = {
   isVisible: boolean;
   onClose: () => void;
-}
+};
 
 const ModalInfo = ({ isVisible, onClose }: ModalInfoProps) => {
   const { id, type, status } = useLocalSearchParams();
@@ -42,33 +42,33 @@ const ModalInfo = ({ isVisible, onClose }: ModalInfoProps) => {
 
   const handleSubmit = () => {
     let finalDate = date.trim() || getTodayDate();
-    
+
     if (finalDate && id && type) {
-      const currentSpider = spiders.find(spider => spider.id === id);
-      
+      const currentSpider = spiders.find((spider) => spider.id === id);
+
       if (currentSpider) {
         if (type === "feeding") {
           const currentFeedingHistory = currentSpider.feedingHistoryData || [];
-          
+
           if (!currentFeedingHistory.includes(finalDate)) {
             const newFeedingHistory = [...currentFeedingHistory, finalDate];
-            
+
             updateSpider(id as string, {
               lastFed: finalDate,
-              feedingHistoryData: newFeedingHistory
+              feedingHistoryData: newFeedingHistory,
             });
           } else {
             updateSpider(id as string, { lastFed: finalDate });
           }
         } else if (type === "molting") {
           const currentMoltingHistory = currentSpider.moltingHistoryData || [];
-        
+
           if (!currentMoltingHistory.includes(finalDate)) {
             const newMoltingHistory = [...currentMoltingHistory, finalDate];
-          
+
             updateSpider(id as string, {
               lastMolt: finalDate,
-              moltingHistoryData: newMoltingHistory
+              moltingHistoryData: newMoltingHistory,
             });
           } else {
             updateSpider(id as string, { lastMolt: finalDate });

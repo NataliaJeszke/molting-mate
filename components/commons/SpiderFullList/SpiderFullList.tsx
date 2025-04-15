@@ -12,7 +12,7 @@ import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
-import { Spider } from "@/models/Spiders.model";
+import { Spider } from "@/models/Spider.model";
 
 type SpiderListProps = {
   data: Spider[];
@@ -116,28 +116,28 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                         />
                       </TouchableOpacity>
                     )}
-                    {(spider.status !== FeedingStatus.HUNGRY && 
-                      spider.status !== FeedingStatus.FEED_TODAY && 
-                      viewType !== ViewTypes.VIEW_COLLECTION) && (
-                      <TouchableOpacity
-                        onPress={() => {
-                          router.push({
-                            pathname: "/manageModal",
-                            params: {
-                              id: spider.id,
-                              type: ViewTypes.VIEW_FEEDING,
-                              action: "edit",
-                            },
-                          });
-                        }}
-                      >
-                        <Feather
-                          size={24}
-                          name="edit-3"
-                          color={Colors[currentTheme].info.text}
-                        />
-                      </TouchableOpacity>
-                    )}
+                    {spider.status !== FeedingStatus.HUNGRY &&
+                      spider.status !== FeedingStatus.FEED_TODAY &&
+                      viewType !== ViewTypes.VIEW_COLLECTION && (
+                        <TouchableOpacity
+                          onPress={() => {
+                            router.push({
+                              pathname: "/manageModal",
+                              params: {
+                                id: spider.id,
+                                type: ViewTypes.VIEW_FEEDING,
+                                action: "edit",
+                              },
+                            });
+                          }}
+                        >
+                          <Feather
+                            size={24}
+                            name="edit-3"
+                            color={Colors[currentTheme].info.text}
+                          />
+                        </TouchableOpacity>
+                      )}
                   </>
                 )}
 

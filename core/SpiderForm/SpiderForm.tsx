@@ -135,19 +135,50 @@ export default function SpiderForm() {
   };
 
   const handleChooseImage = async () => {
-    if (Platform.OS === "web") {
+    const galleryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (galleryPermission.status !== "granted") {
+      Alert.alert("Brak uprawnień", "Nie masz dostępu do galerii.");
       return;
     }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
+  
+    const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+    if (cameraPermission.status !== "granted") {
+      Alert.alert("Brak uprawnień", "Nie masz dostępu do kamery.");
+      return;
     }
+  
+    Alert.alert(
+      "Wybierz opcję",
+      "Chcesz zrobić zdjęcie czy wybrać z galerii?",
+      [
+        {
+          text: "Zrób zdjęcie",
+          onPress: async () => {
+            const result = await ImagePicker.launchCameraAsync({
+              allowsEditing: true,
+              aspect: [1, 1],
+              quality: 1,
+            });
+            if (!result.canceled) {
+              setImageUri(result.assets[0].uri);
+            }
+          },
+        },
+        {
+          text: "Wybierz z galerii",
+          onPress: async () => {
+            const result = await ImagePicker.launchImageLibraryAsync({
+              allowsEditing: true,
+              aspect: [1, 1],
+              quality: 1,
+            });
+            if (!result.canceled) {
+              setImageUri(result.assets[0].uri);
+            }
+          },
+        },
+      ]
+    );
   };
 
   const parseDate = (dateStr: string): Date => {
