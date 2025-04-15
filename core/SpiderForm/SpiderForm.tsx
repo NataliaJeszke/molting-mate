@@ -99,7 +99,6 @@ export default function SpiderForm() {
       id: id ? id : Date.now().toString(),
       name,
       age,
-      spiderType,
       spiderSpecies,
       lastFed,
       feedingFrequency: feedingFrequency as FeedingFrequency,

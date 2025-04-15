@@ -5,7 +5,6 @@ export type Spider = {
   id: string;
   name: string;
   age: string;
-  spiderType: string;
   spiderSpecies: string;
   lastFed: string;
   feedingFrequency: FeedingFrequency;
