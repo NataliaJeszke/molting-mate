@@ -188,9 +188,9 @@ export default function SpiderForm() {
       keyboardVerticalOffset={100}
     >
       <ScrollView
-        contentContainerStyle={{ padding: 4 }}
-        keyboardShouldPersistTaps="handled"
-      >
+      contentContainerStyle={{ paddingBottom: 100 }}
+      showsVerticalScrollIndicator={false}
+    >
         <CardComponent>
           <View style={styles(currentTheme)["centered"]}>
             <ThemedText style={styles(currentTheme)["subHeaderText"]}>
@@ -230,29 +230,13 @@ export default function SpiderForm() {
           />
 
           <ThemedText style={styles(currentTheme)["label"]}>
-            Rodzina i gatunek
+            Gatunek
           </ThemedText>
           <View style={styles(currentTheme)["pickerWrapper"]}>
-            {/* <ThemedPicker
-              label="Wybierz rodzinę"
-              selectedValue={spiderType || ""}
-              onValueChange={(value) => {
-                setSpiderType(value);
-                setSpiderSpecies("");
-              }}
-              options={spiderTypesOptions}
-              theme={currentTheme}
-            />
-            <ThemedPicker
-              label="Wybierz gatunek"
-              selectedValue={spiderSpecies || ""}
-              onValueChange={(value) => setSpiderSpecies(value)}
-              options={getSpeciesForType(spiderType || "")}
-              theme={currentTheme}
-            /> */}
             <AutocompleteSpeciesInput
               value={spiderSpecies}
               onSelect={(value) => setSpiderSpecies(value)}
+              theme={currentTheme}
             />
           </View>
 
@@ -343,12 +327,6 @@ const styles = (theme: ThemeType) =>
       marginBottom: 24,
     },
     pickerWrapper: {
-      borderWidth: 0.5,
-      borderRadius: 6,
-      marginBottom: 24,
-      overflow: "hidden",
-      borderColor: Colors[theme].picker.borderColor,
-      backgroundColor: Colors[theme].picker.background,
     },
     button: {
       padding: 16,

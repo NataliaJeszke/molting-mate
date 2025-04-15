@@ -1,17 +1,11 @@
 import { ScrollView } from "react-native";
 import WrapperComponent from "@/components/ui/WrapperComponent";
-import NewSpiderForm from "@/core/SpiderForm/SpiderForm";
+import SpiderForm from "@/core/SpiderForm/SpiderForm";
 
 export default function SpiderFormScreen() {
   return (
     <WrapperComponent>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="on-drag"
-      >
-        <NewSpiderForm />
-      </ScrollView>
+        <SpiderForm />
     </WrapperComponent>
   );
 }
