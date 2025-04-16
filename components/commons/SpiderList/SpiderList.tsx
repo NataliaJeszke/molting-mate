@@ -213,7 +213,7 @@ const styles = (theme: ThemeType) =>
     },
     "spider-list__info": {
       marginTop: 4,
-      fontSize: 12,
+      fontSize: 16,
       fontWeight: "500",
       textAlign: "center",
     },
