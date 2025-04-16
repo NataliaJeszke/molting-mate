@@ -5,17 +5,20 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import "react-native-reanimated";
-import { useColorScheme } from "react-native";
+import {
+  Platform,
+  View,
+  useColorScheme,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
 
 import { useUserStore } from "@/store/userStore";
 
 import { Colors } from "@/constants/Colors";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Platform, View } from "react-native";
+import { StatusBar } from "@/components/ui/StatusBar";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -47,14 +50,14 @@ export default function RootLayout() {
 
   return (
     <Container
-    style={{
-      flex: 1,
-      backgroundColor:
-        currentTheme === "dark"
-          ? DarkTheme.colors.background
-          : DefaultTheme.colors.background,
-    }}
-  >
+      style={{
+        flex: 1,
+        backgroundColor:
+          currentTheme === "dark"
+            ? DarkTheme.colors.background
+            : DefaultTheme.colors.background,
+      }}
+    >
       <ThemeProvider value={currentTheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen
@@ -95,7 +98,7 @@ export default function RootLayout() {
           />
           <Stack.Screen name="+not-found" />
         </Stack>
-        <StatusBar style={currentTheme === "dark" ? "light" : "dark"} />
+        <StatusBar currentTheme={currentTheme} systemTheme={systemTheme} />
       </ThemeProvider>
     </Container>
   );
