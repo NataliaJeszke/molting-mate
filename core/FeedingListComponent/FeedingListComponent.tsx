@@ -4,7 +4,7 @@ import { useSpidersStore } from "@/store/spidersStore";
 import { convertToISODate } from "@/utils/dateUtils";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 
-import { getFeedingStatus } from "./utils/feedingUtils";
+import { getFeedingStatus, getNextFeedingDate } from "./utils/feedingUtils";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import FiltersComponent from "../FiltersComponent/FiltersComponent";
@@ -20,6 +20,7 @@ const FeedingListComponent = () => {
       .map((spider) => ({
         ...spider,
         status: getFeedingStatus(spider.lastFed, spider.feedingFrequency),
+        nextFeedingDate: getNextFeedingDate(spider.lastFed, spider.feedingFrequency)
       }))
       .sort((a, b) => {
         const dateA = new Date(convertToISODate(a.lastFed)).getTime();

@@ -74,6 +74,11 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                     >
                       Data karmienia: {spider.lastFed}
                     </ThemedText>
+                    <ThemedText
+                      style={styles(currentTheme)["spider-list__info"]}
+                    >
+                      Data następnego karmienia: {spider.nextFeedingDate}
+                    </ThemedText>
 
                     {spider.status === FeedingStatus.HUNGRY && (
                       <TouchableOpacity

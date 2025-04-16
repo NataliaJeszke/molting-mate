@@ -1,6 +1,7 @@
 import { convertToISODate } from "@/utils/dateUtils";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
+import { addDays, addWeeks, parse } from "date-fns";
 
 export const getFeedingStatus = (
   lastFed: string,
@@ -35,4 +36,26 @@ export const getFeedingStatus = (
   if (daysSinceLastFed > frequency) return FeedingStatus.HUNGRY;
 
   return FeedingStatus.NOT_HUNGRY;
+};
+
+export const getNextFeedingDate = (lastFed: string, feedingFrequency: string): string => {
+  const lastFedDate = parse(lastFed, "dd-MM-yyyy", new Date());
+
+  let nextFeedingDate: Date;
+
+  switch (feedingFrequency) {
+    case "daily":
+      nextFeedingDate = addDays(lastFedDate, 1);
+      break;
+    case "weekly":
+      nextFeedingDate = addWeeks(lastFedDate, 1);
+      break;
+    case "biweekly":
+      nextFeedingDate = addWeeks(lastFedDate, 2);
+      break;
+    default:
+      nextFeedingDate = lastFedDate;
+  }
+
+  return nextFeedingDate.toLocaleDateString();
 };

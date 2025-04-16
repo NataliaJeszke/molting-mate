@@ -14,4 +14,5 @@ export type Spider = {
   status?: FeedingStatus | string | null;
   feedingHistoryData: string[];
   moltingHistoryData: string[];
+  nextFeedingDate?: string;
 };

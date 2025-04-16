@@ -14,7 +14,8 @@ import { StatusBar } from "expo-status-bar";
 import { useUserStore } from "@/store/userStore";
 
 import { Colors } from "@/constants/Colors";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { Platform, View } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,6 +26,8 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+
+  const Container = Platform.OS === "android" ? SafeAreaView : View;
 
   useEffect(() => {
     if (!userSelectedTheme && systemTheme) {
@@ -43,49 +46,57 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
+    <Container
+    style={{
+      flex: 1,
+      backgroundColor:
+        currentTheme === "dark"
+          ? DarkTheme.colors.background
+          : DefaultTheme.colors.background,
+    }}
+  >
       <ThemeProvider value={currentTheme === "dark" ? DarkTheme : DefaultTheme}>
-          <Stack>
-            <Stack.Screen
-              name="(tabs)"
-              options={{ headerShown: false, animation: "fade" }}
-            />
-            <Stack.Screen
-              name="onboarding"
-              options={{
-                headerShown: false,
-                animation: "fade",
-                presentation: "modal",
-              }}
-            />
-            <Stack.Screen
-              name="spiderForm"
-              options={{
-                presentation: "modal",
-                title: "Dodaj pająka do kolekcji",
-              }}
-            />
-            <Stack.Screen
-              name="favourites"
-              options={{
-                title: "Ulubione pająki",
-                headerBackTitle: "Wstecz",
-                headerTintColor: Colors[currentTheme].tint,
-              }}
-            />
-            <Stack.Screen
-              name="manageModal"
-              options={{
-                presentation: "transparentModal",
-                title: "Wymagana akcja",
-                headerShown: false,
-                contentStyle: { backgroundColor: "transparent" },
-              }}
-            />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="auto" />
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{ headerShown: false, animation: "fade" }}
+          />
+          <Stack.Screen
+            name="onboarding"
+            options={{
+              headerShown: false,
+              animation: "fade",
+              presentation: "modal",
+            }}
+          />
+          <Stack.Screen
+            name="spiderForm"
+            options={{
+              presentation: "modal",
+              title: "Dodaj pająka do kolekcji",
+            }}
+          />
+          <Stack.Screen
+            name="favourites"
+            options={{
+              title: "Ulubione pająki",
+              headerBackTitle: "Wstecz",
+              headerTintColor: Colors[currentTheme].tint,
+            }}
+          />
+          <Stack.Screen
+            name="manageModal"
+            options={{
+              presentation: "transparentModal",
+              title: "Wymagana akcja",
+              headerShown: false,
+              contentStyle: { backgroundColor: "transparent" },
+            }}
+          />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style={currentTheme === "dark" ? "light" : "dark"} />
       </ThemeProvider>
-    </SafeAreaProvider>
+    </Container>
   );
 }
