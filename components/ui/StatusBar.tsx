@@ -1,6 +1,11 @@
-// components/CustomStatusBar.tsx
-import { StatusBar as ExpoStatusBar, StatusBarStyle } from "expo-status-bar";
-import { ColorSchemeName } from "react-native";
+import {
+  StatusBar as RNStatusBar,
+  StatusBarStyle,
+  ColorSchemeName,
+  Platform,
+  AppState,
+} from "react-native";
+import { useEffect } from "react";
 
 type Props = {
   currentTheme: "light" | "dark";
@@ -12,16 +17,30 @@ function getStatusBarStyle(
   systemTheme: ColorSchemeName
 ): StatusBarStyle {
   if (currentTheme === "light") {
-    return "dark";
+    return "dark-content";
   }
 
   if (currentTheme === "dark" && systemTheme === "light") {
-    return "light";
+    return "light-content";
   }
 
-  return "light";
+  return "light-content";
 }
 
 export const StatusBar = ({ currentTheme, systemTheme }: Props) => {
-  return <ExpoStatusBar style={getStatusBarStyle(currentTheme, systemTheme)} />;
+  const barStyle = getStatusBarStyle(currentTheme, systemTheme);
+
+  useEffect(() => {
+    RNStatusBar.setBarStyle(barStyle, true);
+
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (nextAppState === "active") {
+        RNStatusBar.setBarStyle(barStyle, true);
+      }
+    });
+
+    return () => subscription.remove();
+  }, [barStyle]);
+
+  return <RNStatusBar barStyle={barStyle} animated />;
 };
