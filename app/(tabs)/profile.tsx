@@ -1,8 +1,12 @@
 import { StyleSheet, Button, Switch } from "react-native";
+
 import { useUserStore } from "@/store/userStore";
+
+import { Theme } from "@/constants/Theme.enums";
+import { ThemeType } from "@/constants/Colors";
+
 import { ThemedText } from "@/components/ui/ThemedText";
 import WrapperComponent from "@/components/ui/WrapperComponent";
-import { Theme } from "@/constants/Theme.enums";
 import CardComponent from "@/components/ui/CardComponent";
 
 export default function ProfileScreen() {
@@ -12,18 +16,22 @@ export default function ProfileScreen() {
 
   return (
     <WrapperComponent>
-      <CardComponent customStyle={styles.container}>
+      <CardComponent customStyle={styles(currentTheme)["settings"]}>
         <ThemedText type="subtitle">Ustawienia aplikacji</ThemedText>
-        <ThemedText style={styles.switchLabel}>Przełącz motyw:</ThemedText>
+        <ThemedText style={styles(currentTheme)["settings__switchlabel"]}>
+          Przełącz motyw:
+        </ThemedText>
         <Switch
           value={currentTheme === defaultTheme}
           onValueChange={toggleTheme}
         />
-        <ThemedText style={styles.switchLabel}>Powiadomienia:</ThemedText>
+        <ThemedText style={styles(currentTheme)["settings__switchlabel"]}>
+          Powiadomienia:
+        </ThemedText>
         <Switch value={true} onValueChange={() => {}} />
         <Button title="Back to onboarding" onPress={toggleHasOnboarded} />
       </CardComponent>
-      <CardComponent customStyle={styles.container}>
+      <CardComponent customStyle={styles(currentTheme)["settings"]}>
         <ThemedText type="subtitle">Ustawienia profilu</ThemedText>
         <ThemedText>Zmień adres mailowy</ThemedText>
         <ThemedText>
@@ -36,13 +44,16 @@ export default function ProfileScreen() {
     </WrapperComponent>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "column",
-    gap: 16,
-    paddingTop: 16,
-  },
-  switchLabel: {
-    fontSize: 16,
-  },
-});
+
+/* eslint-disable react-native/no-unused-styles */
+const styles = (theme: ThemeType) =>
+  StyleSheet.create({
+    settings: {
+      flexDirection: "column",
+      gap: 16,
+      paddingTop: 16,
+    },
+    settings__switchlabel: {
+      fontSize: 16,
+    },
+  });
