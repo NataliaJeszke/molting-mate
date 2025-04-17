@@ -230,29 +230,6 @@ export default function SpiderForm() {
           },
         },
         {
-          text: "Wybierz dokument",
-          onPress: async () => {
-            try {
-              const result = await DocumentPicker.getDocumentAsync({
-                type: ["application/pdf", "image/*"],
-                copyToCacheDirectory: true,
-                multiple: false,
-              });
-  
-              if (result.assets && result.assets.length > 0) {
-                const picked = result.assets[0];
-                if (picked.mimeType?.startsWith("image/")) {
-                  setDocumentUri(picked.uri);
-                } else {
-                  setDocumentUri(picked.uri);
-                }
-              }
-            } catch (err) {
-              Alert.alert("Błąd", "Nie udało się załadować dokumentu.");
-            }
-          },
-        },
-        {
           text: "Anuluj",
           style: "cancel",
         },
@@ -413,7 +390,7 @@ export default function SpiderForm() {
           </View>
 
           <ThemedText style={styles(currentTheme).label}>
-            Dokument pochodzenia (PDF lub zdjęcie)
+            Dokument pochodzenia (zdjęcie)
           </ThemedText>
 
           <TouchableOpacity

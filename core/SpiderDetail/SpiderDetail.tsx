@@ -3,11 +3,10 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  Linking,
   Modal,
   ActivityIndicator,
-  Platform,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import { useUserStore } from "@/store/userStore";
 import { Spider } from "@/models/Spider.model";
@@ -17,12 +16,12 @@ import { getNextFeedingDate, getFeedingStatus } from "@/utils/feedingUtils";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import CardComponent from "@/components/ui/CardComponent";
 import { Feather } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import HistoryInformation from "@/components/commons/HistoryInformation/HistoryInformation";
 import WebView from "react-native-webview";
 import * as ImagePicker from "expo-image-picker";
-import * as DocumentPicker from "expo-document-picker";
 import { useSpidersStore } from "@/store/spidersStore";
+import SpiderDocument from "@/components/commons/SpiderDocument/SpiderDocument";
 
 interface Props {
   spider: Spider;
@@ -86,7 +85,6 @@ export default function SpiderDetails({ spider, onUpdateSpider }: Props) {
     );
   };
 
-
   const handleChooseDocument = () => {
     Alert.alert("Wybierz źródło", "Dołącz dokument pochodzenia", [
       {
@@ -97,7 +95,7 @@ export default function SpiderDetails({ spider, onUpdateSpider }: Props) {
             Alert.alert("Brak uprawnień", "Nie masz dostępu do kamery.");
             return;
           }
-  
+
           const result = await ImagePicker.launchCameraAsync({
             allowsEditing: true,
             aspect: [1, 1],
@@ -105,7 +103,9 @@ export default function SpiderDetails({ spider, onUpdateSpider }: Props) {
           });
           if (!result.canceled) {
             setDocumentUri(result.assets[0].uri);
-            useSpidersStore.getState().updateSpider(spider.id, { documentUri: result.assets[0].uri });
+            useSpidersStore.getState().updateSpider(spider.id, {
+              documentUri: result.assets[0].uri,
+            });
           }
         },
       },
@@ -118,7 +118,7 @@ export default function SpiderDetails({ spider, onUpdateSpider }: Props) {
             Alert.alert("Brak uprawnień", "Nie masz dostępu do galerii.");
             return;
           }
-  
+
           const result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
             aspect: [1, 1],
@@ -126,27 +126,9 @@ export default function SpiderDetails({ spider, onUpdateSpider }: Props) {
           });
           if (!result.canceled) {
             setDocumentUri(result.assets[0].uri);
-            useSpidersStore.getState().updateSpider(spider.id, { documentUri: result.assets[0].uri });
-          }
-        },
-      },
-      {
-        text: "Wybierz dokument",
-        onPress: async () => {
-          try {
-            const result = await DocumentPicker.getDocumentAsync({
-              type: ["application/pdf", "image/*"],
-              copyToCacheDirectory: true,
-              multiple: false,
+            useSpidersStore.getState().updateSpider(spider.id, {
+              documentUri: result.assets[0].uri,
             });
-  
-            if (result.assets && result.assets.length > 0) {
-              const picked = result.assets[0];
-              setDocumentUri(picked.uri);
-              useSpidersStore.getState().updateSpider(spider.id, { documentUri: picked.uri });
-            }
-          } catch (err) {
-            Alert.alert("Błąd", "Nie udało się załadować dokumentu.");
           }
         },
       },
@@ -274,140 +256,15 @@ export default function SpiderDetails({ spider, onUpdateSpider }: Props) {
         typeKey="molting"
       />
 
-      <CardComponent customStyle={styles(currentTheme).historyCard}>
-        <View style={styles(currentTheme).documentCard}>
-          <View style={styles(currentTheme).documentHeader}>
-            <View style={styles(currentTheme).documentHeaderContent}>
-              <Feather
-                name="file"
-                size={20}
-                color={Colors[currentTheme].text}
-                style={styles(currentTheme).documentIcon}
-              />
-              <ThemedText style={styles(currentTheme).documentTitle}>
-                Dokumentacja
-              </ThemedText>
-            </View>
-            <TouchableOpacity
-              onPress={handleChooseDocument}
-              style={styles(currentTheme).addDocumentButton}
-            >
-              <Feather
-                name="plus"
-                size={20}
-                color={Colors[currentTheme].text}
-              />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles(currentTheme).documentContent}>
-            {isLoading ? (
-              <View style={styles(currentTheme).loadingContainer}>
-                <ActivityIndicator
-                  size="large"
-                  color={Colors[currentTheme].text}
-                />
-                <ThemedText>Ładowanie dokumentu...</ThemedText>
-              </View>
-            ) : documentError ? (
-              <View style={styles(currentTheme).errorContainer}>
-                <Feather
-                  name="alert-circle"
-                  size={24}
-                  color={Colors[currentTheme].warning.text}
-                />
-                <ThemedText
-                  style={{ color: Colors[currentTheme].warning.text }}
-                >
-                  {documentError}
-                </ThemedText>
-              </View>
-            ) : spider.documentUri ? (
-              <TouchableOpacity
-                onPress={() => setShowDocumentModal(true)}
-                style={styles(currentTheme).documentPreviewContainer}
-              >
-                {isImageDocument(spider.documentUri) ? (
-                  <Image
-                    source={{ uri: spider.documentUri }}
-                    style={styles(currentTheme).documentPreview}
-                  />
-                ) : (
-                  <View style={styles(currentTheme).pdfPreviewContainer}>
-                    <Image
-                      source={require("@/assets/images/pdf.png")}
-                      style={styles(currentTheme).pdfIcon}
-                    />
-                    <ThemedText style={styles(currentTheme).pdfText}>
-                      Dokument PDF
-                    </ThemedText>
-                  </View>
-                )}
-                <View style={styles(currentTheme).viewDocumentButton}>
-                  <Feather name="eye" size={16} color="#fff" />
-                  <ThemedText style={styles(currentTheme).viewDocumentText}>
-                    Zobacz
-                  </ThemedText>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              <View style={styles(currentTheme).noDocumentContainer}>
-                <Feather
-                  name="file-plus"
-                  size={48}
-                  color={Colors[currentTheme].text}
-                />
-                <ThemedText style={styles(currentTheme).noDocumentText}>
-                  Brak dokumentacji. Kliknij plus, aby dodać dokument.
-                </ThemedText>
-              </View>
-            )}
-          </View>
-        </View>
-      </CardComponent>
-
-      <Modal
-        visible={showDocumentModal}
-        animationType="slide"
-        onRequestClose={() => setShowDocumentModal(false)}
-      >
-        <View style={styles(currentTheme).modalContainer}>
-          <View style={styles(currentTheme).modalHeader}>
-            <ThemedText style={styles(currentTheme).modalTitle}>
-              {isImageDocument(spider.documentUri) ? "Zdjęcie" : "Dokument PDF"}
-            </ThemedText>
-            <TouchableOpacity onPress={() => setShowDocumentModal(false)}>
-              <Feather name="x" size={24} color={Colors[currentTheme].text} />
-            </TouchableOpacity>
-          </View>
-
-          {spider.documentUri &&
-            (isImageDocument(spider.documentUri) ? (
-              <Image
-                source={{ uri: spider.documentUri }}
-                style={styles(currentTheme).fullScreenImage}
-                resizeMode="contain"
-              />
-            ) : (
-              <WebView
-                source={{ uri: spider.documentUri }}
-                style={styles(currentTheme).webView}
-                startInLoadingState
-                renderLoading={() => (
-                  <View style={styles(currentTheme).webViewLoader}>
-                    <ActivityIndicator
-                      size="large"
-                      color={Colors[currentTheme].text}
-                    />
-                  </View>
-                )}
-                onError={() =>
-                  setDocumentError("Nie udało się załadować dokumentu")
-                }
-              />
-            ))}
-        </View>
-      </Modal>
+      <SpiderDocument
+        documentUri={spider.documentUri}
+        isImageDocument={isImageDocument(spider.documentUri)}
+        onChooseDocument={handleChooseDocument}
+        currentTheme={currentTheme}
+        styles={styles}
+        showDocumentModal={showDocumentModal}
+        setShowDocumentModal={setShowDocumentModal}
+        />
     </View>
   );
 }
@@ -648,19 +505,17 @@ const styles = (theme: ThemeType) =>
       padding: 20,
     },
 
-    // Modal Styles
     modalContainer: {
       flex: 1,
-      backgroundColor: Colors[theme].background,
+      backgroundColor: Colors[theme].card.backgroundColor,
     },
     modalHeader: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: 16,
-      borderBottomWidth: 1,
-      borderBottomColor: Colors[theme].card.borderColor,
+      width: "100%",
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      alignItems: "flex-end",
       backgroundColor: Colors[theme].card.backgroundColor,
+      zIndex: 1,
     },
     modalTitle: {
       fontSize: 18,
