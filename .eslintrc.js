@@ -1,5 +1,4 @@
 const path = require("path");
-const currentDir = path.resolve();
 
 module.exports = {
   extends: ["expo", "prettier"],
@@ -7,11 +6,13 @@ module.exports = {
   rules: {
     "prettier/prettier": "error",
     "react-native/no-unused-styles": "error",
+    "import/no-unresolved": "error",
   },
   settings: {
     "import/resolver": {
+      typescript: {},
       alias: {
-        map: [["@", path.resolve(currentDir, "src")]],
+        map: [["@", path.resolve(__dirname)]],
         extensions: [".js", ".jsx", ".ts", ".tsx"],
       },
     },

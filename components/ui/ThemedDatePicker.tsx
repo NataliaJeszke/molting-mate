@@ -9,12 +9,9 @@ type ThemedDatePickerProps = {
   onCancel: () => void;
 };
 
-const ThemedDatePicker: React.FC<ThemedDatePickerProps> = ({
-  isVisible,
-  initialDate,
-  onConfirm,
-  onCancel,
-}) => {
+function ThemedDatePicker(props: ThemedDatePickerProps) {
+  const { isVisible, initialDate, onConfirm, onCancel } = props;
+
   const handleConfirm = (date: Date) => {
     const formatted = format(date, "dd-MM-yyyy");
     onConfirm(formatted);
@@ -27,10 +24,10 @@ const ThemedDatePicker: React.FC<ThemedDatePickerProps> = ({
       date={initialDate}
       onConfirm={handleConfirm}
       onCancel={onCancel}
-      confirmTextIOS={"Zatwierdź"}
-      cancelTextIOS={"Anuluj"}
+      confirmTextIOS="Zatwierdź"
+      cancelTextIOS="Anuluj"
     />
   );
-};
+}
 
 export default ThemedDatePicker;
