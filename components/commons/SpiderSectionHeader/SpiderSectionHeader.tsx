@@ -15,17 +15,17 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import Filters from "@/components/commons/Filters/Filters";
 
-type FiltersComponentProps = {
+type SpiderSectionHeaderProps = {
   title: string;
   spiderCount: number;
   info: string;
 };
 
-const FiltersComponent = ({
+const SpiderSectionHeader = ({
   title,
   spiderCount,
   info,
-}: FiltersComponentProps) => {
+}: SpiderSectionHeaderProps) => {
   const router = useRouter();
   const { currentTheme } = useUserStore();
   const [modalVisible, setModalVisible] = useState(false);
@@ -194,4 +194,4 @@ const styles = (theme: ThemeType) =>
     },
   });
 
-export default FiltersComponent;
+export default SpiderSectionHeader;

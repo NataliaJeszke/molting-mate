@@ -1,12 +1,13 @@
 import React, { useMemo } from "react";
+import { ScrollView } from "react-native";
+import { parse } from "date-fns";
 
 import { useSpidersStore } from "@/store/spidersStore";
-import { convertToISODate } from "@/utils/dateUtils";
+
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
-import FiltersComponent from "../FiltersComponent/FiltersComponent";
-import { ScrollView } from "react-native";
+import SpiderSectionHeader from "../../components/commons/SpiderSectionHeader/SpiderSectionHeader";
 
 const MoltingListComponent = () => {
   const spiders = useSpidersStore((state) => state.spiders);
@@ -20,15 +21,15 @@ const MoltingListComponent = () => {
         status: "predykcja linienia",
       }))
       .sort((a, b) => {
-        const dateA = new Date(convertToISODate(a.lastMolt)).getTime();
-        const dateB = new Date(convertToISODate(b.lastMolt)).getTime();
+        const dateA = parse(a.lastFed, "dd-MM-yyyy", new Date()).getTime();
+        const dateB = parse(b.lastFed, "dd-MM-yyyy", new Date()).getTime();
         return dateA - dateB;
       });
   }, [spiders]);
 
   return (
     <>
-      <FiltersComponent
+      <SpiderSectionHeader
         title="Linienie"
         spiderCount={sortedSpiders.length}
         info="Lista pająków według linienia."

@@ -136,7 +136,7 @@ const SpiderList = ({ title, data, info }: SpiderListProps) => {
                 style={styles(currentTheme)["spider-list__image"]}
               />
               <ThemedText style={styles(currentTheme)["spider-list__info"]}>
-                {truncateText(spider.name, 12)}
+                {truncateText(spider.name, 8)}
               </ThemedText>
               <ThemedText style={styles(currentTheme)["spider-list__info"]}>
                 {spider.date}

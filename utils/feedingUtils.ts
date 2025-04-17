@@ -1,7 +1,7 @@
-import { convertToISODate } from "@/utils/dateUtils";
+import { addDays, format, parse } from "date-fns";
+
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
-import { addDays, addWeeks, parse } from "date-fns";
 
 export const getFeedingStatus = (
   lastFed: string,
@@ -9,8 +9,7 @@ export const getFeedingStatus = (
 ): FeedingStatus | null => {
   if (!lastFed || !frequencyInDays) return null;
 
-  const isoDate = convertToISODate(lastFed);
-  const lastFedDate = new Date(isoDate);
+  const lastFedDate = parse(lastFed, "dd-MM-yyyy", new Date());
   const today = new Date();
 
   if (isNaN(lastFedDate.getTime())) {
@@ -38,24 +37,29 @@ export const getFeedingStatus = (
   return FeedingStatus.NOT_HUNGRY;
 };
 
-export const getNextFeedingDate = (lastFed: string, feedingFrequency: string): string => {
+export const getNextFeedingDate = (
+  lastFed: string,
+  feedingFrequency: FeedingFrequency
+): string => {
+  if (!lastFed || !feedingFrequency) return "";
+
   const lastFedDate = parse(lastFed, "dd-MM-yyyy", new Date());
 
-  let nextFeedingDate: Date;
-
-  switch (feedingFrequency) {
-    case "daily":
-      nextFeedingDate = addDays(lastFedDate, 1);
-      break;
-    case "weekly":
-      nextFeedingDate = addWeeks(lastFedDate, 1);
-      break;
-    case "biweekly":
-      nextFeedingDate = addWeeks(lastFedDate, 2);
-      break;
-    default:
-      nextFeedingDate = lastFedDate;
+  if (isNaN(lastFedDate.getTime())) {
+    console.warn("Invalid date format:", lastFed);
+    return "";
   }
 
-  return nextFeedingDate.toLocaleDateString();
+  const frequencyMap: Record<FeedingFrequency, number> = {
+    [FeedingFrequency.FewTimesWeek]: 3,
+    [FeedingFrequency.OnceWeek]: 7,
+    [FeedingFrequency.OnceTwoWeeks]: 14,
+    [FeedingFrequency.OnceMonth]: 30,
+    [FeedingFrequency.Rarely]: 60,
+  };
+
+  const daysToAdd = frequencyMap[feedingFrequency];
+  const nextFeedingDate = addDays(lastFedDate, daysToAdd);
+
+  return format(nextFeedingDate, "dd-MM-yyyy");
 };

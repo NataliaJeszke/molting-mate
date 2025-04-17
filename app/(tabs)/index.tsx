@@ -16,6 +16,7 @@ import { Colors, ThemeType } from "@/constants/Colors";
 import WrapperComponent from "@/components/ui/WrapperComponent";
 import CardComponent from "@/components/ui/CardComponent";
 import SpiderGallery from "@/components/ui/SpiderGallery";
+import UpcomingFeedingListComponent from "@/core/UpcomingFeedingListComponent/UpcomingFeedingListComponent";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -48,6 +49,7 @@ export default function HomeScreen() {
       <ScrollView>
         <SpiderGallery />
         <PostFeedingListComponent />
+        <UpcomingFeedingListComponent />
         <PostMoltingListComponent />
       </ScrollView>
     </WrapperComponent>

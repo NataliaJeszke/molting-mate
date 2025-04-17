@@ -5,11 +5,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import "react-native-reanimated";
-import {
-  Platform,
-  View,
-  useColorScheme,
-} from "react-native";
+import { Platform, View, useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
@@ -83,6 +79,14 @@ export default function RootLayout() {
             name="favourites"
             options={{
               title: "Ulubione pająki",
+              headerBackTitle: "Wstecz",
+              headerTintColor: Colors[currentTheme].tint,
+            }}
+          />
+          <Stack.Screen
+            name="spider/[id]"
+            options={{
+              title: "Pająk",
               headerBackTitle: "Wstecz",
               headerTintColor: Colors[currentTheme].tint,
             }}

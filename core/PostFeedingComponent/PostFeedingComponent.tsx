@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
 import { useSpidersStore } from "@/store/spidersStore";
-import { getFeedingStatus } from "../FeedingListComponent/utils/feedingUtils";
+import { getFeedingStatus } from "../../utils/feedingUtils";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 
 const PostFeedingListComponent = () => {

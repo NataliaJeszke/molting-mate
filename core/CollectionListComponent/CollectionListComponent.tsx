@@ -3,7 +3,7 @@ import React from "react";
 import { useSpidersStore } from "@/store/spidersStore";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
-import FiltersComponent from "../FiltersComponent/FiltersComponent";
+import SpiderSectionHeader from "../../components/commons/SpiderSectionHeader/SpiderSectionHeader";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 import { ScrollView } from "react-native";
 
@@ -16,7 +16,7 @@ const CollectionListComponent = () => {
 
   return (
     <>
-      <FiltersComponent
+      <SpiderSectionHeader
         title="Kolekcja"
         spiderCount={spiders.length}
         info="Lista wszystkich pająków"

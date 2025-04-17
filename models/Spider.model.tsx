@@ -11,8 +11,8 @@ export type Spider = {
   lastMolt: string;
   imageUri: string | undefined;
   isFavourite: boolean;
-  status?: FeedingStatus | string | null;
   feedingHistoryData: string[];
   moltingHistoryData: string[];
+  status?: FeedingStatus | string | null;
   nextFeedingDate?: string;
 };

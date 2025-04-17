@@ -1,4 +1,4 @@
-import React, { act, useEffect } from "react";
+import React, { useEffect } from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 
 import { router } from "expo-router";
@@ -21,8 +21,7 @@ type SpiderListProps = {
 
 const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
   const { currentTheme } = useUserStore();
-  const { addToFavorites, removeFromFavorites, removeSpider, spiders } =
-    useSpidersStore();
+  const { addToFavorites, removeFromFavorites, spiders } = useSpidersStore();
 
   useEffect(() => {
     console.log("Spider data:", spiders);
@@ -40,6 +39,56 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
     }
   };
 
+  const renderStatusIcon = (spider: Spider) => {
+    if (spider.status === FeedingStatus.HUNGRY) {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            router.push({
+              pathname: "/manageModal",
+              params: {
+                id: spider.id,
+                type: ViewTypes.VIEW_FEEDING,
+                action: "edit",
+              },
+            });
+          }}
+        >
+          <Feather
+            style={styles(currentTheme)["spider-list__status-icon"]}
+            size={18}
+            name="alert-triangle"
+            color={Colors[currentTheme].warning.text}
+          />
+        </TouchableOpacity>
+      );
+    } else if (spider.status === FeedingStatus.FEED_TODAY) {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            router.push({
+              pathname: "/manageModal",
+              params: {
+                id: spider.id,
+                type: ViewTypes.VIEW_FEEDING,
+                status: spider.status,
+                action: "edit",
+              },
+            });
+          }}
+        >
+          <Feather
+            style={styles(currentTheme)["spider-list__status-icon"]}
+            size={18}
+            name="alert-octagon"
+            color={Colors[currentTheme].info.text}
+          />
+        </TouchableOpacity>
+      );
+    }
+    return null;
+  };
+
   return (
     <CardComponent>
       <View>
@@ -53,77 +102,73 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
             ]}
           >
             <View style={styles(currentTheme)["spider-list__item-content"]}>
-              <Image
-                source={
-                  spider.imageUri
-                    ? { uri: spider.imageUri }
-                    : require("@/assets/images/spider.png")
-                }
-                style={styles(currentTheme)["spider-list__image"]}
-              />
+              <TouchableOpacity
+                onPress={() => {
+                  router.push(`/spider/${spider.id}`);
+                }}
+              >
+                <Image
+                  source={
+                    spider.imageUri
+                      ? { uri: spider.imageUri }
+                      : require("@/assets/images/spider.png")
+                  }
+                  style={styles(currentTheme)["spider-list__image"]}
+                />
+              </TouchableOpacity>
+
               <View style={styles(currentTheme)["spider-list__info-container"]}>
-                <ThemedText style={styles(currentTheme)["spider-list__info"]}>
+                <ThemedText
+                  style={styles(currentTheme)["spider-list__info-name"]}
+                >
                   {spider.name}
                 </ThemedText>
 
                 {(viewType === ViewTypes.VIEW_COLLECTION ||
                   viewType === ViewTypes.VIEW_FEEDING) && (
-                  <>
+                  <View style={styles(currentTheme)["spider-list__info-group"]}>
+                    <View style={styles(currentTheme)["spider-list__info-row"]}>
+                      <ThemedText
+                        style={styles(currentTheme)["spider-list__info-label"]}
+                      >
+                        Ostatnio nakarmiony:
+                      </ThemedText>
+                      {spider.status === FeedingStatus.HUNGRY &&
+                        renderStatusIcon(spider)}
+                    </View>
                     <ThemedText
-                      style={styles(currentTheme)["spider-list__info"]}
+                      style={styles(currentTheme)["spider-list__info-date"]}
                     >
-                      Data karmienia: {spider.lastFed}
-                    </ThemedText>
-                    <ThemedText
-                      style={styles(currentTheme)["spider-list__info"]}
-                    >
-                      Data następnego karmienia: {spider.nextFeedingDate}
+                      {spider.lastFed}
                     </ThemedText>
 
-                    {spider.status === FeedingStatus.HUNGRY && (
-                      <TouchableOpacity
-                        onPress={() => {
-                          router.push({
-                            pathname: "/manageModal",
-                            params: {
-                              id: spider.id,
-                              type: ViewTypes.VIEW_FEEDING,
-                              action: "edit",
-                            },
-                          });
-                        }}
-                      >
-                        <Feather
-                          size={24}
-                          name="alert-triangle"
-                          color={Colors[currentTheme].warning.text}
-                        />
-                      </TouchableOpacity>
+                    {/* Only show Next Feeding when in VIEW_FEEDING */}
+                    {viewType === ViewTypes.VIEW_FEEDING && (
+                      <>
+                        <View
+                          style={styles(currentTheme)["spider-list__info-row"]}
+                        >
+                          <ThemedText
+                            style={
+                              styles(currentTheme)["spider-list__info-label"]
+                            }
+                          >
+                            Następne karmienie:
+                          </ThemedText>
+                          {spider.status === FeedingStatus.FEED_TODAY &&
+                            renderStatusIcon(spider)}
+                        </View>
+                        <ThemedText
+                          style={styles(currentTheme)["spider-list__info-date"]}
+                        >
+                          {spider.nextFeedingDate}
+                        </ThemedText>
+                      </>
                     )}
-                    {spider.status === FeedingStatus.FEED_TODAY && (
-                      <TouchableOpacity
-                        onPress={() => {
-                          router.push({
-                            pathname: "/manageModal",
-                            params: {
-                              id: spider.id,
-                              type: ViewTypes.VIEW_FEEDING,
-                              status: spider.status,
-                              action: "edit",
-                            },
-                          });
-                        }}
-                      >
-                        <Feather
-                          size={24}
-                          name="alert-octagon"
-                          color={Colors[currentTheme].info.text}
-                        />
-                      </TouchableOpacity>
-                    )}
-                    {spider.status !== FeedingStatus.HUNGRY &&
-                      spider.status !== FeedingStatus.FEED_TODAY &&
-                      viewType !== ViewTypes.VIEW_COLLECTION && (
+
+                    {viewType === ViewTypes.VIEW_FEEDING &&
+                      spider.status !== FeedingStatus.HUNGRY &&
+                      spider.status !== FeedingStatus.FEED_TODAY && (
                         <TouchableOpacity
                           onPress={() => {
                             router.push({
@@ -135,30 +180,41 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                               },
                             });
                           }}
+                          style={
+                            styles(currentTheme)["spider-list__edit-button"]
+                          }
                         >
                           <Feather
-                            size={24}
+                            size={18}
                             name="edit-3"
                             color={Colors[currentTheme].info.text}
                           />
+                          <ThemedText
+                            style={
+                              styles(currentTheme)["spider-list__edit-text"]
+                            }
+                          >
+                            Edytuj karmienie
+                          </ThemedText>
                         </TouchableOpacity>
                       )}
-                  </>
+                  </View>
                 )}
 
                 {(viewType === ViewTypes.VIEW_COLLECTION ||
                   viewType === ViewTypes.VIEW_MOLTING) && (
-                  <>
+                  <View style={styles(currentTheme)["spider-list__info-group"]}>
                     <ThemedText
-                      style={styles(currentTheme)["spider-list__info"]}
+                      style={styles(currentTheme)["spider-list__info-label"]}
                     >
-                      Data linienia: {spider.lastMolt}
+                      Ostatnie linienie:
                     </ThemedText>
-                    {/* <ThemedText
-                      style={styles(currentTheme)["spider-list__info"]}
+                    <ThemedText
+                      style={styles(currentTheme)["spider-list__info-date"]}
                     >
-                      Predykcja Linienia: {spider.status}
-                    </ThemedText> */}
+                      {spider.lastMolt}
+                    </ThemedText>
+
                     {viewType === ViewTypes.VIEW_MOLTING && (
                       <TouchableOpacity
                         onPress={() => {
@@ -171,15 +227,21 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                             },
                           });
                         }}
+                        style={styles(currentTheme)["spider-list__edit-button"]}
                       >
                         <Feather
-                          size={24}
+                          size={18}
                           name="edit-3"
                           color={Colors[currentTheme].info.text}
                         />
+                        <ThemedText
+                          style={styles(currentTheme)["spider-list__edit-text"]}
+                        >
+                          Edytuj linienie
+                        </ThemedText>
                       </TouchableOpacity>
                     )}
-                  </>
+                  </View>
                 )}
               </View>
 
@@ -191,7 +253,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                   onPress={() => toggleFavourite(spider.id, spider.isFavourite)}
                 >
                   <AntDesign
-                    size={24}
+                    size={22}
                     name={spider.isFavourite ? "heart" : "hearto"}
                     color={Colors[currentTheme].tint}
                   />
@@ -212,7 +274,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                     }}
                   >
                     <Feather
-                      size={24}
+                      size={22}
                       name="edit"
                       color={Colors[currentTheme].info.text}
                     />
@@ -232,7 +294,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                   }}
                 >
                   <AntDesign
-                    size={24}
+                    size={22}
                     name="delete"
                     color={Colors[currentTheme].tint}
                   />
@@ -249,45 +311,91 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
     "spider-list__item": {
-      paddingVertical: 12,
+      paddingVertical: 16,
+      paddingHorizontal: 8,
     },
     "spider-list__item-content": {
       flexDirection: "row",
-      alignItems: "center",
       position: "relative",
-      marginBottom: 20,
     },
     "spider-list__separator": {
       borderBottomWidth: 1,
-      borderBottomColor: "#ccc",
-      marginBottom: 12,
+      borderBottomColor: Colors[theme].card.borderColor,
+      marginBottom: 8,
+      paddingBottom: 8,
     },
     "spider-list__image": {
-      width: 50,
-      height: 50,
-      borderRadius: 25,
+      width: 60,
+      height: 60,
+      borderRadius: 8,
       backgroundColor: Colors[theme].spiderImage.backgroundColor,
+      borderWidth: 1,
+      borderColor: Colors[theme].card.borderColor,
     },
     "spider-list__info-container": {
       flex: 1,
       marginLeft: 12,
+      justifyContent: "center",
     },
     "spider-list__info": {
-      fontSize: 18,
+      fontSize: 14,
+      lineHeight: 20,
       fontWeight: "500",
       textAlign: "left",
+      marginBottom: 4,
+      color: Colors[theme].text,
+    },
+    "spider-list__info-name": {
+      fontSize: 18,
+      fontWeight: "bold",
+      marginBottom: 6,
+      color: Colors[theme].text,
+    },
+    "spider-list__info-label": {
+      fontSize: 14,
+      color: Colors[theme].text,
+      marginBottom: 1,
+    },
+    "spider-list__info-date": {
+      fontSize: 16,
+      fontWeight: "600",
+      color: Colors[theme].text,
+      marginBottom: 4,
+    },
+    "spider-list__info-row": {
+      flexDirection: "row",
+      alignItems: "center",
       marginBottom: 2,
+    },
+    "spider-list__status-icon": {
+      marginLeft: 6,
+    },
+    "spider-list__info-group": {
+      marginBottom: 6,
+      paddingVertical: 2,
     },
     "spider-list__actions-container": {
       flexDirection: "column",
       justifyContent: "space-between",
       alignItems: "center",
-      height: 120,
-      marginLeft: 10,
       paddingVertical: 8,
+      marginLeft: 8,
+      height: "auto",
     },
     "spider-list__action-button": {
       padding: 8,
+      marginVertical: 4,
+    },
+    "spider-list__edit-button": {
+      flexDirection: "row",
+      alignItems: "center",
+      marginTop: 6,
+      paddingVertical: 4,
+    },
+    "spider-list__edit-text": {
+      fontSize: 14,
+      color: Colors[theme].info.text,
+      marginLeft: 4,
     },
   });
 

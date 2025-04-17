@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
+import { parse } from "date-fns";
+import { useSpidersStore } from "@/store/spidersStore";
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
 import { PostMoltingMsg } from "./PostMolting.constants";
-import { useSpidersStore } from "@/store/spidersStore";
-import { convertToISODate } from "@/utils/dateUtils";
 
 //This component is to change when there is data from AI about molting predictions
 const PostMoltingListComponent = () => {
@@ -14,8 +14,8 @@ const PostMoltingListComponent = () => {
         (spider) => spider.lastMolt && new Date(spider.lastMolt) < new Date()
       )
       .sort((a, b) => {
-        const dateA = new Date(convertToISODate(a.lastMolt)).getTime();
-        const dateB = new Date(convertToISODate(b.lastMolt)).getTime();
+        const dateA = parse(a.lastMolt, "dd-MM-yyyy", new Date()).getTime();
+        const dateB = parse(b.lastMolt, "dd-MM-yyyy", new Date()).getTime();
         return dateB - dateA;
       })
       .map((spider) => ({

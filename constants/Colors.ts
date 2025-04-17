@@ -66,6 +66,11 @@ export const Colors = {
       },
       background: "#ffffff",
     },
+    feedingStatus: {
+      hungry: "#FF0000",
+      feedToday: "#00FF00",
+      notHungry: "#FFA500",
+    }
   },
   dark: {
     text: "rgb(255, 255, 255)",
@@ -124,5 +129,10 @@ export const Colors = {
       },
       background: "#1f1f1f",
     },
+    feedingStatus: {
+      hungry: "#FF0000",
+      feedToday: "#00FF00",
+      notHungry: "#FFA500",
+    }
   },
 };
