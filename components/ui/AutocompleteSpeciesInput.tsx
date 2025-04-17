@@ -34,7 +34,7 @@ export default function AutocompleteSpeciesInput({
       setDropdownVisible(false);
     } else {
       const filtered = spiderSpeciesList.filter((item) =>
-        item.label.toLowerCase().includes(text.toLowerCase())
+        item.label.toLowerCase().includes(text.toLowerCase()),
       );
       setFilteredData(filtered);
       setDropdownVisible(true);
@@ -55,9 +55,9 @@ export default function AutocompleteSpeciesInput({
         Keyboard.dismiss();
       }}
     >
-      <View style={styles(theme)["wrapper"]}>
+      <View style={styles(theme)["autocomplete"]}>
         <TextInput
-          style={styles(theme)["input"]}
+          style={styles(theme)["autocomplete__input"]}
           value={query}
           placeholder="Zacznij pisać aby wyświetlić podpowiedzi"
           onChangeText={handleChange}
@@ -69,14 +69,14 @@ export default function AutocompleteSpeciesInput({
         />
         {isDropdownVisible && (
           <ScrollView
-            style={styles(theme)["resultsContainer"]}
+            style={styles(theme)["autocomplete__results"]}
             keyboardShouldPersistTaps="handled"
           >
             {filteredData.map((item) => (
               <TouchableOpacity
                 key={item.value}
                 onPress={() => handleSelect(item)}
-                style={styles(theme)["item"]}
+                style={styles(theme)["autocomplete__item"]}
               >
                 <ThemedText>{item.label}</ThemedText>
               </TouchableOpacity>
@@ -88,9 +88,10 @@ export default function AutocompleteSpeciesInput({
   );
 }
 
+/* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
-    wrapper: {
+    autocomplete: {
       borderWidth: 0.5,
       borderRadius: 6,
       marginBottom: 24,
@@ -100,19 +101,19 @@ const styles = (theme: ThemeType) =>
       maxHeight: 200,
       padding: 9,
     },
-    input: {
+    autocomplete__input: {
       backgroundColor: Colors[theme].picker.background,
       padding: 4,
       borderRadius: 10,
       fontSize: 16,
       color: Colors[theme].picker.text,
     },
-    resultsContainer: {
+    autocomplete__results: {
       maxHeight: 200,
       marginTop: 4,
       backgroundColor: Colors[theme].picker.background,
     },
-    item: {
+    autocomplete__item: {
       padding: 12,
       backgroundColor: Colors[theme].picker.background,
       borderBottomWidth: 1,

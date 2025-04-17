@@ -2,8 +2,8 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-import { ThemedText } from "@/components/ui/ThemedText";
-import { Colors, ThemeType } from "@/constants/Colors";
+import { ThemedText } from "./ThemedText";
+import { Colors, ThemeType } from "../../constants/Colors";
 
 type ThemedPickerProps = {
   label: string;
@@ -39,6 +39,7 @@ const ThemedPicker = ({
   </View>
 );
 
+/* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
     "themed-picker__container": {

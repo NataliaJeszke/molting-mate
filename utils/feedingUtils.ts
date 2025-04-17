@@ -5,7 +5,7 @@ import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 
 export const getFeedingStatus = (
   lastFed: string,
-  frequencyInDays: FeedingFrequency
+  frequencyInDays: FeedingFrequency,
 ): FeedingStatus | null => {
   if (!lastFed || !frequencyInDays) return null;
 
@@ -28,7 +28,7 @@ export const getFeedingStatus = (
   const frequency = frequencyMap[frequencyInDays];
 
   const daysSinceLastFed = Math.floor(
-    (today.getTime() - lastFedDate.getTime()) / (1000 * 60 * 60 * 24)
+    (today.getTime() - lastFedDate.getTime()) / (1000 * 60 * 60 * 24),
   );
 
   if (daysSinceLastFed === frequency) return FeedingStatus.FEED_TODAY;
@@ -39,7 +39,7 @@ export const getFeedingStatus = (
 
 export const getNextFeedingDate = (
   lastFed: string,
-  feedingFrequency: FeedingFrequency
+  feedingFrequency: FeedingFrequency,
 ): string => {
   if (!lastFed || !feedingFrequency) return "";
 

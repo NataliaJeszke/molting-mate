@@ -12,7 +12,7 @@ const PostFeedingListComponent = () => {
       .filter((spider) => {
         const feedingStatus = getFeedingStatus(
           spider.lastFed,
-          spider.feedingFrequency
+          spider.feedingFrequency,
         );
         return feedingStatus === FeedingStatus.HUNGRY;
       })

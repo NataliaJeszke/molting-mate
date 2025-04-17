@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import * as DocumentPicker from "expo-document-picker";
 import { parse } from "date-fns";
 
 import { useUserStore } from "@/store/userStore";
@@ -60,7 +59,7 @@ export default function SpiderForm() {
         setImageUri(spiderToEdit.imageUri);
       }
     }
-  }, [id]);
+  }, [id, spiders]);
 
   const handleSubmit = () => {
     console.log("Submitting spider data...");
@@ -71,7 +70,7 @@ export default function SpiderForm() {
       lastFed,
       feedingFrequency,
       lastMolt,
-      imageUri
+      imageUri,
     );
     if (
       !name?.trim() ||
@@ -181,60 +180,56 @@ export default function SpiderForm() {
             }
           },
         },
-      ]
+      ],
     );
   };
 
   const handleChooseDocument = () => {
-    Alert.alert(
-      "Wybierz źródło",
-      "Dołącz dokument pochodzenia",
-      [
-        {
-          text: "Zrób zdjęcie",
-          onPress: async () => {
-            const permission = await ImagePicker.requestCameraPermissionsAsync();
-            if (permission.status !== "granted") {
-              Alert.alert("Brak uprawnień", "Nie masz dostępu do kamery.");
-              return;
-            }
-  
-            const result = await ImagePicker.launchCameraAsync({
-              allowsEditing: true,
-              aspect: [1, 1],
-              quality: 1,
-            });
-            if (!result.canceled) {
-              setDocumentUri(result.assets[0].uri);
-            }
-          },
+    Alert.alert("Wybierz źródło", "Dołącz dokument pochodzenia", [
+      {
+        text: "Zrób zdjęcie",
+        onPress: async () => {
+          const permission = await ImagePicker.requestCameraPermissionsAsync();
+          if (permission.status !== "granted") {
+            Alert.alert("Brak uprawnień", "Nie masz dostępu do kamery.");
+            return;
+          }
+
+          const result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+          });
+          if (!result.canceled) {
+            setDocumentUri(result.assets[0].uri);
+          }
         },
-        {
-          text: "Wybierz z galerii",
-          onPress: async () => {
-            const permission =
-              await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (permission.status !== "granted") {
-              Alert.alert("Brak uprawnień", "Nie masz dostępu do galerii.");
-              return;
-            }
-  
-            const result = await ImagePicker.launchImageLibraryAsync({
-              allowsEditing: true,
-              aspect: [1, 1],
-              quality: 1,
-            });
-            if (!result.canceled) {
-              setDocumentUri(result.assets[0].uri);
-            }
-          },
+      },
+      {
+        text: "Wybierz z galerii",
+        onPress: async () => {
+          const permission =
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+          if (permission.status !== "granted") {
+            Alert.alert("Brak uprawnień", "Nie masz dostępu do galerii.");
+            return;
+          }
+
+          const result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+          });
+          if (!result.canceled) {
+            setDocumentUri(result.assets[0].uri);
+          }
         },
-        {
-          text: "Anuluj",
-          style: "cancel",
-        },
-      ]
-    );
+      },
+      {
+        text: "Anuluj",
+        style: "cancel",
+      },
+    ]);
   };
 
   const parseDate = (dateStr: string): Date => {
@@ -248,8 +243,8 @@ export default function SpiderForm() {
       field === "lastFed" && lastFed
         ? parseDate(lastFed)
         : field === "lastMolt" && lastMolt
-        ? parseDate(lastMolt)
-        : new Date();
+          ? parseDate(lastMolt)
+          : new Date();
 
     setSelectedDate(dateToSet);
     setDatePickerVisibility(true);
@@ -271,8 +266,8 @@ export default function SpiderForm() {
         showsVerticalScrollIndicator={false}
       >
         <CardComponent>
-          <View style={styles(currentTheme)["centered"]}>
-            <ThemedText style={styles(currentTheme)["subHeaderText"]}>
+          <View style={styles(currentTheme).centered}>
+            <ThemedText style={styles(currentTheme).subHeaderText}>
               Uzupełnij informacje o pająku
             </ThemedText>
           </View>
@@ -289,11 +284,11 @@ export default function SpiderForm() {
             <SpiderImage size={100} imageUri={imageUri} />
           </TouchableOpacity>
 
-          <ThemedText style={styles(currentTheme)["label"]}>Imię</ThemedText>
+          <ThemedText style={styles(currentTheme).label}>Imię</ThemedText>
           <TextInput
             value={name}
             onChangeText={setName}
-            style={styles(currentTheme)["input"]}
+            style={styles(currentTheme).input}
             placeholder="Zyzio"
             placeholderTextColor={Colors[currentTheme].input.placeholder}
             autoCapitalize="words"
@@ -303,13 +298,13 @@ export default function SpiderForm() {
           <TextInput
             value={age}
             onChangeText={setAge}
-            style={styles(currentTheme)["input"]}
+            style={styles(currentTheme).input}
             placeholder="L1"
             placeholderTextColor={Colors[currentTheme].input.placeholder}
           />
 
-          <ThemedText style={styles(currentTheme)["label"]}>Gatunek</ThemedText>
-          <View style={styles(currentTheme)["pickerWrapper"]}>
+          <ThemedText style={styles(currentTheme).label}>Gatunek</ThemedText>
+          <View style={styles(currentTheme).pickerWrapper}>
             <AutocompleteSpeciesInput
               value={spiderSpecies}
               onSelect={(value) => setSpiderSpecies(value)}
@@ -317,12 +312,12 @@ export default function SpiderForm() {
             />
           </View>
 
-          <ThemedText style={styles(currentTheme)["label"]}>
+          <ThemedText style={styles(currentTheme).label}>
             Data ostatniego karmienia
           </ThemedText>
           <TouchableOpacity
             onPress={() => showDatePicker("lastFed")}
-            style={styles(currentTheme)["input"]}
+            style={styles(currentTheme).input}
           >
             <ThemedText>{lastFed || "Wybierz datę"}</ThemedText>
           </TouchableOpacity>
@@ -331,7 +326,6 @@ export default function SpiderForm() {
             <ThemedDatePicker
               isVisible={isDatePickerVisible}
               initialDate={selectedDate}
-              theme={currentTheme}
               onConfirm={(formattedDate) => {
                 setLastFed(formattedDate);
                 hideDatePicker();
@@ -339,12 +333,12 @@ export default function SpiderForm() {
               onCancel={hideDatePicker}
             />
           )}
-          <ThemedText style={styles(currentTheme)["label"]}>
+          <ThemedText style={styles(currentTheme).label}>
             Data ostatniego linienia
           </ThemedText>
           <TouchableOpacity
             onPress={() => showDatePicker("lastMolt")}
-            style={styles(currentTheme)["input"]}
+            style={styles(currentTheme).input}
           >
             <ThemedText>{lastMolt || "Wybierz datę"}</ThemedText>
           </TouchableOpacity>
@@ -353,7 +347,6 @@ export default function SpiderForm() {
             <ThemedDatePicker
               isVisible={isDatePickerVisible}
               initialDate={selectedDate}
-              theme={currentTheme}
               onConfirm={(formattedDate) => {
                 setLastMolt(formattedDate);
                 hideDatePicker();
@@ -390,7 +383,7 @@ export default function SpiderForm() {
           </View>
 
           <ThemedText style={styles(currentTheme).label}>
-            Dokument pochodzenia (zdjęcie)
+            Dokument pochodzenia pająka (zdjęcie)
           </ThemedText>
 
           <TouchableOpacity
@@ -403,11 +396,8 @@ export default function SpiderForm() {
             </ThemedText>
           </TouchableOpacity>
 
-          <Pressable
-            style={styles(currentTheme)["button"]}
-            onPress={handleSubmit}
-          >
-            <ThemedText style={styles(currentTheme)["buttonText"]}>
+          <Pressable style={styles(currentTheme).button} onPress={handleSubmit}>
+            <ThemedText style={styles(currentTheme).buttonText}>
               Zapisz pająka
             </ThemedText>
           </Pressable>
@@ -416,7 +406,7 @@ export default function SpiderForm() {
     </KeyboardAvoidingView>
   );
 }
-
+/* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
     input: {

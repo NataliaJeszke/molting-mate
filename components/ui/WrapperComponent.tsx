@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import { SafeAreaView, View, StyleSheet } from 'react-native';
+import React, { ReactNode } from "react";
+import { SafeAreaView, View, StyleSheet } from "react-native";
 
 type WrapperComponentProps = {
   children: ReactNode;
@@ -8,9 +8,7 @@ type WrapperComponentProps = {
 const WrapperComponent = ({ children }: WrapperComponentProps) => {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        {children}
-      </View>
+      <View style={styles.container}>{children}</View>
     </SafeAreaView>
   );
 };

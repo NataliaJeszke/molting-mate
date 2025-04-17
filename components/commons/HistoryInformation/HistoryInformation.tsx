@@ -29,19 +29,19 @@ export default function HistoryInformation({
 }: HistoryInformationProps) {
   return (
     <CardComponent customStyle={styles(currentTheme).historyCard}>
-      <TouchableOpacity 
-        style={styles(currentTheme).historyHeader}
+      <TouchableOpacity
+        style={styles(currentTheme).historyCard__header}
         onPress={toggleExpanded}
         activeOpacity={0.7}
       >
-        <View style={styles(currentTheme).historyHeaderContent}>
+        <View style={styles(currentTheme).historyCard__headerContent}>
           <Feather
             name={iconName}
             size={20}
             color={Colors[currentTheme].text}
-            style={styles(currentTheme).historyIcon}
+            style={styles(currentTheme).historyCard__icon}
           />
-          <ThemedText style={styles(currentTheme).historyTitle}>
+          <ThemedText style={styles(currentTheme).historyCard__title}>
             {title}
           </ThemedText>
         </View>
@@ -53,30 +53,32 @@ export default function HistoryInformation({
       </TouchableOpacity>
 
       {isExpanded && data && data.length > 0 ? (
-        <View style={styles(currentTheme).historyContent}>
+        <View style={styles(currentTheme).historyCard__content}>
           {data.map((item, index) => (
-            <View 
-              key={`${typeKey}-${index}`} 
+            <View
+              key={`${typeKey}-${index}`}
               style={[
-                styles(currentTheme).historyItem,
-                index === data.length - 1 ? styles(currentTheme).historyItemLast : null
+                styles(currentTheme).historyCard__item,
+                index === data.length - 1
+                  ? styles(currentTheme)["historyCard__item--last"]
+                  : null,
               ]}
             >
               <Feather
                 name="calendar"
                 size={16}
                 color={Colors[currentTheme].text}
-                style={styles(currentTheme).historyItemIcon}
+                style={styles(currentTheme).historyCard__itemIcon}
               />
-              <ThemedText style={styles(currentTheme).historyItemText}>
+              <ThemedText style={styles(currentTheme).historyCard__itemText}>
                 {item}
               </ThemedText>
             </View>
           ))}
         </View>
       ) : isExpanded ? (
-        <View style={styles(currentTheme).emptyHistory}>
-          <ThemedText style={styles(currentTheme).emptyHistoryText}>
+        <View style={styles(currentTheme).historyCard__empty}>
+          <ThemedText style={styles(currentTheme).historyCard__emptyText}>
             {emptyText}
           </ThemedText>
         </View>

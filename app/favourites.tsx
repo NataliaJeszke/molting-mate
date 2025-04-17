@@ -9,7 +9,7 @@ export default function Favourites() {
 
   const favouriteSpiders = useMemo(
     () => spiders.filter((spider) => spider.isFavourite),
-    [spiders]
+    [spiders],
   );
 
   return (

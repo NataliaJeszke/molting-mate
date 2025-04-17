@@ -11,9 +11,9 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 
 export default function TabLayout() {
-  const {currentTheme} = useUserStore();
+  const { currentTheme } = useUserStore();
   const hasFinishedOnboarding = useUserStore(
-    (state) => state.hasFinishedOnboarding
+    (state) => state.hasFinishedOnboarding,
   );
 
   if (!hasFinishedOnboarding) {
@@ -31,8 +31,7 @@ export default function TabLayout() {
           ios: {
             position: "absolute",
           },
-          default: {
-          },
+          default: {},
         }),
       }}
     >

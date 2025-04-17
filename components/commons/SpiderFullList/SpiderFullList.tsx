@@ -308,6 +308,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
   );
 };
 
+/* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
     "spider-list__item": {

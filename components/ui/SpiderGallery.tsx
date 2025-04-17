@@ -49,7 +49,7 @@ const SpiderGallery = () => {
 
   return (
     <CardComponent>
-      <View style={styles(currentTheme).container}>
+      <View style={styles(currentTheme)["gallery"]}>
         <ScrollView
           horizontal
           pagingEnabled
@@ -58,22 +58,26 @@ const SpiderGallery = () => {
           scrollEnabled={false}
         >
           {imagesToShow.map((image, index) => (
-            <View key={index} style={styles(currentTheme).imageContainer}>
+            <View
+              key={index}
+              style={styles(currentTheme)["gallery__image-container"]}
+            >
               <Image
                 source={image}
-                style={styles(currentTheme).image}
+                style={styles(currentTheme)["gallery__image"]}
                 resizeMode="cover"
               />
             </View>
           ))}
         </ScrollView>
-        <View style={styles(currentTheme).dotsContainer}>
+        <View style={styles(currentTheme)["gallery__dots"]}>
           {imagesToShow.map((_, index) => (
             <View
               key={index}
               style={[
-                styles(currentTheme).dot,
-                currentIndex === index && styles(currentTheme).activeDot,
+                styles(currentTheme)["gallery__dot"],
+                currentIndex === index &&
+                  styles(currentTheme)["gallery__dot--active"],
               ]}
             />
           ))}
@@ -83,22 +87,23 @@ const SpiderGallery = () => {
   );
 };
 
+/* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
-    container: {
+    gallery: {
       height: 200,
       marginBottom: 16,
     },
-    imageContainer: {
+    "gallery__image-container": {
       width: width,
       height: 200,
       overflow: "hidden",
     },
-    image: {
+    gallery__image: {
       width: "100%",
       height: "100%",
     },
-    dotsContainer: {
+    gallery__dots: {
       position: "absolute",
       bottom: -20,
       left: 0,
@@ -107,13 +112,13 @@ const styles = (theme: ThemeType) =>
       justifyContent: "center",
       gap: 8,
     },
-    dot: {
+    gallery__dot: {
       width: 8,
       height: 8,
       borderRadius: 4,
       backgroundColor: Colors[theme].dot.inactive,
     },
-    activeDot: {
+    "gallery__dot--active": {
       backgroundColor: Colors[theme].dot.active,
     },
   });

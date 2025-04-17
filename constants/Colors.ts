@@ -70,7 +70,7 @@ export const Colors = {
       hungry: "#FF0000",
       feedToday: "#00FF00",
       notHungry: "#FFA500",
-    }
+    },
   },
   dark: {
     text: "rgb(255, 255, 255)",
@@ -133,6 +133,6 @@ export const Colors = {
       hungry: "#FF0000",
       feedToday: "#00FF00",
       notHungry: "#FFA500",
-    }
+    },
   },
 };

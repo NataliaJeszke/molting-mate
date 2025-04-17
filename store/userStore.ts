@@ -12,7 +12,6 @@ type UserState = {
   toggleHasOnboarded: () => void;
 };
 
-
 export const useUserStore = create(
   persist<UserState>(
     (set) => ({
@@ -39,6 +38,6 @@ export const useUserStore = create(
     {
       name: "moltingmate-user-store",
       storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
+    },
+  ),
 );

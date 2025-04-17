@@ -9,7 +9,10 @@ export const feedingFrequencyOptions = [
 export const spiderSpeciesList = [
   { label: "Brachypelma hamorii", value: "brachypelma_hamorii" },
   { label: "Brachypelma albopilosum", value: "brachypelma_albopilosum" },
-  { label: "Chromatopelma cyaneopubescens", value: "chromatopelma_cyaneopubescens" },
+  {
+    label: "Chromatopelma cyaneopubescens",
+    value: "chromatopelma_cyaneopubescens",
+  },
   { label: "Aphonopelma chalcodes", value: "aphonopelma_chalcodes" },
   { label: "Grammostola rosea", value: "grammostola_rosea" },
   { label: "Grammostola cala", value: "grammostola_cala" },
@@ -43,4 +46,3 @@ export const spiderSpeciesList = [
   { label: "Latrodectus geometricus", value: "latrodectus_geometricus" },
   { label: "Argyroneta aquatica", value: "argyroneta_aquatica" },
 ];
-

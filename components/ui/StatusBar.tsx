@@ -2,7 +2,6 @@ import {
   StatusBar as RNStatusBar,
   StatusBarStyle,
   ColorSchemeName,
-  Platform,
   AppState,
 } from "react-native";
 import { useEffect } from "react";
@@ -14,7 +13,7 @@ type Props = {
 
 function getStatusBarStyle(
   currentTheme: "light" | "dark",
-  systemTheme: ColorSchemeName
+  systemTheme: ColorSchemeName,
 ): StatusBarStyle {
   if (currentTheme === "light") {
     return "dark-content";

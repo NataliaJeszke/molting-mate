@@ -15,12 +15,16 @@ const UpcomingFeedingListComponent = () => {
       .filter((spider) => {
         const nextFeedingDateString = getNextFeedingDate(
           spider.lastFed,
-          spider.feedingFrequency as FeedingFrequency
+          spider.feedingFrequency as FeedingFrequency,
         );
 
         if (!nextFeedingDateString) return false;
 
-        const nextFeedingDate = parse(nextFeedingDateString, "dd-MM-yyyy", new Date());
+        const nextFeedingDate = parse(
+          nextFeedingDateString,
+          "dd-MM-yyyy",
+          new Date(),
+        );
 
         return isSameDay(nextFeedingDate, targetDate);
       })

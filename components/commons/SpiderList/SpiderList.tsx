@@ -12,13 +12,15 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+
 import { useUserStore } from "@/store/userStore";
 import { Colors, ThemeType } from "@/constants/Colors";
-import { ThemedText } from "@/components/ui/ThemedText";
-import CardComponent from "@/components/ui/CardComponent";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 
-type SpiderList = {
+import { ThemedText } from "@/components/ui/ThemedText";
+import CardComponent from "@/components/ui/CardComponent";
+
+type SpiderListItem = {
   id: string;
   name: string;
   date: string;
@@ -28,7 +30,7 @@ type SpiderList = {
 
 type SpiderListProps = {
   title: string;
-  data: SpiderList[];
+  data: SpiderListItem[];
   info?: string;
 };
 
@@ -166,6 +168,7 @@ const SpiderList = ({ title, data, info }: SpiderListProps) => {
   );
 };
 
+/* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
     "spider-list__wrapper": {

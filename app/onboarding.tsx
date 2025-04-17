@@ -1,4 +1,4 @@
-import { useUserStore } from './../store/userStore';
+import { useUserStore } from "./../store/userStore";
 import { useRouter } from "expo-router";
 import { View, StyleSheet, Text, Pressable } from "react-native";
 import LottieView from "lottie-react-native";
@@ -32,14 +32,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#2e1a47"
+    backgroundColor: "#2e1a47",
   },
   lottie: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   button: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 50,
     backgroundColor: "rgba(0,0,0,0.6)",
     paddingVertical: 12,

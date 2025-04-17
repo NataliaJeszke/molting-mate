@@ -41,7 +41,7 @@ export const useSpidersStore = create(
         set((state) => ({
           ...state,
           spiders: state.spiders.map((spider) =>
-            spider.id === spiderId ? { ...spider, isFavourite: true } : spider
+            spider.id === spiderId ? { ...spider, isFavourite: true } : spider,
           ),
         })),
 
@@ -49,20 +49,20 @@ export const useSpidersStore = create(
         set((state) => ({
           ...state,
           spiders: state.spiders.map((spider) =>
-            spider.id === spiderId ? { ...spider, isFavourite: false } : spider
+            spider.id === spiderId ? { ...spider, isFavourite: false } : spider,
           ),
         })),
       updateSpider: (spiderId, updates) =>
         set((state) => ({
           ...state,
           spiders: state.spiders.map((spider) =>
-            spider.id === spiderId ? { ...spider, ...updates } : spider
+            spider.id === spiderId ? { ...spider, ...updates } : spider,
           ),
         })),
     }),
     {
       name: "moltingmate-spider-store",
       storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
+    },
+  ),
 );

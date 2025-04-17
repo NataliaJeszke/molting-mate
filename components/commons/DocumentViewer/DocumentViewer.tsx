@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
-import { View, Image, Modal, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-import Pdf from 'react-native-pdf';
+import React, { useState } from "react";
+import {
+  View,
+  Image,
+  Modal,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
+import Pdf from "react-native-pdf";
 
 interface Document {
   id: string;
   name: string;
-  type: 'image' | 'pdf';
+  type: "image" | "pdf";
   url: string;
 }
 
@@ -22,7 +30,7 @@ const DocumentViewer: React.FC<Props> = ({ document }) => {
 
   return (
     <View style={styles.container}>
-      {document.type === 'image' ? (
+      {document.type === "image" ? (
         <TouchableOpacity onPress={handleOpen}>
           <Image source={{ uri: document.url }} style={styles.thumbnail} />
         </TouchableOpacity>
@@ -39,13 +47,17 @@ const DocumentViewer: React.FC<Props> = ({ document }) => {
             <Text style={styles.closeText}>Zamknij ✕</Text>
           </TouchableOpacity>
 
-          {document.type === 'image' ? (
-            <Image source={{ uri: document.url }} style={styles.fullImage} resizeMode="contain" />
+          {document.type === "image" ? (
+            <Image
+              source={{ uri: document.url }}
+              style={styles.fullImage}
+              resizeMode="contain"
+            />
           ) : (
             <Pdf
               source={{ uri: document.url, cache: true }}
               style={styles.pdf}
-              onError={(error) => console.log('PDF error:', error)}
+              onError={(error) => console.log("PDF error:", error)}
             />
           )}
         </View>
@@ -67,35 +79,35 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 8,
-    backgroundColor: '#eee',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#eee",
+    justifyContent: "center",
+    alignItems: "center",
   },
   iconLabel: {
     marginTop: 4,
     fontSize: 14,
-    color: '#555',
+    color: "#555",
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     paddingTop: 40,
   },
   closeButton: {
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     padding: 16,
   },
   closeText: {
     fontSize: 16,
-    color: '#007AFF',
+    color: "#007AFF",
   },
   fullImage: {
-    width: '100%',
-    height: '90%',
+    width: "100%",
+    height: "90%",
   },
   pdf: {
     flex: 1,
-    width: Dimensions.get('window').width,
+    width: Dimensions.get("window").width,
   },
 });
 

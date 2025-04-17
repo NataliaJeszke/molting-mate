@@ -33,11 +33,17 @@ const SpiderSectionHeader = ({
 
   return (
     <CardComponent>
-      <View style={styles(currentTheme).container}>
-        <View style={styles(currentTheme).header}>
-          <ThemedText style={styles(currentTheme).title}>{title}</ThemedText>
-          <View style={styles(currentTheme).iconsRight}>
-            <ThemedText style={styles(currentTheme).count}>
+      <View style={styles(currentTheme)["spiderSectionHeader__container"]}>
+        <View style={styles(currentTheme)["spiderSectionHeader__header"]}>
+          <ThemedText
+            style={styles(currentTheme)["spiderSectionHeader__title"]}
+          >
+            {title}
+          </ThemedText>
+          <View style={styles(currentTheme)["spiderSectionHeader__iconsRight"]}>
+            <ThemedText
+              style={styles(currentTheme)["spiderSectionHeader__count"]}
+            >
               ({spiderCount})
             </ThemedText>
             <TouchableOpacity
@@ -65,9 +71,11 @@ const SpiderSectionHeader = ({
 
         <TouchableOpacity
           onPress={() => setModalVisible(true)}
-          style={styles(currentTheme).filterButton}
+          style={styles(currentTheme)["spiderSectionHeader__filterButton"]}
         >
-          <ThemedText style={styles(currentTheme).filterText}>
+          <ThemedText
+            style={styles(currentTheme)["spiderSectionHeader__filterText"]}
+          >
             Filtry
           </ThemedText>
           <MaterialIcons
@@ -84,9 +92,15 @@ const SpiderSectionHeader = ({
           onRequestClose={() => setTooltipVisible(false)}
         >
           <TouchableWithoutFeedback onPress={() => setTooltipVisible(false)}>
-            <View style={styles(currentTheme).overlay}>
-              <View style={styles(currentTheme).tooltip}>
-                <ThemedText style={styles(currentTheme).tooltipText}>
+            <View style={styles(currentTheme)["spiderSectionHeader__overlay"]}>
+              <View
+                style={styles(currentTheme)["spiderSectionHeader__tooltip"]}
+              >
+                <ThemedText
+                  style={
+                    styles(currentTheme)["spiderSectionHeader__tooltipText"]
+                  }
+                >
                   {info}
                 </ThemedText>
               </View>
@@ -101,10 +115,20 @@ const SpiderSectionHeader = ({
           onRequestClose={() => setModalVisible(false)}
         >
           <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-            <View style={styles(currentTheme).modalOverlay}>
+            <View
+              style={styles(currentTheme)["spiderSectionHeader__modalOverlay"]}
+            >
               <TouchableWithoutFeedback>
-                <View style={styles(currentTheme).modalContent}>
-                  <ThemedText style={styles(currentTheme).modalTitle}>
+                <View
+                  style={
+                    styles(currentTheme)["spiderSectionHeader__modalContent"]
+                  }
+                >
+                  <ThemedText
+                    style={
+                      styles(currentTheme)["spiderSectionHeader__modalTitle"]
+                    }
+                  >
                     Filtry
                   </ThemedText>
                   <Filters />
@@ -118,31 +142,32 @@ const SpiderSectionHeader = ({
   );
 };
 
+/* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
-    container: {
+    spiderSectionHeader__container: {
       marginBottom: 16,
     },
-    header: {
+    spiderSectionHeader__header: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
       marginBottom: 8,
     },
-    title: {
+    spiderSectionHeader__title: {
       fontSize: 20,
       fontWeight: "bold",
       color: Colors[theme].tint,
     },
-    iconsRight: {
+    spiderSectionHeader__iconsRight: {
       flexDirection: "row",
       alignItems: "center",
     },
-    count: {
+    spiderSectionHeader__count: {
       fontSize: 14,
       color: Colors[theme].text,
     },
-    filterButton: {
+    spiderSectionHeader__filterButton: {
       flexDirection: "row",
       alignItems: "center",
       paddingVertical: 8,
@@ -151,42 +176,42 @@ const styles = (theme: ThemeType) =>
       borderRadius: 8,
       alignSelf: "flex-start",
     },
-    filterText: {
+    spiderSectionHeader__filterText: {
       fontSize: 16,
       color: Colors[theme].text,
       marginRight: 4,
     },
-    overlay: {
+    spiderSectionHeader__overlay: {
       flex: 1,
       backgroundColor: "rgba(0,0,0,0.3)",
       justifyContent: "center",
       alignItems: "center",
     },
-    tooltip: {
+    spiderSectionHeader__tooltip: {
       backgroundColor: "#fff",
       padding: 12,
       borderRadius: 8,
       maxWidth: 300,
       elevation: 5,
     },
-    tooltipText: {
+    spiderSectionHeader__tooltipText: {
       fontSize: 14,
       color: "#333",
       textAlign: "center",
     },
-    modalOverlay: {
+    spiderSectionHeader__modalOverlay: {
       flex: 1,
       justifyContent: "flex-end",
       backgroundColor: "rgba(0, 0, 0, 0.3)",
     },
-    modalContent: {
+    spiderSectionHeader__modalContent: {
       backgroundColor: Colors[theme].background,
       padding: 20,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
       minHeight: 200,
     },
-    modalTitle: {
+    spiderSectionHeader__modalTitle: {
       fontSize: 18,
       fontWeight: "600",
       marginBottom: 12,

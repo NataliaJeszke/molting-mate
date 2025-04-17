@@ -32,7 +32,7 @@ export default function RootLayout() {
     if (!userSelectedTheme && systemTheme) {
       setTheme(systemTheme);
     }
-  }, [userSelectedTheme, systemTheme]);
+  }, [userSelectedTheme, systemTheme, setTheme]);
 
   useEffect(() => {
     if (loaded) {

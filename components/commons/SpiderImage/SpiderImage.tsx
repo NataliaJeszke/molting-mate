@@ -11,7 +11,9 @@ export function SpiderImage({ size, imageUri }: Props) {
 
   return (
     <Image
-      source={imageUri ? { uri: imageUri } : require("@/assets/images/spider.png")}
+      source={
+        imageUri ? { uri: imageUri } : require("@/assets/images/spider.png")
+      }
       style={{
         width: imageSize,
         height: imageSize,

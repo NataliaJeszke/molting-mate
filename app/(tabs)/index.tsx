@@ -24,7 +24,7 @@ export default function HomeScreen() {
 
   return (
     <WrapperComponent>
-      <CardComponent customStyle={styles(currentTheme).topBar}>
+      <CardComponent customStyle={styles(currentTheme)["dashboard__top-bar"]}>
         <TouchableOpacity
           onPress={() => {
             console.log("Ulubione pająki");
@@ -34,7 +34,7 @@ export default function HomeScreen() {
           <AntDesign name="heart" size={24} color={Colors[currentTheme].tint} />
         </TouchableOpacity>
 
-        <View style={styles(currentTheme).searchWrapper}>
+        <View style={styles(currentTheme)["dashboard__search-wrapper"]}>
           <SearchComponent />
         </View>
 
@@ -46,6 +46,7 @@ export default function HomeScreen() {
           />
         </TouchableOpacity>
       </CardComponent>
+
       <ScrollView>
         <SpiderGallery />
         <PostFeedingListComponent />
@@ -56,28 +57,10 @@ export default function HomeScreen() {
   );
 }
 
+/* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
-    titleContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 8,
-    },
-    stepContainer: {
-      gap: 8,
-      marginBottom: 8,
-    },
-    reactLogo: {
-      height: 178,
-      width: 290,
-      bottom: 0,
-      left: 0,
-      position: "absolute",
-    },
-    container: {
-      flex: 1,
-    },
-    topBar: {
+    "dashboard__top-bar": {
       flexDirection: "row",
       alignItems: "center",
       paddingHorizontal: 16,
@@ -87,7 +70,26 @@ const styles = (theme: ThemeType) =>
       borderRadius: 8,
       borderWidth: 0,
     },
-    searchWrapper: {
+    "dashboard__search-wrapper": {
+      flex: 1,
+    },
+    "dashboard__title-container": {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+    },
+    "dashboard__step-container": {
+      gap: 8,
+      marginBottom: 8,
+    },
+    "dashboard__react-logo": {
+      height: 178,
+      width: 290,
+      bottom: 0,
+      left: 0,
+      position: "absolute",
+    },
+    dashboard__container: {
       flex: 1,
     },
   });

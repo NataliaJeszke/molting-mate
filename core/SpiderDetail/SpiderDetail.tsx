@@ -1,26 +1,18 @@
-import {
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  ActivityIndicator,
-  Alert,
-  SafeAreaView,
-} from "react-native";
+import { useState } from "react";
+import { View, Image, StyleSheet, Alert } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+
 import { useUserStore } from "@/store/userStore";
+import { useSpidersStore } from "@/store/spidersStore";
 import { Spider } from "@/models/Spider.model";
 import { Colors, ThemeType } from "@/constants/Colors";
-import { ThemedText } from "@/components/ui/ThemedText";
-import { getNextFeedingDate, getFeedingStatus } from "@/utils/feedingUtils";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
+import { getNextFeedingDate, getFeedingStatus } from "@/utils/feedingUtils";
+
+import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
-import { Feather } from "@expo/vector-icons";
-import { useState } from "react";
 import HistoryInformation from "@/components/commons/HistoryInformation/HistoryInformation";
-import WebView from "react-native-webview";
-import * as ImagePicker from "expo-image-picker";
-import { useSpidersStore } from "@/store/spidersStore";
 import SpiderDocument from "@/components/commons/SpiderDocument/SpiderDocument";
 
 interface Props {
@@ -33,18 +25,16 @@ export default function SpiderDetails({ spider, onUpdateSpider }: Props) {
   const [showFeedingHistory, setShowFeedingHistory] = useState(false);
   const [showMoltingHistory, setShowMoltingHistory] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [documentError, setDocumentError] = useState<string | null>(null);
   const [documentUri, setDocumentUri] = useState<string>();
 
   const nextFeedingDate = getNextFeedingDate(
     spider.lastFed,
-    spider.feedingFrequency
+    spider.feedingFrequency,
   );
 
   const feedingStatus = getFeedingStatus(
     spider.lastFed,
-    spider.feedingFrequency
+    spider.feedingFrequency,
   );
 
   const getFeedingStatusLabel = (status: FeedingStatus | null) => {
@@ -104,7 +94,7 @@ export default function SpiderDetails({ spider, onUpdateSpider }: Props) {
           if (!result.canceled) {
             setDocumentUri(result.assets[0].uri);
             useSpidersStore.getState().updateSpider(spider.id, {
-              documentUri: result.assets[0].uri,
+              documentUri: documentUri,
             });
           }
         },
@@ -127,7 +117,7 @@ export default function SpiderDetails({ spider, onUpdateSpider }: Props) {
           if (!result.canceled) {
             setDocumentUri(result.assets[0].uri);
             useSpidersStore.getState().updateSpider(spider.id, {
-              documentUri: result.assets[0].uri,
+              documentUri: documentUri,
             });
           }
         },
@@ -140,7 +130,7 @@ export default function SpiderDetails({ spider, onUpdateSpider }: Props) {
   };
 
   return (
-    <View style={styles(currentTheme).container}>
+    <View style={styles(currentTheme).spiderDetails}>
       <CardComponent customStyle={styles(currentTheme).spiderCard}>
         <View style={styles(currentTheme)["spiderCard__header"]}>
           <Image
@@ -264,16 +254,19 @@ export default function SpiderDetails({ spider, onUpdateSpider }: Props) {
         styles={styles}
         showDocumentModal={showDocumentModal}
         setShowDocumentModal={setShowDocumentModal}
-        />
+      />
     </View>
   );
 }
-
+/* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
-    container: {
+    // Block: spiderDetails
+    spiderDetails: {
       gap: 16,
     },
+
+    // Block: spiderCard
     spiderCard: {
       padding: 0,
       overflow: "hidden",
@@ -344,65 +337,67 @@ const styles = (theme: ThemeType) =>
       color: Colors[theme].text,
     },
 
-    // Nowe style dla dokumentów
+    // Block: historyCard
     historyCard: {
       padding: 0,
       overflow: "hidden",
       borderRadius: 16,
     },
-    historyHeader: {
+    historyCard__header: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
       padding: 16,
       backgroundColor: Colors[theme].card.backgroundColor,
     },
-    historyHeaderContent: {
+    historyCard__headerContent: {
       flexDirection: "row",
       alignItems: "center",
     },
-    historyIcon: {
+    historyCard__icon: {
       marginRight: 8,
     },
-    historyTitle: {
+    historyCard__title: {
       fontSize: 18,
       fontWeight: "600",
     },
-    historyContent: {
+    historyCard__content: {
       backgroundColor: Colors[theme].card.backgroundColor,
       paddingHorizontal: 16,
     },
-    historyItem: {
+    historyCard__item: {
       flexDirection: "row",
       alignItems: "center",
       paddingVertical: 12,
       borderBottomWidth: 1,
       borderBottomColor: Colors[theme].card.borderColor,
     },
-    historyItemLast: {
+    "historyCard__item--last": {
       borderBottomWidth: 0,
     },
-    historyItemIcon: {
+    historyCard__itemIcon: {
       marginRight: 12,
     },
-    historyItemText: {
+    historyCard__itemText: {
       fontSize: 15,
     },
-    emptyHistory: {
+    historyCard__empty: {
       padding: 16,
       alignItems: "center",
     },
-    emptyHistoryText: {
+    historyCard__emptyText: {
       color: Colors[theme].text,
       fontStyle: "italic",
     },
 
-    // Dokument Card
+    // Block: documentCard
     documentCard: {
       backgroundColor: Colors[theme].card.backgroundColor,
       borderRadius: 16,
+      padding: 0,
+      overflow: "hidden",
     },
-    documentHeader: {
+    documentCard__header: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
@@ -410,33 +405,34 @@ const styles = (theme: ThemeType) =>
       borderBottomWidth: 1,
       borderBottomColor: Colors[theme].card.borderColor,
     },
-    documentHeaderContent: {
+    documentCard__headerContent: {
       flexDirection: "row",
       alignItems: "center",
     },
-    documentIcon: {
+    documentCard__icon: {
       marginRight: 8,
+      color: Colors[theme].text,
     },
-    documentTitle: {
+    documentCard__title: {
       fontSize: 18,
       fontWeight: "600",
     },
-    addDocumentButton: {
+    documentCard__addButton: {
       padding: 8,
       borderRadius: 8,
       backgroundColor: Colors[theme].card.backgroundColor,
     },
-    documentContent: {
+    documentCard__content: {
       padding: 16,
       minHeight: 160,
       justifyContent: "center",
       alignItems: "center",
     },
-    documentPreviewContainer: {
+    documentCard__previewContainer: {
       alignItems: "center",
       position: "relative",
     },
-    documentPreview: {
+    documentCard__preview: {
       width: 200,
       height: 200,
       borderRadius: 8,
@@ -444,27 +440,7 @@ const styles = (theme: ThemeType) =>
       borderColor: Colors[theme].card.borderColor,
       resizeMode: "cover",
     },
-    pdfPreviewContainer: {
-      width: 200,
-      height: 200,
-      borderRadius: 8,
-      borderWidth: 1,
-      borderColor: Colors[theme].card.borderColor,
-      backgroundColor: "#f5f5f5",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    pdfIcon: {
-      width: 80,
-      height: 80,
-      resizeMode: "contain",
-    },
-    pdfText: {
-      marginTop: 8,
-      fontSize: 14,
-      fontWeight: "500",
-    },
-    viewDocumentButton: {
+    documentCard__viewButton: {
       position: "absolute",
       bottom: 12,
       flexDirection: "row",
@@ -478,38 +454,25 @@ const styles = (theme: ThemeType) =>
       shadowOpacity: 0.2,
       shadowRadius: 3,
       elevation: 3,
+      color: Colors[theme].text,
     },
-    viewDocumentText: {
-      marginLeft: 6,
-      color: "#fff",
-      fontWeight: "600",
-    },
-    noDocumentContainer: {
+    documentCard__noDocument: {
       alignItems: "center",
       justifyContent: "center",
       padding: 20,
     },
-    noDocumentText: {
+    documentCard__noDocumentText: {
       marginTop: 12,
       textAlign: "center",
       color: Colors[theme].text,
     },
-    loadingContainer: {
-      alignItems: "center",
-      justifyContent: "center",
-      padding: 20,
-    },
-    errorContainer: {
-      alignItems: "center",
-      justifyContent: "center",
-      padding: 20,
-    },
 
-    modalContainer: {
+    // Block: modal
+    modal: {
       flex: 1,
       backgroundColor: Colors[theme].card.backgroundColor,
     },
-    modalHeader: {
+    modal__header: {
       width: "100%",
       paddingHorizontal: 16,
       paddingVertical: 12,
@@ -517,25 +480,13 @@ const styles = (theme: ThemeType) =>
       backgroundColor: Colors[theme].card.backgroundColor,
       zIndex: 1,
     },
-    modalTitle: {
-      fontSize: 18,
-      fontWeight: "600",
+    modal__icon: {
+      marginRight: 8,
+      color: Colors[theme].text,
     },
-    fullScreenImage: {
+    "modal__fullscreen-image": {
       flex: 1,
       width: "100%",
       backgroundColor: "#000",
-    },
-    webView: {
-      flex: 1,
-    },
-    webViewLoader: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      justifyContent: "center",
-      alignItems: "center",
     },
   });

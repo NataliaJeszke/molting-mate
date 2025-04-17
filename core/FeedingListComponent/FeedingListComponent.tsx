@@ -22,7 +22,7 @@ const FeedingListComponent = () => {
         status: getFeedingStatus(spider.lastFed, spider.feedingFrequency),
         nextFeedingDate: getNextFeedingDate(
           spider.lastFed,
-          spider.feedingFrequency
+          spider.feedingFrequency,
         ),
       }))
       .sort((a, b) => {

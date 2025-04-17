@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import { View, TextInput, StyleSheet } from "react-native";
 
-import { useUserStore } from '@/store/userStore';
-import { Colors } from '@/constants/Colors';
+import { useUserStore } from "@/store/userStore";
+import { Colors } from "@/constants/Colors";
 
 const SearchComponent = () => {
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const { currentTheme } = useUserStore();
-  
-  const isDarkMode = currentTheme === 'dark';
-  const searchBarColors = isDarkMode ? Colors.dark.searchBar : Colors.light.searchBar;
+
+  const isDarkMode = currentTheme === "dark";
+  const searchBarColors = isDarkMode
+    ? Colors.dark.searchBar
+    : Colors.light.searchBar;
 
   const handleSearch = (text: string) => {
     setSearchText(text);
-    console.log('Wpisano:', text);
+    console.log("Wpisano:", text);
   };
 
   return (

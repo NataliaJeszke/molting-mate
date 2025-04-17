@@ -19,16 +19,10 @@ export default function ManageAlertModal() {
   return (
     <View style={styles.container}>
       {action === "delete" && (
-        <ModalAlert
-          isVisible={true}
-          onClose={handleClose}
-        />
+        <ModalAlert isVisible={true} onClose={handleClose} />
       )}
       {action === "edit" && (
-        <ModalInfo
-          isVisible={true}
-          onClose={handleClose}
-        />
+        <ModalInfo isVisible={true} onClose={handleClose} />
       )}
     </View>
   );
