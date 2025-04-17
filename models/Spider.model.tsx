@@ -15,4 +15,5 @@ export type Spider = {
   moltingHistoryData: string[];
   status?: FeedingStatus | string | null;
   nextFeedingDate?: string;
+  documentUri?: string | undefined;
 };

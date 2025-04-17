@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from "expo-document-picker";
 import { parse } from "date-fns";
 
 import { useUserStore } from "@/store/userStore";
@@ -44,6 +45,7 @@ export default function SpiderForm() {
     "lastFed" | "lastMolt" | null
   >(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [documentUri, setDocumentUri] = useState<string>();
 
   useEffect(() => {
     if (id) {
@@ -108,6 +110,7 @@ export default function SpiderForm() {
       feedingFrequency: feedingFrequency as FeedingFrequency,
       lastMolt,
       imageUri: imageUri || "",
+      documentUri: documentUri || "",
       isFavourite: existingSpider?.isFavourite ?? false,
       moltingHistoryData: updatedMoltingHistory,
       feedingHistoryData: updatedFeedingHistory,
@@ -135,18 +138,19 @@ export default function SpiderForm() {
   };
 
   const handleChooseImage = async () => {
-    const galleryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const galleryPermission =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (galleryPermission.status !== "granted") {
       Alert.alert("Brak uprawnień", "Nie masz dostępu do galerii.");
       return;
     }
-  
+
     const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
     if (cameraPermission.status !== "granted") {
       Alert.alert("Brak uprawnień", "Nie masz dostępu do kamery.");
       return;
     }
-  
+
     Alert.alert(
       "Wybierz opcję",
       "Chcesz zrobić zdjęcie czy wybrać z galerii?",
@@ -176,6 +180,81 @@ export default function SpiderForm() {
               setImageUri(result.assets[0].uri);
             }
           },
+        },
+      ]
+    );
+  };
+
+  const handleChooseDocument = () => {
+    Alert.alert(
+      "Wybierz źródło",
+      "Dołącz dokument pochodzenia",
+      [
+        {
+          text: "Zrób zdjęcie",
+          onPress: async () => {
+            const permission = await ImagePicker.requestCameraPermissionsAsync();
+            if (permission.status !== "granted") {
+              Alert.alert("Brak uprawnień", "Nie masz dostępu do kamery.");
+              return;
+            }
+  
+            const result = await ImagePicker.launchCameraAsync({
+              allowsEditing: true,
+              aspect: [1, 1],
+              quality: 1,
+            });
+            if (!result.canceled) {
+              setDocumentUri(result.assets[0].uri);
+            }
+          },
+        },
+        {
+          text: "Wybierz z galerii",
+          onPress: async () => {
+            const permission =
+              await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (permission.status !== "granted") {
+              Alert.alert("Brak uprawnień", "Nie masz dostępu do galerii.");
+              return;
+            }
+  
+            const result = await ImagePicker.launchImageLibraryAsync({
+              allowsEditing: true,
+              aspect: [1, 1],
+              quality: 1,
+            });
+            if (!result.canceled) {
+              setDocumentUri(result.assets[0].uri);
+            }
+          },
+        },
+        {
+          text: "Wybierz dokument",
+          onPress: async () => {
+            try {
+              const result = await DocumentPicker.getDocumentAsync({
+                type: ["application/pdf", "image/*"],
+                copyToCacheDirectory: true,
+                multiple: false,
+              });
+  
+              if (result.assets && result.assets.length > 0) {
+                const picked = result.assets[0];
+                if (picked.mimeType?.startsWith("image/")) {
+                  setDocumentUri(picked.uri);
+                } else {
+                  setDocumentUri(picked.uri);
+                }
+              }
+            } catch (err) {
+              Alert.alert("Błąd", "Nie udało się załadować dokumentu.");
+            }
+          },
+        },
+        {
+          text: "Anuluj",
+          style: "cancel",
         },
       ]
     );
@@ -332,6 +411,21 @@ export default function SpiderForm() {
               );
             })}
           </View>
+
+          <ThemedText style={styles(currentTheme).label}>
+            Dokument pochodzenia (PDF lub zdjęcie)
+          </ThemedText>
+
+          <TouchableOpacity
+            onPress={handleChooseDocument}
+            activeOpacity={0.8}
+            style={styles(currentTheme).filePicker}
+          >
+            <ThemedText>
+              {documentUri ? "Wybrano dokument" : "Wybierz dokument"}
+            </ThemedText>
+          </TouchableOpacity>
+
           <Pressable
             style={styles(currentTheme)["button"]}
             onPress={handleSubmit}
@@ -361,6 +455,7 @@ const styles = (theme: ThemeType) =>
       fontSize: 16,
       marginBottom: 8,
       fontWeight: "bold",
+      marginTop: 16,
     },
     centered: {
       alignItems: "center",
@@ -400,5 +495,14 @@ const styles = (theme: ThemeType) =>
     selectedText: {
       color: "#fff",
       fontWeight: "bold",
+    },
+
+    filePicker: {
+      borderWidth: 1,
+      borderColor: "#ccc",
+      borderRadius: 8,
+      padding: 12,
+      marginVertical: 8,
+      alignItems: "center",
     },
   });
