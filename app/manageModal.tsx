@@ -1,7 +1,9 @@
 import { useEffect } from "react";
-import { router, useLocalSearchParams } from "expo-router";
-import ModalInfo from "@/components/commons/ModalInfo/ModalInfo";
 import { View, StyleSheet } from "react-native";
+
+import { router, useLocalSearchParams } from "expo-router";
+
+import ModalInfo from "@/components/commons/ModalInfo/ModalInfo";
 import ModalAlert from "@/components/commons/ModalAlert/ModalAlert";
 
 export default function ManageAlertModal() {

@@ -26,7 +26,7 @@ function getStatusBarStyle(
   return "light-content";
 }
 
-export const StatusBar = ({ currentTheme, systemTheme }: Props) => {
+const StatusBar = ({ currentTheme, systemTheme }: Props) => {
   const barStyle = getStatusBarStyle(currentTheme, systemTheme);
 
   useEffect(() => {
@@ -43,3 +43,5 @@ export const StatusBar = ({ currentTheme, systemTheme }: Props) => {
 
   return <RNStatusBar barStyle={barStyle} animated />;
 };
+
+export default StatusBar;

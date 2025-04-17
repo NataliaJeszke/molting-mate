@@ -1,10 +1,11 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 
-import { useUserStore } from "../../../store/userStore";
+import { useUserStore } from "@/store/userStore";
 
-import { Colors, ThemeType } from "../../../constants/Colors";
-import { ThemedText } from "../../ui/ThemedText";
+import { Colors, ThemeType } from "@/constants/Colors";
+import { ThemedText } from "@/components/ui/ThemedText";
+
 
 const Filters = () => {
   const { currentTheme } = useUserStore();

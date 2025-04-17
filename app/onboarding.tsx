@@ -1,7 +1,9 @@
-import { useUserStore } from "./../store/userStore";
-import { useRouter } from "expo-router";
 import { View, StyleSheet, Text, Pressable } from "react-native";
 import LottieView from "lottie-react-native";
+
+import { useRouter } from "expo-router";
+
+import { useUserStore } from "@/store/userStore";
 
 export default function OnboardingScreen() {
   const router = useRouter();

@@ -18,11 +18,7 @@ type Props = {
   theme: ThemeType;
 };
 
-export default function AutocompleteSpeciesInput({
-  value,
-  onSelect,
-  theme,
-}: Props) {
+const AutocompleteSpeciesInput = ({ onSelect, theme }: Props) => {
   const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState(spiderSpeciesList);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
@@ -34,7 +30,7 @@ export default function AutocompleteSpeciesInput({
       setDropdownVisible(false);
     } else {
       const filtered = spiderSpeciesList.filter((item) =>
-        item.label.toLowerCase().includes(text.toLowerCase()),
+        item.label.toLowerCase().includes(text.toLowerCase())
       );
       setFilteredData(filtered);
       setDropdownVisible(true);
@@ -86,7 +82,9 @@ export default function AutocompleteSpeciesInput({
       </View>
     </TouchableWithoutFeedback>
   );
-}
+};
+
+export default AutocompleteSpeciesInput;
 
 /* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>

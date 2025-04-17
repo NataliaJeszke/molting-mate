@@ -1,12 +1,13 @@
+import React from "react";
 import { Image, useWindowDimensions } from "react-native";
+
 type Props = {
   size?: number;
-  imageUri?: string;
+  imageUri?: string | null;
 };
 
-export function SpiderImage({ size, imageUri }: Props) {
+const SpiderImage = ({ size, imageUri }: Props) => {
   const { width } = useWindowDimensions();
-
   const imageSize = size || Math.min(width / 1.5, 400);
 
   return (
@@ -21,4 +22,6 @@ export function SpiderImage({ size, imageUri }: Props) {
       }}
     />
   );
-}
+};
+
+export default SpiderImage;

@@ -1,5 +1,6 @@
 import { View, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
+
 import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
@@ -16,7 +17,7 @@ interface HistoryInformationProps {
   toggleExpanded: () => void;
 }
 
-export default function HistoryInformation({
+const HistoryInformation = ({
   title,
   iconName,
   data,
@@ -26,7 +27,7 @@ export default function HistoryInformation({
   typeKey,
   isExpanded,
   toggleExpanded,
-}: HistoryInformationProps) {
+}: HistoryInformationProps) => {
   return (
     <CardComponent customStyle={styles(currentTheme).historyCard}>
       <TouchableOpacity
@@ -85,4 +86,6 @@ export default function HistoryInformation({
       ) : null}
     </CardComponent>
   );
-}
+};
+
+export default HistoryInformation;

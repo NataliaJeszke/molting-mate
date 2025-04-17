@@ -20,114 +20,106 @@ interface Props {
   onUpdateSpider?: (updatedSpider: Spider) => void;
 }
 
-export default function SpiderDetails({ spider, onUpdateSpider }: Props) {
-  const { currentTheme } = useUserStore();
-  const [showFeedingHistory, setShowFeedingHistory] = useState(false);
-  const [showMoltingHistory, setShowMoltingHistory] = useState(false);
-  const [showDocumentModal, setShowDocumentModal] = useState(false);
-  const [documentUri, setDocumentUri] = useState<string>();
-
-  const nextFeedingDate = getNextFeedingDate(
-    spider.lastFed,
-    spider.feedingFrequency,
-  );
-
-  const feedingStatus = getFeedingStatus(
-    spider.lastFed,
-    spider.feedingFrequency,
-  );
-
-  const getFeedingStatusLabel = (status: FeedingStatus | null) => {
-    switch (status) {
-      case FeedingStatus.HUNGRY:
-        return "Tak";
-      case FeedingStatus.FEED_TODAY:
-        return "Tak (karmienie dzisiaj)";
-      case FeedingStatus.NOT_HUNGRY:
-        return "Nie";
-      default:
-        return "Brak danych";
-    }
-  };
-
-  const getFeedingStatusColor = (status: FeedingStatus | null) => {
-    switch (status) {
-      case FeedingStatus.HUNGRY:
-        return Colors[currentTheme].feedingStatus.hungry;
-      case FeedingStatus.FEED_TODAY:
-        return Colors[currentTheme].feedingStatus.feedToday;
-      case FeedingStatus.NOT_HUNGRY:
-        return Colors[currentTheme].feedingStatus.notHungry;
-      default:
-        return Colors[currentTheme].text;
-    }
-  };
-
-  const isImageDocument = (uri: string | undefined) => {
-    if (!uri) return false;
-    const lowerCaseUri = uri.toLowerCase();
-    return (
-      lowerCaseUri.endsWith(".jpg") ||
-      lowerCaseUri.endsWith(".jpeg") ||
-      lowerCaseUri.endsWith(".png") ||
-      lowerCaseUri.endsWith(".heic") ||
-      lowerCaseUri.includes("image")
-    );
-  };
-
-  const handleChooseDocument = () => {
-    Alert.alert("Wybierz źródło", "Dołącz dokument pochodzenia", [
-      {
-        text: "Zrób zdjęcie",
-        onPress: async () => {
-          const permission = await ImagePicker.requestCameraPermissionsAsync();
-          if (permission.status !== "granted") {
-            Alert.alert("Brak uprawnień", "Nie masz dostępu do kamery.");
-            return;
-          }
-
-          const result = await ImagePicker.launchCameraAsync({
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-          });
-          if (!result.canceled) {
-            setDocumentUri(result.assets[0].uri);
-            useSpidersStore.getState().updateSpider(spider.id, {
-              documentUri: documentUri,
+const SpiderDetails = ({ spider, onUpdateSpider }: Props) => {
+    const { currentTheme } = useUserStore();
+    const [showFeedingHistory, setShowFeedingHistory] = useState(false);
+    const [showMoltingHistory, setShowMoltingHistory] = useState(false);
+    const [showDocumentModal, setShowDocumentModal] = useState(false);
+    const [documentUri, setDocumentUri] = useState<string>();
+  
+    const nextFeedingDate = getNextFeedingDate(spider.lastFed, spider.feedingFrequency);
+    const feedingStatus = getFeedingStatus(spider.lastFed, spider.feedingFrequency);
+  
+    const getFeedingStatusLabel = (status: FeedingStatus | null) => {
+      switch (status) {
+        case FeedingStatus.HUNGRY:
+          return "Tak";
+        case FeedingStatus.FEED_TODAY:
+          return "Tak (karmienie dzisiaj)";
+        case FeedingStatus.NOT_HUNGRY:
+          return "Nie";
+        default:
+          return "Brak danych";
+      }
+    };
+  
+    const getFeedingStatusColor = (status: FeedingStatus | null) => {
+      switch (status) {
+        case FeedingStatus.HUNGRY:
+          return Colors[currentTheme].feedingStatus.hungry;
+        case FeedingStatus.FEED_TODAY:
+          return Colors[currentTheme].feedingStatus.feedToday;
+        case FeedingStatus.NOT_HUNGRY:
+          return Colors[currentTheme].feedingStatus.notHungry;
+        default:
+          return Colors[currentTheme].text;
+      }
+    };
+  
+    const isImageDocument = (uri: string | undefined) => {
+      if (!uri) return false;
+      const lower = uri.toLowerCase();
+      return (
+        lower.endsWith(".jpg") ||
+        lower.endsWith(".jpeg") ||
+        lower.endsWith(".png") ||
+        lower.endsWith(".heic") ||
+        lower.includes("image")
+      );
+    };
+  
+    const handleChooseDocument = () => {
+      Alert.alert("Wybierz źródło", "Dołącz dokument pochodzenia", [
+        {
+          text: "Zrób zdjęcie",
+          onPress: async () => {
+            const permission = await ImagePicker.requestCameraPermissionsAsync();
+            if (permission.status !== "granted") {
+              Alert.alert("Brak uprawnień", "Nie masz dostępu do kamery.");
+              return;
+            }
+  
+            const result = await ImagePicker.launchCameraAsync({
+              allowsEditing: true,
+              aspect: [1, 1],
+              quality: 1,
             });
-          }
+  
+            if (!result.canceled) {
+              const uri = result.assets[0].uri;
+              setDocumentUri(uri);
+              useSpidersStore.getState().updateSpider(spider.id, { documentUri: uri });
+            }
+          },
         },
-      },
-      {
-        text: "Wybierz z galerii",
-        onPress: async () => {
-          const permission =
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
-          if (permission.status !== "granted") {
-            Alert.alert("Brak uprawnień", "Nie masz dostępu do galerii.");
-            return;
-          }
-
-          const result = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-          });
-          if (!result.canceled) {
-            setDocumentUri(result.assets[0].uri);
-            useSpidersStore.getState().updateSpider(spider.id, {
-              documentUri: documentUri,
+        {
+          text: "Wybierz z galerii",
+          onPress: async () => {
+            const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (permission.status !== "granted") {
+              Alert.alert("Brak uprawnień", "Nie masz dostępu do galerii.");
+              return;
+            }
+  
+            const result = await ImagePicker.launchImageLibraryAsync({
+              allowsEditing: true,
+              aspect: [1, 1],
+              quality: 1,
             });
-          }
+  
+            if (!result.canceled) {
+              const uri = result.assets[0].uri;
+              setDocumentUri(uri);
+              useSpidersStore.getState().updateSpider(spider.id, { documentUri: uri });
+            }
+          },
         },
-      },
-      {
-        text: "Anuluj",
-        style: "cancel",
-      },
-    ]);
-  };
+        {
+          text: "Anuluj",
+          style: "cancel",
+        },
+      ]);
+    };
 
   return (
     <View style={styles(currentTheme).spiderDetails}>
@@ -490,3 +482,6 @@ const styles = (theme: ThemeType) =>
       backgroundColor: "#000",
     },
   });
+
+
+export default SpiderDetails;

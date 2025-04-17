@@ -23,9 +23,10 @@ import { feedingFrequencyOptions } from "./SpiderForm.constants";
 
 import CardComponent from "@/components/ui/CardComponent";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
-import { ThemedText } from "@/components/ui/ThemedText";
-import { SpiderImage } from "@/components/commons/SpiderImage/SpiderImage";
 import AutocompleteSpeciesInput from "@/components/ui/AutocompleteSpeciesInput";
+import { ThemedText } from "@/components/ui/ThemedText";
+
+import SpiderImage from "@/components/commons/SpiderImage/SpiderImage";
 
 export default function SpiderForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();
