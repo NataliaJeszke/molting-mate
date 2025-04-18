@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useSpidersStore } from "@/store/spidersStore";
-
+import { ensureLatestDate, sortDateStrings } from "@/utils/dateUtils";
 import { ThemedText } from "@/components/ui/ThemedText";
 
 type ModalInfoProps = {
@@ -50,29 +50,41 @@ const ModalInfo = ({ isVisible, onClose }: ModalInfoProps) => {
         if (type === "feeding") {
           const currentFeedingHistory = currentSpider.feedingHistoryData || [];
 
+          let newFeedingHistory = [...currentFeedingHistory];
           if (!currentFeedingHistory.includes(finalDate)) {
-            const newFeedingHistory = [...currentFeedingHistory, finalDate];
-
-            updateSpider(id as string, {
-              lastFed: finalDate,
-              feedingHistoryData: newFeedingHistory,
-            });
-          } else {
-            updateSpider(id as string, { lastFed: finalDate });
+            newFeedingHistory = [...currentFeedingHistory, finalDate];
           }
+
+          const sortedFeedingHistory = sortDateStrings(newFeedingHistory);
+
+          const latestFeedingDate = ensureLatestDate(
+            finalDate,
+            sortedFeedingHistory,
+          );
+
+          updateSpider(id as string, {
+            lastFed: latestFeedingDate,
+            feedingHistoryData: sortedFeedingHistory,
+          });
         } else if (type === "molting") {
           const currentMoltingHistory = currentSpider.moltingHistoryData || [];
 
+          let newMoltingHistory = [...currentMoltingHistory];
           if (!currentMoltingHistory.includes(finalDate)) {
-            const newMoltingHistory = [...currentMoltingHistory, finalDate];
-
-            updateSpider(id as string, {
-              lastMolt: finalDate,
-              moltingHistoryData: newMoltingHistory,
-            });
-          } else {
-            updateSpider(id as string, { lastMolt: finalDate });
+            newMoltingHistory = [...currentMoltingHistory, finalDate];
           }
+
+          const sortedMoltingHistory = sortDateStrings(newMoltingHistory);
+
+          const latestMoltingDate = ensureLatestDate(
+            finalDate,
+            sortedMoltingHistory,
+          );
+
+          updateSpider(id as string, {
+            lastMolt: latestMoltingDate,
+            moltingHistoryData: sortedMoltingHistory,
+          });
         }
       }
       onClose();

@@ -6,6 +6,7 @@ export type Spider = {
   name: string;
   age: string;
   spiderSpecies: string;
+  individualType: IndividualType | undefined;
   lastFed: string;
   feedingFrequency: FeedingFrequency;
   lastMolt: string;
@@ -17,3 +18,5 @@ export type Spider = {
   nextFeedingDate?: string;
   documentUri?: string | undefined;
 };
+
+export type IndividualType = "Samiec" | "Samica" | "Niezidentyfikowany";

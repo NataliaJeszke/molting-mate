@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TextInput,
   TouchableOpacity,
@@ -18,10 +18,18 @@ type Props = {
   theme: ThemeType;
 };
 
-const AutocompleteSpeciesInput = ({ onSelect, theme }: Props) => {
+const AutocompleteSpeciesInput = ({ value, onSelect, theme }: Props) => {
   const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState(spiderSpeciesList);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
+
+  useEffect(() => {
+    if (value) {
+      setQuery(
+        spiderSpeciesList.find((item) => item.value === value)?.label ?? value,
+      );
+    }
+  }, [value]);
 
   const handleChange = (text: string) => {
     setQuery(text);
@@ -30,7 +38,7 @@ const AutocompleteSpeciesInput = ({ onSelect, theme }: Props) => {
       setDropdownVisible(false);
     } else {
       const filtered = spiderSpeciesList.filter((item) =>
-        item.label.toLowerCase().includes(text.toLowerCase())
+        item.label.toLowerCase().includes(text.toLowerCase()),
       );
       setFilteredData(filtered);
       setDropdownVisible(true);

@@ -5,6 +5,7 @@ import { format } from "date-fns";
 type ThemedDatePickerProps = {
   isVisible: boolean;
   initialDate: Date;
+  maximumDate?: Date;
   onConfirm: (formattedDate: string) => void;
   onCancel: () => void;
 };
@@ -12,6 +13,7 @@ type ThemedDatePickerProps = {
 const ThemedDatePicker = ({
   isVisible,
   initialDate,
+  maximumDate,
   onConfirm,
   onCancel,
 }: ThemedDatePickerProps) => {
@@ -29,6 +31,7 @@ const ThemedDatePicker = ({
       onCancel={onCancel}
       confirmTextIOS="Zatwierdź"
       cancelTextIOS="Anuluj"
+      maximumDate={maximumDate}
     />
   );
 };

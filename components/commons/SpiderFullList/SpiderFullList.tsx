@@ -142,7 +142,6 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                       {spider.lastFed}
                     </ThemedText>
 
-                    {/* Only show Next Feeding when in VIEW_FEEDING */}
                     {viewType === ViewTypes.VIEW_FEEDING && (
                       <>
                         <View
@@ -321,17 +320,15 @@ const styles = (theme: ThemeType) =>
     },
     "spider-list__separator": {
       borderBottomWidth: 1,
-      borderBottomColor: Colors[theme].card.borderColor,
+      borderBottomColor: Colors[theme].list.borderColor,
       marginBottom: 8,
       paddingBottom: 8,
     },
     "spider-list__image": {
-      width: 60,
-      height: 60,
+      width: 70,
+      height: 70,
       borderRadius: 8,
       backgroundColor: Colors[theme].spiderImage.backgroundColor,
-      borderWidth: 1,
-      borderColor: Colors[theme].card.borderColor,
     },
     "spider-list__info-container": {
       flex: 1,

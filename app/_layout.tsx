@@ -1,11 +1,11 @@
 import { useEffect } from "react";
+import { Platform, View, useColorScheme } from "react-native";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
 import "react-native-reanimated";
-import { Platform, View, useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
@@ -14,7 +14,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { useUserStore } from "@/store/userStore";
 
 import { Colors } from "@/constants/Colors";
-import { StatusBar } from "@/components/ui/StatusBar";
+
+import StatusBar from "@/components/ui/StatusBar";
 
 SplashScreen.preventAutoHideAsync();
 

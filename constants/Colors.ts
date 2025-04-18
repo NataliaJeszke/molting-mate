@@ -71,6 +71,14 @@ export const Colors = {
       feedToday: "#00FF00",
       notHungry: "#FFA500",
     },
+    list: {
+      borderColor: "#C0C0C0",
+    },
+    spider_detail: {
+      backgroundColor: "#1f1f1f",
+      borderColor: "#6a4c9c",
+      borderWidth: 0.5,
+    },
   },
   dark: {
     text: "rgb(255, 255, 255)",
@@ -133,6 +141,14 @@ export const Colors = {
       hungry: "#FF0000",
       feedToday: "#00FF00",
       notHungry: "#FFA500",
+    },
+    list: {
+      borderColor: "#C0C0C0",
+    },
+    spider_detail: {
+      backgroundColor: "#1f1f1f",
+      borderColor: "#6a4c9c",
+      borderWidth: 0.5,
     },
   },
 };

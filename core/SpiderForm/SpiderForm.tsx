@@ -17,9 +17,13 @@ import { parse } from "date-fns";
 import { useUserStore } from "@/store/userStore";
 import { useSpidersStore } from "@/store/spidersStore";
 
+import { IndividualType } from "@/models/Spider.model";
 import { Colors, ThemeType } from "@/constants/Colors";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
-import { feedingFrequencyOptions } from "./SpiderForm.constants";
+import {
+  feedingFrequencyOptions,
+  individualTypeOptions,
+} from "./SpiderForm.constants";
 
 import CardComponent from "@/components/ui/CardComponent";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
@@ -27,6 +31,7 @@ import AutocompleteSpeciesInput from "@/components/ui/AutocompleteSpeciesInput";
 import { ThemedText } from "@/components/ui/ThemedText";
 
 import SpiderImage from "@/components/commons/SpiderImage/SpiderImage";
+import { ensureLatestDate, sortDateStrings } from "@/utils/dateUtils";
 
 export default function SpiderForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -46,19 +51,48 @@ export default function SpiderForm() {
   >(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [documentUri, setDocumentUri] = useState<string>();
+  const [individualType, setIndividualType] = useState<
+    IndividualType | undefined
+  >();
 
   useEffect(() => {
     if (id) {
       const spiderToEdit = spiders.find((s) => s.id === id);
+      console.log("Spider to edit:", spiderToEdit?.spiderSpecies);
       if (spiderToEdit) {
         setName(spiderToEdit.name);
         setAge(spiderToEdit.age);
         setSpiderSpecies(spiderToEdit.spiderSpecies);
-        setLastFed(spiderToEdit.lastFed);
+        setIndividualType(spiderToEdit.individualType);
+
+        const latestFedDate = spiderToEdit.feedingHistoryData?.length
+          ? ensureLatestDate(
+              spiderToEdit.lastFed,
+              spiderToEdit.feedingHistoryData,
+            )
+          : spiderToEdit.lastFed;
+
+        const latestMoltDate = spiderToEdit.moltingHistoryData?.length
+          ? ensureLatestDate(
+              spiderToEdit.lastMolt,
+              spiderToEdit.moltingHistoryData,
+            )
+          : spiderToEdit.lastMolt;
+
+        setLastFed(latestFedDate);
         setFeedingFrequency(spiderToEdit.feedingFrequency);
-        setLastMolt(spiderToEdit.lastMolt);
+        setLastMolt(latestMoltDate);
         setImageUri(spiderToEdit.imageUri);
       }
+    } else {
+      setName("");
+      setAge("");
+      setSpiderSpecies("");
+      setIndividualType(undefined);
+      setLastFed("");
+      setFeedingFrequency("");
+      setLastMolt("");
+      setImageUri(undefined);
     }
   }, [id, spiders]);
 
@@ -68,6 +102,7 @@ export default function SpiderForm() {
       name,
       age,
       spiderSpecies,
+      individualType,
       lastFed,
       feedingFrequency,
       lastMolt,
@@ -101,19 +136,26 @@ export default function SpiderForm() {
       updatedFeedingHistory.push(lastFed);
     }
 
+    const sortedMoltingHistory = sortDateStrings(updatedMoltingHistory);
+    const sortedFeedingHistory = sortDateStrings(updatedFeedingHistory);
+
+    const latestFedDate = ensureLatestDate(lastFed, sortedFeedingHistory);
+    const latestMoltDate = ensureLatestDate(lastMolt, sortedMoltingHistory);
+
     const spiderData = {
       id: id ? id : Date.now().toString(),
       name,
       age,
       spiderSpecies,
-      lastFed,
+      individualType,
+      lastFed: latestFedDate,
       feedingFrequency: feedingFrequency as FeedingFrequency,
-      lastMolt,
+      lastMolt: latestMoltDate,
       imageUri: imageUri || "",
       documentUri: documentUri || "",
       isFavourite: existingSpider?.isFavourite ?? false,
-      moltingHistoryData: updatedMoltingHistory,
-      feedingHistoryData: updatedFeedingHistory,
+      moltingHistoryData: sortedMoltingHistory,
+      feedingHistoryData: sortedFeedingHistory,
     };
 
     if (id) {
@@ -131,6 +173,7 @@ export default function SpiderForm() {
     setName("");
     setAge("");
     setSpiderSpecies("");
+    setIndividualType(undefined);
     setLastFed("");
     setFeedingFrequency("");
     setLastMolt("");
@@ -308,9 +351,39 @@ export default function SpiderForm() {
           <View style={styles(currentTheme).pickerWrapper}>
             <AutocompleteSpeciesInput
               value={spiderSpecies}
-              onSelect={(value) => setSpiderSpecies(value)}
+              onSelect={(value) => {
+                console.log("Selected species:", value);
+                setSpiderSpecies(value);
+              }}
               theme={currentTheme}
             />
+          </View>
+
+          <ThemedText style={styles(currentTheme).label}>Płeć</ThemedText>
+          <View style={styles(currentTheme).pickerWrapper}>
+            {individualTypeOptions.map((option) => (
+              <TouchableOpacity
+                key={option.value}
+                onPress={() =>
+                  setIndividualType(option.value as IndividualType)
+                }
+                style={[
+                  styles(currentTheme).radioButton,
+                  individualType === option.value &&
+                    styles(currentTheme).selectedRadioButton,
+                ]}
+              >
+                <ThemedText
+                  style={
+                    individualType === option.value
+                      ? styles(currentTheme).selectedText
+                      : undefined
+                  }
+                >
+                  {option.label}
+                </ThemedText>
+              </TouchableOpacity>
+            ))}
           </View>
 
           <ThemedText style={styles(currentTheme).label}>
@@ -327,6 +400,7 @@ export default function SpiderForm() {
             <ThemedDatePicker
               isVisible={isDatePickerVisible}
               initialDate={selectedDate}
+              maximumDate={new Date()}
               onConfirm={(formattedDate) => {
                 setLastFed(formattedDate);
                 hideDatePicker();
@@ -348,6 +422,7 @@ export default function SpiderForm() {
             <ThemedDatePicker
               isVisible={isDatePickerVisible}
               initialDate={selectedDate}
+              maximumDate={new Date()}
               onConfirm={(formattedDate) => {
                 setLastMolt(formattedDate);
                 hideDatePicker();
@@ -472,5 +547,17 @@ const styles = (theme: ThemeType) =>
       padding: 12,
       marginVertical: 8,
       alignItems: "center",
+    },
+
+    pickerOption: {
+      padding: 10,
+      marginRight: 10,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: "#ccc",
+    },
+    selectedOption: {
+      backgroundColor: "#ddd",
+      borderColor: "#666",
     },
   });
