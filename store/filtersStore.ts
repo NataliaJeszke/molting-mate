@@ -1,25 +1,15 @@
 import { create } from "zustand";
-
-export type FilterState = {
-  age?: string;
-  gender?: string;
-  species?: string;
-  dateFrom?: string;
-  dateTo?: string;
-};
+import { FilterType } from "@/models/Filters.model";
 
 export type FilterViewTypes = "molting" | "feeding" | "collection";
 
 type FiltersStore = {
   filters: {
-    molting: FilterState;
-    feeding: FilterState;
-    collection: FilterState;
+    molting: FilterType;
+    feeding: FilterType;
+    collection: FilterType;
   };
-  setFilters: (
-    key: keyof FiltersStore["filters"],
-    filters: FilterState,
-  ) => void;
+  setFilters: (key: keyof FiltersStore["filters"], filters: FilterType) => void;
   resetFilters: (key: keyof FiltersStore["filters"]) => void;
 };
 

@@ -3,8 +3,6 @@ import {
   Modal,
   View,
   TouchableOpacity,
-  Text,
-  TextInput,
   StyleSheet,
   Dimensions,
   KeyboardAvoidingView,
@@ -14,17 +12,19 @@ import { useLocalSearchParams } from "expo-router";
 import { useSpidersStore } from "@/store/spidersStore";
 import { ensureLatestDate, sortDateStrings } from "@/utils/dateUtils";
 import { ThemedText } from "@/components/ui/ThemedText";
+import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
 
-type ModalInfoProps = {
+type ModalUpdateProps = {
   isVisible: boolean;
   onClose: () => void;
 };
 
-const ModalInfo = ({ isVisible, onClose }: ModalInfoProps) => {
-  const { id, type, status } = useLocalSearchParams();
+const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
+  const { id, type } = useLocalSearchParams();
   const updateSpider = useSpidersStore((state) => state.updateSpider);
   const spiders = useSpidersStore((state) => state.spiders);
   const [date, setDate] = useState("");
+  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
   useEffect(() => {
     console.log("ModalInfo opened");
@@ -91,8 +91,21 @@ const ModalInfo = ({ isVisible, onClose }: ModalInfoProps) => {
     }
   };
 
+  const handleOpenDatePicker = () => {
+    setDatePickerVisible(true);
+  };
+
+  const handleDateConfirm = (formattedDate: string) => {
+    setDate(formattedDate);
+    setDatePickerVisible(false);
+  };
+
+  const handleDateCancel = () => {
+    setDatePickerVisible(false);
+  };
+
   const renderContent = () => {
-    const showInput = status !== "FEED_TODAY";
+    const displayDate = date || getTodayDate();
 
     switch (type) {
       case "feeding":
@@ -104,19 +117,18 @@ const ModalInfo = ({ isVisible, onClose }: ModalInfoProps) => {
             <ThemedText type="subtitle" style={styles.modalText}>
               Czy nakarmiłeś pająka?
             </ThemedText>
-            <ThemedText style={styles.modalText}>
-              {showInput
-                ? "Jeśli nakarmiłeś w innym terminie, wpisz datę i kliknij 'Zatwierdź'. W przeciwnym razie zostanie użyta dzisiejsza data."
-                : "Kliknij 'Zatwierdź', aby potwierdzić karmienie dzisiaj"}
-            </ThemedText>
-            {showInput && (
-              <TextInput
-                style={styles.input}
-                placeholder="Wpisz datę karmienia (dd-mm-rrrr) lub pozostaw puste dla dzisiaj"
-                value={date}
-                onChangeText={setDate}
-              />
-            )}
+
+            <View style={styles.dateContainer}>
+              <ThemedText style={styles.dateLabel}>
+                Wybierz datę karmienia:
+              </ThemedText>
+              <TouchableOpacity
+                style={styles.dateButton}
+                onPress={handleOpenDatePicker}
+              >
+                <ThemedText style={styles.dateText}>{displayDate}</ThemedText>
+              </TouchableOpacity>
+            </View>
           </>
         );
       case "molting":
@@ -126,23 +138,24 @@ const ModalInfo = ({ isVisible, onClose }: ModalInfoProps) => {
             <ThemedText style={styles.modalText}>
               Czy pająk przeszedł linienie?
             </ThemedText>
-            <ThemedText style={styles.modalText}>
-              {showInput
-                ? "Jeśli w innym dniu, wprowadź datę i kliknij 'Zatwierdź'. W przeciwnym razie zostanie użyta dzisiejsza data."
-                : "Kliknij 'Zatwierdź', aby potwierdzić linienie dzisiaj"}
-            </ThemedText>
-            {showInput && (
-              <TextInput
-                style={styles.input}
-                placeholder="Wpisz datę linienia (dd-mm-rrrr) lub pozostaw puste dla dzisiaj"
-                value={date}
-                onChangeText={setDate}
-              />
-            )}
+
+            <View style={styles.dateContainer}>
+              <ThemedText style={styles.dateLabel}>
+                Wybierz datę linienia:
+              </ThemedText>
+              <TouchableOpacity
+                style={styles.dateButton}
+                onPress={handleOpenDatePicker}
+              >
+                <ThemedText style={styles.dateText}>{displayDate}</ThemedText>
+              </TouchableOpacity>
+            </View>
           </>
         );
       default:
-        return <Text style={styles.modalText}>Nieznany typ: {type}</Text>;
+        return (
+          <ThemedText style={styles.modalText}>Nieznany typ: {type}</ThemedText>
+        );
     }
   };
 
@@ -183,6 +196,14 @@ const ModalInfo = ({ isVisible, onClose }: ModalInfoProps) => {
           </View>
         </View>
       </KeyboardAvoidingView>
+
+      <ThemedDatePicker
+        isVisible={isDatePickerVisible}
+        initialDate={new Date()}
+        maximumDate={new Date()}
+        onConfirm={handleDateConfirm}
+        onCancel={handleDateCancel}
+      />
     </Modal>
   );
 };
@@ -234,14 +255,25 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
   },
-  input: {
-    height: 40,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 5,
+  dateContainer: {
     width: "100%",
-    marginBottom: 20,
-    paddingHorizontal: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 15,
+  },
+  dateLabel: {
+    fontSize: 14,
+  },
+  dateButton: {
+    backgroundColor: "#f0f0f0",
+    padding: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  dateText: {
+    fontSize: 14,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -267,4 +299,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ModalInfo;
+export default ModalUpdate;

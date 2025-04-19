@@ -2,18 +2,11 @@ import { useMemo } from "react";
 
 import { Spider } from "@/models/Spider.model";
 import { parseDate } from "@/utils/dateUtils";
-
-type FilterOptions = {
-  age?: string;
-  gender?: string;
-  species?: string;
-  dateFrom?: string;
-  dateTo?: string;
-};
+import { FilterType } from "@/models/Filters.model";
 
 type UseSpiderFilterParams<T extends Spider> = {
   spiders: T[];
-  filters: FilterOptions;
+  filters: FilterType;
   datePropertyKey: keyof T;
   statusLabel?: string;
 };
