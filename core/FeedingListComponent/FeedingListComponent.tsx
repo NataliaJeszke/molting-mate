@@ -1,12 +1,18 @@
 import React, { useMemo } from "react";
 import { ScrollView } from "react-native";
+
 import { useSpidersStore } from "@/store/spidersStore";
-import { ViewTypes } from "@/constants/ViewTypes.enums";
-import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
-import SpiderSectionHeader from "../../components/commons/SpiderSectionHeader/SpiderSectionHeader";
 import { useFiltersStore } from "@/store/filtersStore";
-import { parseDate } from "@/utils/dateUtils";
+
 import { useSpiderFilter } from "@/hooks/useSpiderFilter";
+
+import { parseDate } from "@/utils/dateUtils";
+import { getNextFeedingDate } from "@/utils/feedingUtils";
+
+import { ViewTypes } from "@/constants/ViewTypes.enums";
+
+import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
+import SpiderSectionHeader from "@/components/commons/SpiderSectionHeader/SpiderSectionHeader";
 
 const FeedingListComponent = () => {
   const spiders = useSpidersStore((state) => state.spiders);
@@ -21,10 +27,17 @@ const FeedingListComponent = () => {
 
   const processedSpiders = useMemo(() => {
     return [...filteredSpiders]
-      .map((spider) => ({
-        ...spider,
-        status: "predykcja karmienia",
-      }))
+      .map((spider) => {
+        const nextFeedingDate = getNextFeedingDate(
+          spider.lastFed,
+          spider.feedingFrequency,
+        );
+        return {
+          ...spider,
+          status: "predykcja karmienia",
+          nextFeedingDate,
+        };
+      })
       .sort((a, b) => {
         const dateA = parseDate(a.lastFed)?.getTime() || 0;
         const dateB = parseDate(b.lastFed)?.getTime() || 0;
