@@ -1,17 +1,9 @@
 import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import { View, TextInput, StyleSheet, Alert } from "react-native";
 import { router } from "expo-router";
 
 import { useUserStore } from "@/store/userStore";
 import { Colors } from "@/constants/Colors";
-
-import { ThemedText } from "@/components/ui/ThemedText";
 
 const SearchComponent = () => {
   const [searchText, setSearchText] = useState("");

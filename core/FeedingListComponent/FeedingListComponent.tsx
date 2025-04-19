@@ -9,14 +9,39 @@ import { getFeedingStatus, getNextFeedingDate } from "../../utils/feedingUtils";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import SpiderSectionHeader from "../../components/commons/SpiderSectionHeader/SpiderSectionHeader";
+import { useFiltersStore } from "@/store/filtersStore";
 
 const FeedingListComponent = () => {
   const spiders = useSpidersStore((state) => state.spiders);
+  const filters = useFiltersStore((state) => state.filters.feeding);
   const viewType = ViewTypes.VIEW_FEEDING;
 
   const sortedSpidersWithStatus = useMemo(() => {
     return [...spiders]
       .filter((spider) => !!spider.lastFed)
+      .filter((spider) => {
+        const matchAge = filters.age ? spider.age === filters.age : true;
+        const matchGender = filters.gender
+          ? spider.individualType === filters.gender
+          : true;
+        const matchSpecies = filters.species
+          ? spider.spiderSpecies?.includes(filters.species)
+          : true;
+        const matchDateFrom = filters.dateFrom
+          ? new Date(spider.lastFed) >= new Date(filters.dateFrom)
+          : true;
+        const matchDateTo = filters.dateTo
+          ? new Date(spider.lastFed) <= new Date(filters.dateTo)
+          : true;
+
+        return (
+          matchAge &&
+          matchGender &&
+          matchSpecies &&
+          matchDateFrom &&
+          matchDateTo
+        );
+      })
       .map((spider) => ({
         ...spider,
         status: getFeedingStatus(spider.lastFed, spider.feedingFrequency),
@@ -30,7 +55,7 @@ const FeedingListComponent = () => {
         const dateB = parse(b.lastFed, "dd-MM-yyyy", new Date()).getTime();
         return dateA - dateB;
       });
-  }, [spiders]);
+  }, [spiders, filters]);
 
   return (
     <>
@@ -38,6 +63,7 @@ const FeedingListComponent = () => {
         title="Karmienie"
         spiderCount={sortedSpidersWithStatus.length}
         info="Lista pająków według karmienia."
+        viewType={viewType}
       />
       <ScrollView>
         <SpiderFullList data={sortedSpidersWithStatus} viewType={viewType} />
