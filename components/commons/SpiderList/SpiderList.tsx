@@ -14,19 +14,11 @@ import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { useUserStore } from "@/store/userStore";
+import { SpiderListItem } from "@/models/SpiderList.model";
 import { Colors, ThemeType } from "@/constants/Colors";
-import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
-
-type SpiderListItem = {
-  id: string;
-  name: string;
-  date: string;
-  imageUri?: string | null;
-  status?: FeedingStatus | string | null;
-};
 
 type SpiderListProps = {
   title: string;
