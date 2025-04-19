@@ -84,6 +84,20 @@ export default function RootLayout() {
               headerTintColor: Colors[currentTheme].tint,
             }}
           />
+
+          <Stack.Screen
+            name="searched"
+            options={({ route }) => {
+              const { query } = (route.params as { query?: string }) || {};
+              return {
+                title: query
+                  ? `Wyniki wyszukiwania dla: ${query}`
+                  : "Wyniki wyszukiwania",
+                headerBackTitle: "Wstecz",
+                headerTintColor: Colors[currentTheme].tint,
+              };
+            }}
+          />
           <Stack.Screen
             name="spider/[id]"
             options={{
