@@ -9,7 +9,7 @@ export const getFeedingStatus = (
 ): FeedingStatus | null => {
   if (!lastFed || !frequencyInDays) return null;
 
-  const lastFedDate = parse(lastFed, "dd-MM-yyyy", new Date());
+  const lastFedDate = parse(lastFed, "yyyy-MM-dd", new Date());
   const today = new Date();
 
   if (isNaN(lastFedDate.getTime())) {
@@ -43,7 +43,7 @@ export const getNextFeedingDate = (
 ): string => {
   if (!lastFed || !feedingFrequency) return "";
 
-  const lastFedDate = parse(lastFed, "dd-MM-yyyy", new Date());
+  const lastFedDate = parse(lastFed, "yyyy-MM-dd", new Date());
 
   if (isNaN(lastFedDate.getTime())) {
     console.warn("Invalid date format:", lastFed);
@@ -61,5 +61,5 @@ export const getNextFeedingDate = (
   const daysToAdd = frequencyMap[feedingFrequency];
   const nextFeedingDate = addDays(lastFedDate, daysToAdd);
 
-  return format(nextFeedingDate, "dd-MM-yyyy");
+  return format(nextFeedingDate, "yyyy-MM-dd");
 };

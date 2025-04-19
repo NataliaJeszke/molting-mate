@@ -106,7 +106,7 @@ const Filters = ({ viewType }: Props) => {
         <ThemedText
           style={current.dateFrom ? styles.dateText : styles.datePlaceholder}
         >
-          {current.dateFrom || "Data od (dd-mm-yyyy)"}
+          {current.dateFrom || "Data od (yyyy-MM-dd)"}
         </ThemedText>
       </TouchableOpacity>
 
@@ -114,7 +114,7 @@ const Filters = ({ viewType }: Props) => {
         <ThemedText
           style={current.dateTo ? styles.dateText : styles.datePlaceholder}
         >
-          {current.dateTo || "Data do (dd-mm-yyyy)"}
+          {current.dateTo || "Data do (yyyy-MM-dd)"}
         </ThemedText>
       </TouchableOpacity>
 

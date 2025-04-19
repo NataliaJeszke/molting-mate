@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Image, StyleSheet, Alert } from "react-native";
+import { View, Image, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons"; // Dodajemy FontAwesome dla ikon płci
 import * as ImagePicker from "expo-image-picker";
@@ -15,6 +15,8 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import HistoryInformation from "@/components/commons/HistoryInformation/HistoryInformation";
 import SpiderDocument from "@/components/commons/SpiderDocument/SpiderDocument";
+import { ViewTypes } from "@/constants/ViewTypes.enums";
+import { router } from "expo-router";
 
 interface Props {
   spider: Spider;
@@ -29,11 +31,11 @@ const SpiderDetails = ({ spider }: Props) => {
 
   const nextFeedingDate = getNextFeedingDate(
     spider.lastFed,
-    spider.feedingFrequency,
+    spider.feedingFrequency
   );
   const feedingStatus = getFeedingStatus(
     spider.lastFed,
-    spider.feedingFrequency,
+    spider.feedingFrequency
   );
 
   const getFeedingStatusLabel = (status: FeedingStatus | null) => {
@@ -294,16 +296,31 @@ const SpiderDetails = ({ spider }: Props) => {
                 Głodny?
               </ThemedText>
             </View>
-            <View
-              style={[
-                styles(currentTheme).feedingCard__statusBadge,
-                { backgroundColor: getFeedingStatusColor(feedingStatus) },
-              ]}
+            <TouchableOpacity
+              onPress={() => {
+                router.push({
+                  pathname: "/manageModal",
+                  params: {
+                    id: spider.id,
+                    type: ViewTypes.VIEW_FEEDING,
+                    action: "edit",
+                  },
+                });
+              }}
             >
-              <ThemedText style={styles(currentTheme).feedingCard__statusText}>
-                {getFeedingStatusLabel(feedingStatus)}
-              </ThemedText>
-            </View>
+              <View
+                style={[
+                  styles(currentTheme).feedingCard__statusBadge,
+                  { backgroundColor: getFeedingStatusColor(feedingStatus) },
+                ]}
+              >
+                <ThemedText
+                  style={styles(currentTheme).feedingCard__statusText}
+                >
+                  {getFeedingStatusLabel(feedingStatus)}
+                </ThemedText>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </CardComponent>
@@ -341,13 +358,26 @@ const SpiderDetails = ({ spider }: Props) => {
             </ThemedText>
           </View>
           <View style={styles(currentTheme).moltingCard__addButtonRow}>
-            <View style={styles(currentTheme).moltingCard__addBadge}>
-              <ThemedText
-                style={styles(currentTheme).moltingCard__addBadgeText}
-              >
-                Dodaj linienie
-              </ThemedText>
-            </View>
+            <TouchableOpacity
+              onPress={() => {
+                router.push({
+                  pathname: "/manageModal",
+                  params: {
+                    id: spider.id,
+                    type: ViewTypes.VIEW_MOLTING,
+                    action: "edit",
+                  },
+                });
+              }}
+            >
+              <View style={styles(currentTheme).moltingCard__addBadge}>
+                <ThemedText
+                  style={styles(currentTheme).moltingCard__addBadgeText}
+                >
+                  Dodaj linienie
+                </ThemedText>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </CardComponent>

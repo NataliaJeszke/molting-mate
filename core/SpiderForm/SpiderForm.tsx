@@ -277,7 +277,7 @@ export default function SpiderForm() {
   };
 
   const parseDate = (dateStr: string): Date => {
-    return parse(dateStr, "dd-MM-yyyy", new Date());
+    return parse(dateStr, "yyyy-MM-dd", new Date());
   };
 
   const showDatePicker = (field: "lastFed" | "lastMolt") => {
@@ -338,7 +338,9 @@ export default function SpiderForm() {
             autoCapitalize="words"
           />
 
-          <ThemedText style={styles(currentTheme)["label"]}>Wiek "L"</ThemedText>
+          <ThemedText style={styles(currentTheme)["label"]}>
+            Wiek "L"
+          </ThemedText>
           <TextInput
             value={age}
             onChangeText={(text) => {

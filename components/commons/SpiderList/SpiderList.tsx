@@ -19,6 +19,7 @@ import { Colors, ThemeType } from "@/constants/Colors";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
+import { router } from "expo-router";
 
 type SpiderListProps = {
   title: string;
@@ -121,14 +122,20 @@ const SpiderList = ({ title, data, info }: SpiderListProps) => {
               key={spider.id}
               style={styles(currentTheme)["spider-list__item"]}
             >
-              <Image
-                source={
-                  spider.imageUri
-                    ? { uri: spider.imageUri }
-                    : require("@/assets/images/spider.png")
-                }
-                style={styles(currentTheme)["spider-list__image"]}
-              />
+              <TouchableOpacity
+                onPress={() => {
+                  router.push(`/spider/${spider.id}`);
+                }}
+              >
+                <Image
+                  source={
+                    spider.imageUri
+                      ? { uri: spider.imageUri }
+                      : require("@/assets/images/spider.png")
+                  }
+                  style={styles(currentTheme)["spider-list__image"]}
+                />
+              </TouchableOpacity>
               <ThemedText style={styles(currentTheme)["spider-list__info"]}>
                 {truncateText(spider.name, 8)}
               </ThemedText>

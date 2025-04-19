@@ -25,7 +25,7 @@ const UpcomingFeedingListComponent = () => {
 
         const nextFeedingDate = parse(
           nextFeedingDateString,
-          "dd-MM-yyyy",
+          "yyyy-MM-dd",
           new Date(),
         );
 

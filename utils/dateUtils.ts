@@ -6,8 +6,8 @@ export const sortDateStrings = (datesArray: string[]): string[] => {
   }
 
   return [...datesArray].sort((dateA, dateB) => {
-    const parsedDateA = parse(dateA, "dd-MM-yyyy", new Date());
-    const parsedDateB = parse(dateB, "dd-MM-yyyy", new Date());
+    const parsedDateA = parse(dateA, "yyyy-MM-dd", new Date());
+    const parsedDateB = parse(dateB, "yyyy-MM-dd", new Date());
 
     return compareAsc(parsedDateA, parsedDateB);
   });
@@ -20,12 +20,12 @@ export const ensureLatestDate = (
   if (!currentDate || !historyDates || historyDates.length === 0) {
     return currentDate;
   }
-  const parsedCurrentDate = parse(currentDate, "dd-MM-yyyy", new Date());
+  const parsedCurrentDate = parse(currentDate, "yyyy-MM-dd", new Date());
 
-  let latestHistoryDate = parse(historyDates[0], "dd-MM-yyyy", new Date());
+  let latestHistoryDate = parse(historyDates[0], "yyyy-MM-dd", new Date());
 
   for (const dateStr of historyDates) {
-    const parsedDate = parse(dateStr, "dd-MM-yyyy", new Date());
+    const parsedDate = parse(dateStr, "yyyy-MM-dd", new Date());
     if (isAfter(parsedDate, latestHistoryDate)) {
       latestHistoryDate = parsedDate;
     }
@@ -34,13 +34,13 @@ export const ensureLatestDate = (
   if (isAfter(parsedCurrentDate, latestHistoryDate)) {
     return currentDate;
   } else {
-    return format(latestHistoryDate, "dd-MM-yyyy");
+    return format(latestHistoryDate, "yyyy-MM-dd");
   }
 };
 
 export const parseDate = (
   dateString: string | null,
-  format: string = "dd-MM-yyyy",
+  format: string = "yyyy-MM-dd",
 ): Date | null => {
   if (!dateString) return null;
   return parse(dateString, format, new Date());

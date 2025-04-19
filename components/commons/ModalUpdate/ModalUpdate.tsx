@@ -7,6 +7,7 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
+  TextInput,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useSpidersStore } from "@/store/spidersStore";
@@ -24,6 +25,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   const updateSpider = useSpidersStore((state) => state.updateSpider);
   const spiders = useSpidersStore((state) => state.spiders);
   const [date, setDate] = useState("");
+  const [age, setAge] = useState("");
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
   useEffect(() => {
@@ -31,6 +33,15 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
     console.log("id:", id);
     console.log("type:", type);
   }, [id, type]);
+
+  useEffect(() => {
+    if (id && type === "molting") {
+      const currentSpider = spiders.find((spider) => spider.id === id);
+      if (currentSpider?.age) {
+        setAge(currentSpider.age);
+      }
+    }
+  }, [id, type, spiders]);
 
   const getTodayDate = () => {
     const today = new Date();
@@ -84,6 +95,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
           updateSpider(id as string, {
             lastMolt: latestMoltingDate,
             moltingHistoryData: sortedMoltingHistory,
+            age: age,
           });
         }
       }
@@ -149,6 +161,24 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
               >
                 <ThemedText style={styles.dateText}>{displayDate}</ThemedText>
               </TouchableOpacity>
+            </View>
+            <View style={styles.dateContainer}>
+              <ThemedText>Wiek "L"</ThemedText>
+              <TextInput
+                value={age}
+                onChangeText={(text) => {
+                  const numericValue = text.replace(/[^0-9]/g, "");
+                  const number = parseInt(numericValue, 10);
+                  if (!isNaN(number) && number <= 20) {
+                    setAge(`L${numericValue}`);
+                  } else if (numericValue === "") {
+                    setAge("");
+                  }
+                }}
+                keyboardType="numeric"
+                maxLength={3}
+                placeholder="0"
+              />
             </View>
           </>
         );

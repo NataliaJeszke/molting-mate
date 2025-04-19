@@ -18,7 +18,7 @@ const ThemedDatePicker = ({
   onCancel,
 }: ThemedDatePickerProps) => {
   const handleConfirm = (date: Date) => {
-    const formatted = format(date, "dd-MM-yyyy");
+    const formatted = format(date, "yyyy-MM-dd");
     onConfirm(formatted);
   };
 
