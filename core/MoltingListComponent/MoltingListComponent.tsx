@@ -3,9 +3,7 @@ import { ScrollView } from "react-native";
 import { parse } from "date-fns";
 
 import { useSpidersStore } from "@/store/spidersStore";
-
 import { ViewTypes } from "@/constants/ViewTypes.enums";
-
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import SpiderSectionHeader from "../../components/commons/SpiderSectionHeader/SpiderSectionHeader";
 import { useFiltersStore } from "@/store/filtersStore";
@@ -26,12 +24,20 @@ const MoltingListComponent = () => {
         const matchSpecies = filters.species
           ? spider.spiderSpecies?.includes(filters.species)
           : true;
-        const matchDateFrom = filters.dateFrom
-          ? new Date(spider.lastMolt) >= new Date(filters.dateFrom)
+
+        const parsedDateFrom = filters.dateFrom
+          ? parse(filters.dateFrom, "dd-MM-yyyy", new Date())
+          : null;
+        const parsedDateTo = filters.dateTo
+          ? parse(filters.dateTo, "dd-MM-yyyy", new Date())
+          : null;
+
+        const spiderDate = parse(spider.lastMolt, "dd-MM-yyyy", new Date());
+
+        const matchDateFrom = parsedDateFrom
+          ? spiderDate >= parsedDateFrom
           : true;
-        const matchDateTo = filters.dateTo
-          ? new Date(spider.lastMolt) <= new Date(filters.dateTo)
-          : true;
+        const matchDateTo = parsedDateTo ? spiderDate <= parsedDateTo : true;
 
         return (
           matchAge &&
@@ -46,8 +52,8 @@ const MoltingListComponent = () => {
         status: "predykcja linienia",
       }))
       .sort((a, b) => {
-        const dateA = parse(a.lastFed, "dd-MM-yyyy", new Date()).getTime();
-        const dateB = parse(b.lastFed, "dd-MM-yyyy", new Date()).getTime();
+        const dateA = parse(a.lastMolt, "dd-MM-yyyy", new Date()).getTime();
+        const dateB = parse(b.lastMolt, "dd-MM-yyyy", new Date()).getTime();
         return dateA - dateB;
       });
   }, [spiders, filters]);
@@ -56,7 +62,7 @@ const MoltingListComponent = () => {
     <>
       <SpiderSectionHeader
         title="Linienie"
-        spiderCount={spiders.length}
+        spiderCount={filteredAndSortedSpiders.length}
         info="Lista pająków według linienia."
         viewType={viewType}
       />

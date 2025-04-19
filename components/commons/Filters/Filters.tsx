@@ -45,13 +45,13 @@ const Filters = ({ viewType }: Props) => {
         style={styles.input}
       />
       <TextInput
-        placeholder="Data od (YYYY-MM-DD)"
+        placeholder="Data od (dd-mm-yyyy)"
         value={current.dateFrom || ""}
         onChangeText={(text) => handleChange("dateFrom", text)}
         style={styles.input}
       />
       <TextInput
-        placeholder="Data do (YYYY-MM-DD)"
+        placeholder="Data do (dd-mm-yyyy)"
         value={current.dateTo || ""}
         onChangeText={(text) => handleChange("dateTo", text)}
         style={styles.input}

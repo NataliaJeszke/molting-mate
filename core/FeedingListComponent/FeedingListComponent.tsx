@@ -27,12 +27,20 @@ const FeedingListComponent = () => {
         const matchSpecies = filters.species
           ? spider.spiderSpecies?.includes(filters.species)
           : true;
-        const matchDateFrom = filters.dateFrom
-          ? new Date(spider.lastFed) >= new Date(filters.dateFrom)
+
+        const parsedDateFrom = filters.dateFrom
+          ? parse(filters.dateFrom, "dd-MM-yyyy", new Date())
+          : null;
+        const parsedDateTo = filters.dateTo
+          ? parse(filters.dateTo, "dd-MM-yyyy", new Date())
+          : null;
+
+        const spiderDate = parse(spider.lastFed, "dd-MM-yyyy", new Date());
+
+        const matchDateFrom = parsedDateFrom
+          ? spiderDate >= parsedDateFrom
           : true;
-        const matchDateTo = filters.dateTo
-          ? new Date(spider.lastFed) <= new Date(filters.dateTo)
-          : true;
+        const matchDateTo = parsedDateTo ? spiderDate <= parsedDateTo : true;
 
         return (
           matchAge &&
