@@ -8,12 +8,19 @@ import {
   KeyboardAvoidingView,
   Platform,
   TextInput,
+  StatusBar,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useSpidersStore } from "@/store/spidersStore";
 import { ensureLatestDate, sortDateStrings } from "@/utils/dateUtils";
 import { ThemedText } from "@/components/ui/ThemedText";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
+import { Colors } from "@/constants/Colors";
+import { BlurView } from "expo-blur";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { useUserStore } from "@/store/userStore";
+
+type ThemeType = "light" | "dark";
 
 type ModalUpdateProps = {
   isVisible: boolean;
@@ -28,11 +35,22 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   const [age, setAge] = useState("");
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
+  const { currentTheme } = useUserStore();
+
   useEffect(() => {
-    console.log("ModalInfo opened");
-    console.log("id:", id);
-    console.log("type:", type);
-  }, [id, type]);
+    if (isVisible) {
+      StatusBar.setBarStyle("light-content");
+    } else {
+      StatusBar.setBarStyle(
+        currentTheme === "dark" ? "light-content" : "dark-content",
+      );
+    }
+    return () => {
+      StatusBar.setBarStyle(
+        currentTheme === "dark" ? "light-content" : "dark-content",
+      );
+    };
+  }, [isVisible, currentTheme]);
 
   useEffect(() => {
     if (id && type === "molting") {
@@ -123,22 +141,30 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
       case "feeding":
         return (
           <>
-            <ThemedText type="title" style={styles.modalTitle}>
+            <ThemedText type="title" style={styles(currentTheme).modal__title}>
               Karmienie
             </ThemedText>
-            <ThemedText type="subtitle" style={styles.modalText}>
+            <ThemedText
+              type="subtitle"
+              style={styles(currentTheme).modal__subtitle}
+            >
               Czy nakarmiłeś pająka?
             </ThemedText>
 
-            <View style={styles.dateContainer}>
-              <ThemedText style={styles.dateLabel}>
+            <View style={styles(currentTheme).dateContainer}>
+              <ThemedText style={styles(currentTheme).dateContainer__label}>
                 Wybierz datę karmienia:
               </ThemedText>
               <TouchableOpacity
-                style={styles.dateButton}
+                style={styles(currentTheme).dateContainer__button}
                 onPress={handleOpenDatePicker}
+                activeOpacity={0.7}
               >
-                <ThemedText style={styles.dateText}>{displayDate}</ThemedText>
+                <ThemedText
+                  style={styles(currentTheme).dateContainer__buttonText}
+                >
+                  {displayDate}
+                </ThemedText>
               </TouchableOpacity>
             </View>
           </>
@@ -146,24 +172,36 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
       case "molting":
         return (
           <>
-            <ThemedText style={styles.modalTitle}>Linienie</ThemedText>
-            <ThemedText style={styles.modalText}>
+            <ThemedText type="title" style={styles(currentTheme).modal__title}>
+              Linienie
+            </ThemedText>
+            <ThemedText
+              type="subtitle"
+              style={styles(currentTheme).modal__subtitle}
+            >
               Czy pająk przeszedł linienie?
             </ThemedText>
 
-            <View style={styles.dateContainer}>
-              <ThemedText style={styles.dateLabel}>
+            <View style={styles(currentTheme).dateContainer}>
+              <ThemedText style={styles(currentTheme).dateContainer__label}>
                 Wybierz datę linienia:
               </ThemedText>
               <TouchableOpacity
-                style={styles.dateButton}
+                style={styles(currentTheme).dateContainer__button}
                 onPress={handleOpenDatePicker}
+                activeOpacity={0.7}
               >
-                <ThemedText style={styles.dateText}>{displayDate}</ThemedText>
+                <ThemedText
+                  style={styles(currentTheme).dateContainer__buttonText}
+                >
+                  {displayDate}
+                </ThemedText>
               </TouchableOpacity>
             </View>
-            <View style={styles.dateContainer}>
-              <ThemedText>Wiek "L"</ThemedText>
+            <View style={styles(currentTheme).ageInput}>
+              <ThemedText style={styles(currentTheme).ageInput__label}>
+                Wiek "L"
+              </ThemedText>
               <TextInput
                 value={age}
                 onChangeText={(text) => {
@@ -178,20 +216,26 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
                 keyboardType="numeric"
                 maxLength={3}
                 placeholder="0"
+                placeholderTextColor={Colors[currentTheme].text + "80"}
+                style={styles(currentTheme).ageInput__field}
               />
             </View>
           </>
         );
       default:
         return (
-          <ThemedText style={styles.modalText}>Nieznany typ: {type}</ThemedText>
+          <ThemedText style={styles(currentTheme).modal__subtitle}>
+            Nieznany typ: {type}
+          </ThemedText>
         );
     }
   };
 
+  if (!isVisible) return null;
+
   return (
     <Modal
-      animationType="fade"
+      animationType="none"
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
@@ -199,32 +243,59 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={styles.container}
+        style={styles(currentTheme).container}
       >
-        <View style={styles.centeredView}>
-          <TouchableOpacity
-            style={styles.backdrop}
-            activeOpacity={1}
-            onPress={onClose}
-          />
-          <View style={styles.modalView}>
+        <Animated.View
+          style={styles(currentTheme).centeredView}
+          entering={FadeIn.duration(200)}
+          exiting={FadeOut.duration(200)}
+        >
+          <BlurView
+            intensity={90}
+            tint={currentTheme === "dark" ? "dark" : "light"}
+            style={styles(currentTheme).backdrop}
+          >
+            <TouchableOpacity
+              style={styles(currentTheme).backdrop}
+              activeOpacity={1}
+              onPress={onClose}
+            />
+          </BlurView>
+
+          <Animated.View
+            style={styles(currentTheme).modalView}
+            entering={FadeIn.duration(300).delay(100)}
+          >
+            <View style={styles(currentTheme).modal__handle} />
             {renderContent()}
-            <View style={styles.buttonContainer}>
+            <View style={styles(currentTheme).buttonContainer}>
               <TouchableOpacity
                 onPress={onClose}
-                style={[styles.button, styles.cancelButton]}
+                style={styles(currentTheme).buttonContainer__cancelButton}
+                activeOpacity={0.8}
               >
-                <ThemedText style={styles.buttonText}>Anuluj</ThemedText>
+                <ThemedText
+                  style={styles(currentTheme).buttonContainer__cancelButtonText}
+                >
+                  Anuluj
+                </ThemedText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleSubmit}
-                style={[styles.button, styles.confirmButton]}
+                style={styles(currentTheme).buttonContainer__confirmButton}
+                activeOpacity={0.8}
               >
-                <ThemedText style={styles.buttonText}>Zatwierdź</ThemedText>
+                <ThemedText
+                  style={
+                    styles(currentTheme).buttonContainer__confirmButtonText
+                  }
+                >
+                  Zatwierdź
+                </ThemedText>
               </TouchableOpacity>
             </View>
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
       </KeyboardAvoidingView>
 
       <ThemedDatePicker
@@ -238,95 +309,141 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   );
 };
 
-const windowWidth = Dimensions.get("window").width;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
-  },
-  backdrop: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalView: {
-    width: windowWidth * 0.8,
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
+const { width, height } = Dimensions.get("window");
+/* eslint-disable react-native/no-unused-styles */
+const styles = (theme: ThemeType) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    zIndex: 10,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-  modalText: {
-    fontSize: 14,
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  dateContainer: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 15,
-  },
-  dateLabel: {
-    fontSize: 14,
-  },
-  dateButton: {
-    backgroundColor: "#f0f0f0",
-    padding: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: "#ddd",
-  },
-  dateText: {
-    fontSize: 14,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  button: {
-    padding: 10,
-    borderRadius: 5,
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: 5,
-  },
-  confirmButton: {
-    backgroundColor: "#4CAF50",
-  },
-  cancelButton: {
-    backgroundColor: "#f44336",
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-});
+    centeredView: {
+      flex: 1,
+      justifyContent: "flex-end",
+      alignItems: "center",
+      position: "relative",
+    },
+    backdrop: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    },
+    modalView: {
+      width: width,
+      backgroundColor: Colors[theme].background,
+      borderTopLeftRadius: 24,
+      borderTopRightRadius: 24,
+      padding: 24,
+      alignItems: "center",
+      shadowColor: Colors[theme === "dark" ? "light" : "dark"].text,
+      shadowOffset: {
+        width: 0,
+        height: -3,
+      },
+      shadowOpacity: theme === "dark" ? 0.15 : 0.1,
+      shadowRadius: 12,
+      elevation: 10,
+      zIndex: 10,
+    },
+    modal__handle: {
+      width: 40,
+      height: 5,
+      borderRadius: 3,
+      backgroundColor: Colors[theme].card.backgroundColor,
+      marginBottom: 24,
+    },
+    modal__title: {
+      fontSize: 22,
+      fontWeight: "700",
+      marginBottom: 8,
+      textAlign: "center",
+      color: Colors[theme].text,
+    },
+    modal__subtitle: {
+      fontSize: 16,
+      marginBottom: 24,
+      textAlign: "center",
+      color: Colors[theme].text || Colors[theme].text + "99",
+    },
+    dateContainer: {
+      width: "100%",
+      marginBottom: 20,
+    },
+    dateContainer__label: {
+      fontSize: 16,
+      marginBottom: 8,
+      color: Colors[theme].text,
+    },
+    dateContainer__button: {
+      backgroundColor: Colors[theme].card.backgroundColor,
+      padding: 16,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: Colors[theme].card.borderColor,
+      width: "100%",
+      alignItems: "center",
+    },
+    dateContainer__buttonText: {
+      fontSize: 16,
+      color: Colors[theme].text,
+      fontWeight: "500",
+    },
+    ageInput: {
+      width: "100%",
+      marginBottom: 24,
+    },
+    ageInput__label: {
+      fontSize: 16,
+      marginBottom: 8,
+      color: Colors[theme].text,
+    },
+    ageInput__field: {
+      backgroundColor: Colors[theme].card.backgroundColor,
+      padding: 16,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: Colors[theme].card.borderColor,
+      fontSize: 16,
+      color: Colors[theme].text,
+      width: "100%",
+      textAlign: "center",
+      fontWeight: "500",
+    },
+    buttonContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      width: "100%",
+      marginTop: 12,
+    },
+    buttonContainer__cancelButton: {
+      padding: 16,
+      borderRadius: 12,
+      flex: 1,
+      alignItems: "center",
+      marginRight: 8,
+      backgroundColor: "yellow",
+      borderWidth: 1,
+      borderColor: Colors[theme].card.borderColor,
+    },
+    buttonContainer__confirmButton: {
+      padding: 16,
+      borderRadius: 12,
+      flex: 1,
+      alignItems: "center",
+      marginLeft: 8,
+      backgroundColor: Colors[theme].card.backgroundColor || "#4CAF50",
+    },
+    buttonContainer__cancelButtonText: {
+      color: Colors[theme].text || Colors[theme].text,
+      fontWeight: "600",
+      fontSize: 16,
+    },
+    buttonContainer__confirmButtonText: {
+      color: Colors[theme].text || "#FFFFFF",
+      fontWeight: "600",
+      fontSize: 16,
+    },
+  });
 
 export default ModalUpdate;
