@@ -37,3 +37,11 @@ export const ensureLatestDate = (
     return format(latestHistoryDate, "dd-MM-yyyy");
   }
 };
+
+export const parseDate = (
+  dateString: string | null,
+  format: string = "dd-MM-yyyy",
+): Date | null => {
+  if (!dateString) return null;
+  return parse(dateString, format, new Date());
+};
