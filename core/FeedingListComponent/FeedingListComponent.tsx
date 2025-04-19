@@ -10,6 +10,7 @@ import { parseDate } from "@/utils/dateUtils";
 import { getNextFeedingDate } from "@/utils/feedingUtils";
 
 import { ViewTypes } from "@/constants/ViewTypes.enums";
+import { getFeedingStatus } from "@/utils/feedingUtils";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import SpiderSectionHeader from "@/components/commons/SpiderSectionHeader/SpiderSectionHeader";
@@ -32,9 +33,15 @@ const FeedingListComponent = () => {
           spider.lastFed,
           spider.feedingFrequency,
         );
+
+        const status = getFeedingStatus(
+          spider.lastFed,
+          spider.feedingFrequency,
+        );
+
         return {
           ...spider,
-          status: "predykcja karmienia",
+          status,
           nextFeedingDate,
         };
       })
