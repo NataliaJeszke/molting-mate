@@ -31,20 +31,12 @@ export default function HomeScreen() {
             router.push("/favourites");
           }}
         >
-          <AntDesign name="heart" size={24} color={Colors[currentTheme].tint} />
+          <AntDesign name="heart" size={28} color={Colors[currentTheme].tint} />
         </TouchableOpacity>
 
         <View style={styles(currentTheme)["dashboard__search-wrapper"]}>
           <SearchComponent />
         </View>
-
-        <TouchableOpacity onPress={() => router.push("/spiderForm")}>
-          <Feather
-            name="plus-circle"
-            size={28}
-            color={Colors[currentTheme].tint}
-          />
-        </TouchableOpacity>
       </CardComponent>
 
       <ScrollView>
@@ -53,6 +45,13 @@ export default function HomeScreen() {
         <UpcomingFeedingListComponent />
         <PostMoltingListComponent />
       </ScrollView>
+
+      <TouchableOpacity
+        style={styles(currentTheme)["dashboard__fab"]}
+        onPress={() => router.push("/spiderForm")}
+      >
+        <Feather name="plus" size={28} color="#FFFFFF" />
+      </TouchableOpacity>
     </WrapperComponent>
   );
 }
@@ -91,5 +90,21 @@ const styles = (theme: ThemeType) =>
     },
     dashboard__container: {
       flex: 1,
+    },
+    dashboard__fab: {
+      position: "absolute",
+      right: 20,
+      bottom: 60,
+      width: 50,
+      height: 50,
+      borderRadius: 30,
+      backgroundColor: Colors[theme].tint,
+      justifyContent: "center",
+      alignItems: "center",
+      elevation: 5,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
     },
   });

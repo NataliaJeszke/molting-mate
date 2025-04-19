@@ -14,22 +14,28 @@ import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import Filters from "@/components/commons/Filters/Filters";
+import { FilterViewTypes, useFiltersStore } from "@/store/filtersStore";
 
 type SpiderSectionHeaderProps = {
   title: string;
   spiderCount: number;
   info: string;
+  viewType: FilterViewTypes;
 };
 
 const SpiderSectionHeader = ({
   title,
   spiderCount,
   info,
+  viewType,
 }: SpiderSectionHeaderProps) => {
   const router = useRouter();
   const { currentTheme } = useUserStore();
   const [modalVisible, setModalVisible] = useState(false);
   const [tooltipVisible, setTooltipVisible] = useState(false);
+
+  const filters = useFiltersStore((state) => state.filters[viewType]);
+  const areFiltersActive = Object.values(filters).some((value) => value);
 
   return (
     <CardComponent>
@@ -68,6 +74,14 @@ const SpiderSectionHeader = ({
             </TouchableOpacity>
           </View>
         </View>
+
+        {areFiltersActive && (
+          <ThemedText
+            style={styles(currentTheme)["spiderSectionHeader__filterStatus"]}
+          >
+            Filtry są włączone
+          </ThemedText>
+        )}
 
         <TouchableOpacity
           onPress={() => setModalVisible(true)}
@@ -131,7 +145,7 @@ const SpiderSectionHeader = ({
                   >
                     Filtry
                   </ThemedText>
-                  <Filters />
+                  <Filters viewType={viewType} />
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -180,6 +194,12 @@ const styles = (theme: ThemeType) =>
       fontSize: 16,
       color: Colors[theme].text,
       marginRight: 4,
+    },
+    spiderSectionHeader__filterStatus: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: Colors[theme].tint,
+      marginTop: 4,
     },
     spiderSectionHeader__overlay: {
       flex: 1,

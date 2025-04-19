@@ -35,11 +35,8 @@ const SearchComponent = () => {
         placeholderTextColor="#888"
         value={searchText}
         onChangeText={handleSearch}
-      />
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
+        returnKeyType="search"
+        onSubmitEditing={() => {
           if (searchText.trim() === "") {
             Alert.alert("Błąd", "Wpisz coś, aby wyszukać.");
             return;
@@ -50,9 +47,7 @@ const SearchComponent = () => {
             params: { query: searchText },
           });
         }}
-      >
-        <ThemedText style={styles.buttonText}>Szukaj</ThemedText>
-      </TouchableOpacity>
+      />
     </View>
   );
 };
@@ -61,24 +56,13 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
     marginTop: 8,
-    marginBottom: 16,
+    marginBottom: 10,
   },
   input: {
     height: 40,
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: "#4CAF50",
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
   },
 });
 
