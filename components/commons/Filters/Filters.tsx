@@ -116,7 +116,13 @@ const Filters = ({ viewType, isVisible, onClose }: Props) => {
       statusBarTranslucent={true}
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        behavior={
+          Platform.OS === "ios" &&
+          !isDateFromPickerVisible &&
+          !isDateToPickerVisible
+            ? "padding"
+            : undefined
+        }
         style={styles(currentTheme).container}
       >
         {/* Semi-transparent overlay */}
