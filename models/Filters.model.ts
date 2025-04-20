@@ -1,7 +1,7 @@
 export type FilterType = {
   age?: string;
-  gender?: string;
-  species?: string;
+  individualType?: string;
+  spiderSpecies?: string;
   dateFrom?: string;
   dateTo?: string;
 };

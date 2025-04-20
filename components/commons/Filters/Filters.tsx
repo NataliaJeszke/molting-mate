@@ -138,15 +138,15 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
               />
               <TextInput
                 placeholder="Płeć (np. samica)"
-                value={current.gender || ""}
-                onChangeText={(text) => handleChange("gender", text)}
+                value={current.individualType || ""}
+                onChangeText={(text) => handleChange("individualType", text)}
                 style={styles(currentTheme).input}
                 placeholderTextColor={Colors[currentTheme].text + "80"}
               />
               <TextInput
                 placeholder="Gatunek"
-                value={current.species || ""}
-                onChangeText={(text) => handleChange("species", text)}
+                value={current.spiderSpecies || ""}
+                onChangeText={(text) => handleChange("spiderSpecies", text)}
                 style={styles(currentTheme).input}
                 placeholderTextColor={Colors[currentTheme].text + "80"}
               />

@@ -16,15 +16,15 @@ const CollectionListComponent = () => {
   const filteredSpiders = useMemo(() => {
     return spiders
       .filter((spider) => {
-        const matchSpecies = filters.species
-          ? spider.spiderSpecies?.includes(filters.species)
+        const matchspiderSpecies = filters.spiderSpecies
+          ? spider.spiderSpecies?.includes(filters.spiderSpecies)
           : true;
         const matchAge = filters.age ? spider.age === filters.age : true;
-        const matchGender = filters.gender
-          ? spider.individualType === filters.gender
+        const matchGender = filters.individualType
+          ? spider.individualType === filters.individualType
           : true;
 
-        return matchSpecies && matchAge && matchGender;
+        return matchspiderSpecies && matchAge && matchGender;
       })
       .map((spider) => ({
         ...spider,
