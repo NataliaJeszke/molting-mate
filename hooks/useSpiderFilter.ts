@@ -22,11 +22,11 @@ export function useSpiderFilter<T extends Spider>({
       .filter((spider) => !!spider[datePropertyKey])
       .filter((spider) => {
         const matchAge = filters.age ? spider.age === filters.age : true;
-        const matchGender = filters.gender
-          ? spider.individualType === filters.gender
-          : true;
-        const matchSpecies = filters.species
-          ? spider.spiderSpecies?.includes(filters.species)
+        const matchGender =
+          !filters.individualType?.length ||
+          (filters.individualType || []).includes(spider.individualType!);
+        const matchSpecies = filters.spiderSpecies
+          ? spider.spiderSpecies?.includes(filters.spiderSpecies)
           : true;
 
         const parsedDateFrom = filters.dateFrom

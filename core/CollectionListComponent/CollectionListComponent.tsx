@@ -20,9 +20,9 @@ const CollectionListComponent = () => {
           ? spider.spiderSpecies?.includes(filters.spiderSpecies)
           : true;
         const matchAge = filters.age ? spider.age === filters.age : true;
-        const matchGender = filters.individualType
-          ? spider.individualType === filters.individualType
-          : true;
+        const matchGender =
+          !filters.individualType?.length ||
+          (filters.individualType || []).includes(spider.individualType!);
 
         return matchspiderSpecies && matchAge && matchGender;
       })

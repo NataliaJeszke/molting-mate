@@ -20,6 +20,7 @@ import { Colors, ThemeType } from "@/constants/Colors";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
+import { IndividualType } from "@/models/Spider.model";
 
 type FiltersProps = {
   viewType: FilterViewTypes;
@@ -33,6 +34,17 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   const current = filters[viewType];
   const [isDateFromPickerVisible, setDateFromPickerVisible] = useState(false);
   const [isDateToPickerVisible, setDateToPickerVisible] = useState(false);
+  const [individualTypes, setIndividualTypes] = useState<IndividualType[]>(
+    // eslint-disable-next-line prettier/prettier
+    current.individualType || []
+  );
+
+  const today = new Date();
+  const individualTypeOptions: { label: string; value: IndividualType }[] = [
+    { label: "Samiec", value: "Samiec" },
+    { label: "Samica", value: "Samica" },
+    { label: "Niezidentyfikowany", value: "Niezidentyfikowany" },
+  ];
 
   const handleChange = (field: keyof typeof current, value: string) => {
     setFilters(viewType, {
@@ -43,6 +55,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
 
   const handleReset = () => {
     resetFilters(viewType);
+    setIndividualTypes([]);
   };
 
   const showDateFromPicker = () => {
@@ -87,7 +100,17 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
     return new Date();
   };
 
-  const today = new Date();
+  const toggleIndividualType = (value: IndividualType) => {
+    const updated = individualTypes.includes(value)
+      ? individualTypes.filter((item) => item !== value)
+      : [...individualTypes, value];
+
+    setIndividualTypes(updated);
+    setFilters(viewType, {
+      ...current,
+      individualType: updated,
+    });
+  };
 
   return (
     <Modal
@@ -136,13 +159,36 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                 placeholderTextColor={Colors[currentTheme].text + "80"}
                 keyboardType="numeric"
               />
-              <TextInput
-                placeholder="Płeć (np. samica)"
-                value={current.individualType || ""}
-                onChangeText={(text) => handleChange("individualType", text)}
-                style={styles(currentTheme).input}
-                placeholderTextColor={Colors[currentTheme].text + "80"}
-              />
+              <ThemedText>Płeć</ThemedText>
+              <View style={styles(currentTheme).checkboxWrapper}>
+                {individualTypeOptions.map((option) => {
+                  const isSelected = individualTypes.includes(option.value);
+                  return (
+                    <TouchableOpacity
+                      key={option.value}
+                      onPress={() =>
+                        toggleIndividualType(option.value as IndividualType)
+                      }
+                      style={[
+                        styles(currentTheme).checkboxItem,
+                        isSelected
+                          ? styles(currentTheme).checkboxSelected
+                          : styles(currentTheme).checkboxUnselected,
+                      ]}
+                    >
+                      <ThemedText
+                        style={
+                          isSelected
+                            ? styles(currentTheme).checkboxTextSelected
+                            : styles(currentTheme).checkboxTextUnselected
+                        }
+                      >
+                        {option.label}
+                      </ThemedText>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
               <TextInput
                 placeholder="Gatunek"
                 value={current.spiderSpecies || ""}
@@ -257,7 +303,7 @@ const styles = (theme: ThemeType) =>
       shadowOpacity: 0.2,
       shadowRadius: 5,
       elevation: 10,
-      maxHeight: "85%",
+      maxHeight: "90%",
     },
     contentContainer: {
       padding: 20,
@@ -321,7 +367,7 @@ const styles = (theme: ThemeType) =>
     buttonsContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
-      marginTop: 16,
+      marginTop: 5,
     },
     resetButton: {
       flex: 1,
@@ -348,6 +394,37 @@ const styles = (theme: ThemeType) =>
       color: Colors[theme].text,
       fontWeight: "600",
       fontSize: 16,
+    },
+    checkboxWrapper: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      marginBottom: 12,
+      gap: 8,
+    },
+
+    checkboxItem: {
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      borderRadius: 16,
+      borderWidth: 1,
+    },
+
+    checkboxSelected: {
+      borderColor: Colors[theme].card.borderColor,
+      backgroundColor: "#4CAF50",
+    },
+
+    checkboxUnselected: {
+      borderColor: Colors[theme].card.borderColor,
+      backgroundColor: "transparent",
+    },
+
+    checkboxTextSelected: {
+      color: "#fff",
+    },
+
+    checkboxTextUnselected: {
+      color: Colors[theme].text,
     },
   });
 

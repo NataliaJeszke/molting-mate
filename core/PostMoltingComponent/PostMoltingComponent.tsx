@@ -11,7 +11,7 @@ const PostMoltingListComponent = () => {
   const postMoltingSpiders = useMemo(() => {
     return spiders
       .filter(
-        (spider) => spider.lastMolt && new Date(spider.lastMolt) < new Date()
+        (spider) => spider.lastMolt && new Date(spider.lastMolt) < new Date(),
       )
       .sort((a, b) => {
         const dateA = parse(a.lastMolt, "yyyy-MM-dd", new Date()).getTime();
