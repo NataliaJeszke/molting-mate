@@ -333,7 +333,7 @@ const styles = (theme: ThemeType) =>
     "spider-list__info-container": {
       flex: 1,
       marginLeft: 12,
-      justifyContent: "center",
+      justifyContent: "flex-start",
     },
     "spider-list__info": {
       fontSize: 14,
@@ -374,15 +374,12 @@ const styles = (theme: ThemeType) =>
     },
     "spider-list__actions-container": {
       flexDirection: "column",
-      justifyContent: "space-between",
-      alignItems: "center",
-      paddingVertical: 8,
       marginLeft: 8,
       height: "auto",
+      justifyContent: "space-between",
     },
     "spider-list__action-button": {
-      padding: 8,
-      marginVertical: 4,
+      marginBottom: 16,
     },
     "spider-list__edit-button": {
       flexDirection: "row",
