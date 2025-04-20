@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -6,49 +6,33 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
-  StatusBar,
   KeyboardAvoidingView,
   Modal,
   View,
 } from "react-native";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { isAfter, parseISO } from "date-fns";
+
 import { FilterViewTypes, useFiltersStore } from "@/store/filtersStore";
 import { useUserStore } from "@/store/userStore";
+
+import { Colors, ThemeType } from "@/constants/Colors";
+
 import { ThemedText } from "@/components/ui/ThemedText";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
-import { Colors } from "@/constants/Colors";
-import Animated, {
-  FadeIn,
-  FadeOut,
-  SlideInDown,
-  SlideOutDown,
-} from "react-native-reanimated";
 
-type ThemeType = "light" | "dark";
-
-type Props = {
+type FiltersProps = {
   viewType: FilterViewTypes;
   isVisible: boolean;
   onClose: () => void;
 };
 
-const Filters = ({ viewType, isVisible, onClose }: Props) => {
+const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   const { filters, setFilters, resetFilters } = useFiltersStore();
   const { currentTheme } = useUserStore();
   const current = filters[viewType];
-
   const [isDateFromPickerVisible, setDateFromPickerVisible] = useState(false);
   const [isDateToPickerVisible, setDateToPickerVisible] = useState(false);
-
-  useEffect(() => {
-    StatusBar.setBarStyle(
-      currentTheme === "dark" ? "light-content" : "dark-content"
-    );
-    return () => {
-      StatusBar.setBarStyle(
-        currentTheme === "dark" ? "light-content" : "dark-content"
-      );
-    };
-  }, [currentTheme]);
 
   const handleChange = (field: keyof typeof current, value: string) => {
     setFilters(viewType, {
@@ -89,18 +73,16 @@ const Filters = ({ viewType, isVisible, onClose }: Props) => {
 
   const getInitialDateFrom = () => {
     if (current.dateFrom) {
-      const [year, month, day] = current.dateFrom.split("-").map(Number);
-      const date = new Date(year, month - 1, day);
-      return date > new Date() ? new Date() : date;
+      const parsedDate = parseISO(current.dateFrom);
+      return isAfter(parsedDate, new Date()) ? new Date() : parsedDate;
     }
     return new Date();
   };
 
   const getInitialDateTo = () => {
     if (current.dateTo) {
-      const [year, month, day] = current.dateTo.split("-").map(Number);
-      const date = new Date(year, month - 1, day);
-      return date > new Date() ? new Date() : date;
+      const parsedDate = parseISO(current.dateTo);
+      return isAfter(parsedDate, new Date()) ? new Date() : parsedDate;
     }
     return new Date();
   };
@@ -133,11 +115,7 @@ const Filters = ({ viewType, isVisible, onClose }: Props) => {
           />
         </TouchableWithoutFeedback>
 
-        <Animated.View
-          style={styles(currentTheme).filtersContainer}
-          entering={SlideInDown.duration(300).springify()}
-          exiting={SlideOutDown.duration(250)}
-        >
+        <Animated.View style={styles(currentTheme).filtersContainer}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles(currentTheme).contentContainer}>
               <View style={styles(currentTheme).handleBar} />
@@ -173,37 +151,41 @@ const Filters = ({ viewType, isVisible, onClose }: Props) => {
                 placeholderTextColor={Colors[currentTheme].text + "80"}
               />
 
-              <TouchableOpacity
-                style={styles(currentTheme).dateInput}
-                onPress={showDateFromPicker}
-                activeOpacity={0.7}
-              >
-                <ThemedText
-                  style={
-                    current.dateFrom
-                      ? styles(currentTheme).dateText
-                      : styles(currentTheme).datePlaceholder
-                  }
-                >
-                  {current.dateFrom || "Data od (yyyy-MM-dd)"}
-                </ThemedText>
-              </TouchableOpacity>
+              {viewType !== "collection" && (
+                <>
+                  <TouchableOpacity
+                    style={styles(currentTheme).dateInput}
+                    onPress={showDateFromPicker}
+                    activeOpacity={0.7}
+                  >
+                    <ThemedText
+                      style={
+                        current.dateFrom
+                          ? styles(currentTheme).dateText
+                          : styles(currentTheme).datePlaceholder
+                      }
+                    >
+                      {current.dateFrom || "Data od (yyyy-MM-dd)"}
+                    </ThemedText>
+                  </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles(currentTheme).dateInput}
-                onPress={showDateToPicker}
-                activeOpacity={0.7}
-              >
-                <ThemedText
-                  style={
-                    current.dateTo
-                      ? styles(currentTheme).dateText
-                      : styles(currentTheme).datePlaceholder
-                  }
-                >
-                  {current.dateTo || "Data do (yyyy-MM-dd)"}
-                </ThemedText>
-              </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles(currentTheme).dateInput}
+                    onPress={showDateToPicker}
+                    activeOpacity={0.7}
+                  >
+                    <ThemedText
+                      style={
+                        current.dateTo
+                          ? styles(currentTheme).dateText
+                          : styles(currentTheme).datePlaceholder
+                      }
+                    >
+                      {current.dateTo || "Data do (yyyy-MM-dd)"}
+                    </ThemedText>
+                  </TouchableOpacity>
+                </>
+              )}
 
               <View style={styles(currentTheme).buttonsContainer}>
                 <TouchableOpacity
@@ -230,26 +212,28 @@ const Filters = ({ viewType, isVisible, onClose }: Props) => {
           </TouchableWithoutFeedback>
         </Animated.View>
 
-        <ThemedDatePicker
-          isVisible={isDateFromPickerVisible}
-          initialDate={getInitialDateFrom()}
-          maximumDate={today}
-          onConfirm={handleDateFromConfirm}
-          onCancel={hideDateFromPicker}
-        />
-
-        <ThemedDatePicker
-          isVisible={isDateToPickerVisible}
-          initialDate={getInitialDateTo()}
-          maximumDate={today}
-          onConfirm={handleDateToConfirm}
-          onCancel={hideDateToPicker}
-        />
+        {viewType !== "collection" && (
+          <>
+            <ThemedDatePicker
+              isVisible={isDateFromPickerVisible}
+              initialDate={getInitialDateFrom()}
+              maximumDate={today}
+              onConfirm={handleDateFromConfirm}
+              onCancel={hideDateFromPicker}
+            />
+            <ThemedDatePicker
+              isVisible={isDateToPickerVisible}
+              initialDate={getInitialDateTo()}
+              maximumDate={today}
+              onConfirm={handleDateToConfirm}
+              onCancel={hideDateToPicker}
+            />
+          </>
+        )}
       </KeyboardAvoidingView>
     </Modal>
   );
 };
-
 /* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
@@ -264,8 +248,7 @@ const styles = (theme: ThemeType) =>
     filtersContainer: {
       borderTopLeftRadius: 24,
       borderTopRightRadius: 24,
-      backgroundColor:
-        Colors[theme].background || (theme === "dark" ? "#1c1c1e" : "#f2f2f7"),
+      backgroundColor: Colors[theme].modal_update.backgroundColor,
       shadowColor: "#000",
       shadowOffset: {
         width: 0,

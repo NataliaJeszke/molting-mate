@@ -8,19 +8,19 @@ import {
   KeyboardAvoidingView,
   Platform,
   TextInput,
-  StatusBar,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
-import { useSpidersStore } from "@/store/spidersStore";
-import { ensureLatestDate, sortDateStrings } from "@/utils/dateUtils";
-import { ThemedText } from "@/components/ui/ThemedText";
-import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
-import { Colors } from "@/constants/Colors";
-import { BlurView } from "expo-blur";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { useLocalSearchParams } from "expo-router";
+import { BlurView } from "expo-blur";
+
+import { useSpidersStore } from "@/store/spidersStore";
 import { useUserStore } from "@/store/userStore";
 
-type ThemeType = "light" | "dark";
+import { ensureLatestDate, sortDateStrings } from "@/utils/dateUtils";
+import { Colors, ThemeType } from "@/constants/Colors";
+
+import { ThemedText } from "@/components/ui/ThemedText";
+import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
 
 type ModalUpdateProps = {
   isVisible: boolean;
@@ -29,28 +29,12 @@ type ModalUpdateProps = {
 
 const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   const { id, type } = useLocalSearchParams();
+  const { currentTheme } = useUserStore();
   const updateSpider = useSpidersStore((state) => state.updateSpider);
   const spiders = useSpidersStore((state) => state.spiders);
   const [date, setDate] = useState("");
   const [age, setAge] = useState("");
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
-
-  const { currentTheme } = useUserStore();
-
-  useEffect(() => {
-    if (isVisible) {
-      StatusBar.setBarStyle("light-content");
-    } else {
-      StatusBar.setBarStyle(
-        currentTheme === "dark" ? "light-content" : "dark-content",
-      );
-    }
-    return () => {
-      StatusBar.setBarStyle(
-        currentTheme === "dark" ? "light-content" : "dark-content",
-      );
-    };
-  }, [isVisible, currentTheme]);
 
   useEffect(() => {
     if (id && type === "molting") {
@@ -88,7 +72,8 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
 
           const latestFeedingDate = ensureLatestDate(
             finalDate,
-            sortedFeedingHistory,
+            // eslint-disable-next-line prettier/prettier
+            sortedFeedingHistory
           );
 
           updateSpider(id as string, {
@@ -107,7 +92,8 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
 
           const latestMoltingDate = ensureLatestDate(
             finalDate,
-            sortedMoltingHistory,
+            // eslint-disable-next-line prettier/prettier
+            sortedMoltingHistory
           );
 
           updateSpider(id as string, {
@@ -350,7 +336,7 @@ const styles = (theme: ThemeType) =>
       width: 40,
       height: 5,
       borderRadius: 3,
-      backgroundColor: Colors[theme].card.backgroundColor,
+      backgroundColor: Colors[theme].modal_update.backgroundColor,
       marginBottom: 24,
     },
     modal__title: {
