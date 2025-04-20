@@ -7,7 +7,11 @@ import {
   Dimensions,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
+
 import { useSpidersStore } from "@/store/spidersStore";
+import { useUserStore } from "@/store/userStore";
+
+import { Colors, ThemeType } from "@/constants/Colors";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 
@@ -20,6 +24,7 @@ const ModalAlert = ({ isVisible, onClose }: ModalAlertProps) => {
   const { id } = useLocalSearchParams();
   const spiders = useSpidersStore((state) => state.spiders);
   const deleteSpider = useSpidersStore((state) => state.removeSpider);
+  const { currentTheme } = useUserStore();
 
   const handleConfirm = () => {
     if (id) {
@@ -40,36 +45,46 @@ const ModalAlert = ({ isVisible, onClose }: ModalAlertProps) => {
       onRequestClose={onClose}
       statusBarTranslucent={true}
     >
-      <View style={styles.container}>
-        <View style={styles.centeredView}>
+      <View style={styles(currentTheme).container}>
+        <View style={styles(currentTheme).centeredView}>
           <TouchableOpacity
-            style={styles.backdrop}
+            style={styles(currentTheme).backdrop}
             activeOpacity={1}
             onPress={onClose}
           />
-          <View style={styles.modalView}>
-            <ThemedText type="title" style={styles.modalTitle}>
+          <View style={styles(currentTheme).modalView}>
+            <ThemedText type="title" style={styles(currentTheme).modalTitle}>
               Usuwanie pająka
             </ThemedText>
-            <ThemedText type="subtitle" style={styles.modalText}>
+            <ThemedText type="subtitle" style={styles(currentTheme).modalText}>
               Czy na pewno chcesz usunąć {spiderName} z bazy danych?
             </ThemedText>
-            <ThemedText style={styles.modalText}>
+            <ThemedText style={styles(currentTheme).modalText}>
               Ta operacja jest nieodwracalna. Wszystkie dane dotyczące tego
               pająka zostaną trwale usunięte.
             </ThemedText>
-            <View style={styles.buttonContainer}>
+            <View style={styles(currentTheme).buttonContainer}>
               <TouchableOpacity
                 onPress={onClose}
-                style={[styles.button, styles.cancelButton]}
+                style={[
+                  styles(currentTheme).button,
+                  styles(currentTheme).cancelButton,
+                ]}
               >
-                <ThemedText style={styles.buttonText}>Anuluj</ThemedText>
+                <ThemedText style={styles(currentTheme).buttonText}>
+                  Anuluj
+                </ThemedText>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleConfirm}
-                style={[styles.button, styles.confirmButton]}
+                style={[
+                  styles(currentTheme).button,
+                  styles(currentTheme).confirmButton,
+                ]}
               >
-                <ThemedText style={styles.buttonText}>OK</ThemedText>
+                <ThemedText style={styles(currentTheme).buttonText}>
+                  OK
+                </ThemedText>
               </TouchableOpacity>
             </View>
           </View>
@@ -80,74 +95,75 @@ const ModalAlert = ({ isVisible, onClose }: ModalAlertProps) => {
 };
 
 const windowWidth = Dimensions.get("window").width;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
-  },
-  backdrop: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalView: {
-    width: windowWidth * 0.8,
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
+/* eslint-disable react-native/no-unused-styles */
+const styles = (theme: ThemeType) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    zIndex: 10,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-  modalText: {
-    fontSize: 14,
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  button: {
-    padding: 10,
-    borderRadius: 5,
-    flex: 1,
-    alignItems: "center",
-    marginHorizontal: 5,
-  },
-  confirmButton: {
-    backgroundColor: "#f44336",
-  },
-  cancelButton: {
-    backgroundColor: "#9e9e9e",
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-});
+    centeredView: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      position: "relative",
+    },
+    backdrop: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    modalView: {
+      width: windowWidth * 0.8,
+      backgroundColor: Colors[theme].modal_alert.backgroundColor,
+      borderRadius: 12,
+      padding: 20,
+      alignItems: "center",
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+      zIndex: 10,
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: "bold",
+      marginBottom: 10,
+      textAlign: "center",
+    },
+    modalText: {
+      fontSize: 14,
+      marginBottom: 20,
+      textAlign: "center",
+    },
+    buttonContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      width: "100%",
+    },
+    button: {
+      padding: 10,
+      borderRadius: 5,
+      flex: 1,
+      alignItems: "center",
+      marginHorizontal: 5,
+    },
+    confirmButton: {
+      backgroundColor: "#f44336",
+    },
+    cancelButton: {
+      backgroundColor: "#9e9e9e",
+    },
+    buttonText: {
+      color: "white",
+      fontWeight: "bold",
+    },
+  });
 
 export default ModalAlert;

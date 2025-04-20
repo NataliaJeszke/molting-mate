@@ -64,6 +64,7 @@ const AutocompleteSpeciesInput = ({ value, onSelect, theme }: Props) => {
           style={styles(theme)["autocomplete__input"]}
           value={query}
           placeholder="Zacznij pisać aby wyświetlić podpowiedzi"
+          placeholderTextColor={Colors[theme].text}
           onChangeText={handleChange}
           onFocus={() => {
             if (query.length > 0) {

@@ -309,7 +309,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   );
 };
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 /* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
@@ -331,12 +331,12 @@ const styles = (theme: ThemeType) =>
     },
     modalView: {
       width: width,
-      backgroundColor: Colors[theme].background,
+      backgroundColor: Colors[theme].modal_update.backgroundColor,
       borderTopLeftRadius: 24,
       borderTopRightRadius: 24,
       padding: 24,
       alignItems: "center",
-      shadowColor: Colors[theme === "dark" ? "light" : "dark"].text,
+      shadowColor: "gray",
       shadowOffset: {
         width: 0,
         height: -3,
@@ -376,11 +376,11 @@ const styles = (theme: ThemeType) =>
       color: Colors[theme].text,
     },
     dateContainer__button: {
-      backgroundColor: Colors[theme].card.backgroundColor,
+      backgroundColor: Colors[theme].modal_update.backgroundColor,
       padding: 16,
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: Colors[theme].card.borderColor,
+      borderColor: Colors[theme].modal_update.borderColor,
       width: "100%",
       alignItems: "center",
     },
@@ -399,11 +399,11 @@ const styles = (theme: ThemeType) =>
       color: Colors[theme].text,
     },
     ageInput__field: {
-      backgroundColor: Colors[theme].card.backgroundColor,
+      backgroundColor: Colors[theme].input.backgroundColor,
       padding: 16,
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: Colors[theme].card.borderColor,
+      borderColor: Colors[theme].modal_update.borderColor,
       fontSize: 16,
       color: Colors[theme].text,
       width: "100%",
@@ -422,9 +422,7 @@ const styles = (theme: ThemeType) =>
       flex: 1,
       alignItems: "center",
       marginRight: 8,
-      backgroundColor: "yellow",
       borderWidth: 1,
-      borderColor: Colors[theme].card.borderColor,
     },
     buttonContainer__confirmButton: {
       padding: 16,
@@ -432,15 +430,15 @@ const styles = (theme: ThemeType) =>
       flex: 1,
       alignItems: "center",
       marginLeft: 8,
-      backgroundColor: Colors[theme].card.backgroundColor || "#4CAF50",
+      backgroundColor: Colors[theme].button.confirm.backgroundColor,
     },
     buttonContainer__cancelButtonText: {
-      color: Colors[theme].text || Colors[theme].text,
+      color: Colors[theme].button.cancel.color,
       fontWeight: "600",
       fontSize: 16,
     },
     buttonContainer__confirmButtonText: {
-      color: Colors[theme].text || "#FFFFFF",
+      color: Colors[theme].button.confirm.color,
       fontWeight: "600",
       fontSize: 16,
     },

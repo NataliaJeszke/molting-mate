@@ -31,7 +31,7 @@ const SpiderSectionHeader = ({
 }: SpiderSectionHeaderProps) => {
   const router = useRouter();
   const { currentTheme } = useUserStore();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [filtersVisible, setFiltersVisible] = useState(false);
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
   const filters = useFiltersStore((state) => state.filters[viewType]);
@@ -84,7 +84,7 @@ const SpiderSectionHeader = ({
         )}
 
         <TouchableOpacity
-          onPress={() => setModalVisible(true)}
+          onPress={() => setFiltersVisible(true)}
           style={styles(currentTheme)["spiderSectionHeader__filterButton"]}
         >
           <ThemedText
@@ -93,7 +93,7 @@ const SpiderSectionHeader = ({
             Filtry
           </ThemedText>
           <MaterialIcons
-            name={modalVisible ? "keyboard-arrow-down" : "keyboard-arrow-up"}
+            name="filter-list"
             size={20}
             color={Colors[currentTheme].text}
           />
@@ -122,35 +122,12 @@ const SpiderSectionHeader = ({
           </TouchableWithoutFeedback>
         </Modal>
 
-        <Modal
-          transparent
-          visible={modalVisible}
-          animationType="slide"
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-            <View
-              style={styles(currentTheme)["spiderSectionHeader__modalOverlay"]}
-            >
-              <TouchableWithoutFeedback>
-                <View
-                  style={
-                    styles(currentTheme)["spiderSectionHeader__modalContent"]
-                  }
-                >
-                  <ThemedText
-                    style={
-                      styles(currentTheme)["spiderSectionHeader__modalTitle"]
-                    }
-                  >
-                    Filtry
-                  </ThemedText>
-                  <Filters viewType={viewType} />
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
+        {/* Używamy poprawionego komponentu Filters, który sam ma już Modal */}
+        <Filters
+          viewType={viewType}
+          isVisible={filtersVisible}
+          onClose={() => setFiltersVisible(false)}
+        />
       </View>
     </CardComponent>
   );
@@ -218,24 +195,6 @@ const styles = (theme: ThemeType) =>
       fontSize: 14,
       color: "#333",
       textAlign: "center",
-    },
-    spiderSectionHeader__modalOverlay: {
-      flex: 1,
-      justifyContent: "flex-end",
-      backgroundColor: "rgba(0, 0, 0, 0.3)",
-    },
-    spiderSectionHeader__modalContent: {
-      backgroundColor: Colors[theme].background,
-      padding: 20,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
-      minHeight: 200,
-    },
-    spiderSectionHeader__modalTitle: {
-      fontSize: 18,
-      fontWeight: "600",
-      marginBottom: 12,
-      color: Colors[theme].text,
     },
   });
 

@@ -31,11 +31,11 @@ const SpiderDetails = ({ spider }: Props) => {
 
   const nextFeedingDate = getNextFeedingDate(
     spider.lastFed,
-    spider.feedingFrequency
+    spider.feedingFrequency,
   );
   const feedingStatus = getFeedingStatus(
     spider.lastFed,
-    spider.feedingFrequency
+    spider.feedingFrequency,
   );
 
   const getFeedingStatusLabel = (status: FeedingStatus | null) => {
@@ -60,7 +60,7 @@ const SpiderDetails = ({ spider }: Props) => {
       case FeedingStatus.NOT_HUNGRY:
         return Colors[currentTheme].feedingStatus.notHungry;
       default:
-        return Colors[currentTheme].text;
+        return Colors[currentTheme].feedingStatus.default;
     }
   };
 

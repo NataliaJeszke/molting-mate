@@ -68,14 +68,14 @@ export default function SpiderForm() {
         const latestFedDate = spiderToEdit.feedingHistoryData?.length
           ? ensureLatestDate(
               spiderToEdit.lastFed,
-              spiderToEdit.feedingHistoryData
+              spiderToEdit.feedingHistoryData,
             )
           : spiderToEdit.lastFed;
 
         const latestMoltDate = spiderToEdit.moltingHistoryData?.length
           ? ensureLatestDate(
               spiderToEdit.lastMolt,
-              spiderToEdit.moltingHistoryData
+              spiderToEdit.moltingHistoryData,
             )
           : spiderToEdit.lastMolt;
 
@@ -106,7 +106,7 @@ export default function SpiderForm() {
       lastFed,
       feedingFrequency,
       lastMolt,
-      imageUri
+      imageUri,
     );
     if (
       !name?.trim() ||
@@ -224,7 +224,7 @@ export default function SpiderForm() {
             }
           },
         },
-      ]
+      ],
     );
   };
 

@@ -40,6 +40,18 @@ export const Colors = {
       text: {
         color: "#ffffff",
       },
+      cancel: {
+        backgroundColor: "gray",
+        borderColor: "#a855f7",
+        borderWidth: 0,
+        color: "black",
+      },
+      confirm: {
+        backgroundColor: tintColorLight,
+        borderColor: "#a855f7",
+        borderWidth: 0,
+        color: "#ffffff",
+      },
     },
     picker: {
       background: "#ffffff",
@@ -58,6 +70,8 @@ export const Colors = {
     input: {
       label: "#6e6e6e",
       placeholder: "#6e6e6e",
+      backgroundColor: "#ffffff",
+      borderColor: "#C0C0C0",
     },
     datepicker: {
       button: {
@@ -67,9 +81,10 @@ export const Colors = {
       background: "#ffffff",
     },
     feedingStatus: {
-      hungry: "#FF0000",
-      feedToday: "#00FF00",
-      notHungry: "#FFA500",
+      hungry: "red",
+      feedToday: "yellow",
+      notHungry: "green",
+      default: "gray",
     },
     list: {
       borderColor: "#C0C0C0",
@@ -77,6 +92,16 @@ export const Colors = {
     spider_detail: {
       backgroundColor: "#1f1f1f",
       borderColor: "#6a4c9c",
+      borderWidth: 0.5,
+    },
+    modal_update: {
+      backgroundColor: "#ffffff",
+      borderColor: "#a855f7",
+      borderWidth: 0.5,
+    },
+    modal_alert: {
+      backgroundColor: "#ffffff",
+      borderColor: "#a855f7",
       borderWidth: 0.5,
     },
   },
@@ -111,6 +136,17 @@ export const Colors = {
       text: {
         color: "#1f1f1f",
       },
+      cancel: {
+        borderColor: "#a855f7",
+        borderWidth: 0,
+        color: "white",
+      },
+      confirm: {
+        backgroundColor: tintColorDark,
+        borderColor: "#6a4c9c",
+        borderWidth: 0,
+        color: "black",
+      },
     },
     picker: {
       background: "#1f1f1f",
@@ -129,6 +165,8 @@ export const Colors = {
     input: {
       label: "#c0c0c0",
       placeholder: "#c0c0c0",
+      backgroundColor: "#1f1f1f",
+      borderColor: "#6a4c9c",
     },
     datepicker: {
       button: {
@@ -138,14 +176,25 @@ export const Colors = {
       background: "#1f1f1f",
     },
     feedingStatus: {
-      hungry: "#FF0000",
-      feedToday: "#00FF00",
-      notHungry: "#FFA500",
+      hungry: "red",
+      feedToday: "yellow",
+      notHungry: "green",
+      default: "gray",
     },
     list: {
       borderColor: "#C0C0C0",
     },
     spider_detail: {
+      backgroundColor: "#1f1f1f",
+      borderColor: "#6a4c9c",
+      borderWidth: 0.5,
+    },
+    modal_update: {
+      backgroundColor: "#1f1f1f",
+      borderColor: "#6a4c9c",
+      borderWidth: 0.5,
+    },
+    modal_alert: {
       backgroundColor: "#1f1f1f",
       borderColor: "#6a4c9c",
       borderWidth: 0.5,
