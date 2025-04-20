@@ -251,7 +251,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
           exiting={FadeOut.duration(200)}
         >
           <BlurView
-            intensity={90}
+            intensity={10}
             tint={currentTheme === "dark" ? "dark" : "light"}
             style={styles(currentTheme).backdrop}
           >
