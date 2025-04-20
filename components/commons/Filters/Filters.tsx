@@ -125,7 +125,6 @@ const Filters = ({ viewType, isVisible, onClose }: Props) => {
         }
         style={styles(currentTheme).container}
       >
-        {/* Semi-transparent overlay */}
         <TouchableWithoutFeedback onPress={onClose}>
           <Animated.View
             style={styles(currentTheme).overlay}
@@ -134,7 +133,6 @@ const Filters = ({ viewType, isVisible, onClose }: Props) => {
           />
         </TouchableWithoutFeedback>
 
-        {/* Filter panel sliding from bottom */}
         <Animated.View
           style={styles(currentTheme).filtersContainer}
           entering={SlideInDown.duration(300).springify()}
@@ -142,7 +140,6 @@ const Filters = ({ viewType, isVisible, onClose }: Props) => {
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles(currentTheme).contentContainer}>
-              {/* Handle bar */}
               <View style={styles(currentTheme).handleBar} />
 
               <ThemedText style={styles(currentTheme).filtersTitle}>
