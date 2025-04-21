@@ -36,7 +36,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   const [isDateFromPickerVisible, setDateFromPickerVisible] = useState(false);
   const [isDateToPickerVisible, setDateToPickerVisible] = useState(false);
   const [individualTypes, setIndividualTypes] = useState<IndividualType[]>(
-    current.individualType || [],
+    current.individualType || []
   );
 
   const today = new Date();
@@ -48,7 +48,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
 
   const handleChange = (
     field: keyof typeof current,
-    value: string | number,
+    value: string | number
   ) => {
     setFilters(viewType, {
       ...current,
@@ -154,7 +154,10 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                 min={0}
                 max={20}
                 step={1}
-                initialValues={[current.ageFrom || 0, current.ageTo || 20]}
+                initialValues={[
+                  typeof current.ageFrom === "number" ? current.ageFrom : 0,
+                  typeof current.ageTo === "number" ? current.ageTo : 20,
+                ]}
                 label="Wiek"
                 onChange={([from, to]) => {
                   handleChange("ageFrom", from);

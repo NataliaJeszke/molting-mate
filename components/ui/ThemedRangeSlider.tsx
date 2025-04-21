@@ -11,7 +11,7 @@ type Props = {
   initialValues?: [number, number];
   label?: string;
   onChange: (values: [number, number]) => void;
-  allowSameValue?: boolean; // Dodany nowy prop kontrolujący czy można ustawić te same wartości
+  allowSameValue?: boolean;
 };
 
 const SLIDER_WIDTH = Dimensions.get("window").width * 0.9;
