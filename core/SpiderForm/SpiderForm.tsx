@@ -39,7 +39,7 @@ export default function SpiderForm() {
   const { addSpider, updateSpider, spiders } = useSpidersStore();
 
   const [name, setName] = useState<string>();
-  const [age, setAge] = useState<string>();
+  const [age, setAge] = useState<number>();
   const [lastFed, setLastFed] = useState<string>();
   const [feedingFrequency, setFeedingFrequency] = useState<string>();
   const [lastMolt, setLastMolt] = useState<string>();
@@ -86,7 +86,7 @@ export default function SpiderForm() {
       }
     } else {
       setName("");
-      setAge("");
+      setAge(0);
       setSpiderSpecies("");
       setIndividualType(undefined);
       setLastFed("");
@@ -110,7 +110,7 @@ export default function SpiderForm() {
     );
     if (
       !name?.trim() ||
-      !age?.trim() ||
+      !age ||
       !spiderSpecies?.trim() ||
       !lastFed?.trim() ||
       !feedingFrequency?.trim() ||
@@ -171,7 +171,7 @@ export default function SpiderForm() {
 
   const clearForm = () => {
     setName("");
-    setAge("");
+    setAge(0);
     setSpiderSpecies("");
     setIndividualType(undefined);
     setLastFed("");
@@ -342,21 +342,11 @@ export default function SpiderForm() {
             Wiek "L"
           </ThemedText>
           <TextInput
-            value={age}
-            onChangeText={(text) => {
-              const numericValue = text.replace(/[^0-9]/g, "");
-              const number = parseInt(numericValue, 10);
-              if (!isNaN(number) && number <= 20) {
-                setAge(`L${numericValue}`);
-              } else if (numericValue === "") {
-                setAge("");
-              }
-            }}
+            value={age?.toString()}
+            onChangeText={(text) => setAge(+text)}
             keyboardType="numeric"
-            maxLength={3}
             style={styles(currentTheme).input}
             placeholder="0"
-            placeholderTextColor={Colors[currentTheme].input.placeholder}
           />
 
           <ThemedText style={styles(currentTheme).label}>Gatunek</ThemedText>

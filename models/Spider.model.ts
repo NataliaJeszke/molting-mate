@@ -4,7 +4,7 @@ import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 export type Spider = {
   id: string;
   name: string;
-  age: string;
+  age: number;
   spiderSpecies: string;
   individualType: IndividualType | undefined;
   lastFed: string;
