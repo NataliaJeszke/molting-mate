@@ -230,7 +230,7 @@ const SpiderDetails = ({ spider }: Props) => {
               </ThemedText>
             </View>
             <ThemedText style={styles(currentTheme).basicInfoCard__value}>
-              {spider.age}
+              L{spider.age}
             </ThemedText>
           </View>
         </View>

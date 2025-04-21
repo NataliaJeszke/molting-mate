@@ -1,7 +1,7 @@
 import { IndividualType } from "./Spider.model";
 
 export type FilterType = {
-  age?: string;
+  age?: number;
   individualType?: IndividualType[];
   spiderSpecies?: string;
   dateFrom?: string;

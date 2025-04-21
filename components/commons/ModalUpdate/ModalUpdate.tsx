@@ -33,7 +33,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   const updateSpider = useSpidersStore((state) => state.updateSpider);
   const spiders = useSpidersStore((state) => state.spiders);
   const [date, setDate] = useState("");
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState(0);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
   useEffect(() => {
@@ -189,21 +189,11 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
                 Wiek "L"
               </ThemedText>
               <TextInput
-                value={age}
-                onChangeText={(text) => {
-                  const numericValue = text.replace(/[^0-9]/g, "");
-                  const number = parseInt(numericValue, 10);
-                  if (!isNaN(number) && number <= 20) {
-                    setAge(`L${numericValue}`);
-                  } else if (numericValue === "") {
-                    setAge("");
-                  }
-                }}
+                value={age?.toString()}
+                onChangeText={(text) => setAge(+text)}
                 keyboardType="numeric"
-                maxLength={3}
-                placeholder="0"
-                placeholderTextColor={Colors[currentTheme].text + "80"}
                 style={styles(currentTheme).ageInput__field}
+                placeholder="0"
               />
             </View>
           </>

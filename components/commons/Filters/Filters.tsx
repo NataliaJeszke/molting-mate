@@ -46,7 +46,10 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
     { label: "Niezidentyfikowany", value: "Niezidentyfikowany" },
   ];
 
-  const handleChange = (field: keyof typeof current, value: string) => {
+  const handleChange = (
+    field: keyof typeof current,
+    value: string | number,
+  ) => {
     setFilters(viewType, {
       ...current,
       [field]: value,
@@ -146,15 +149,10 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
               <ThemedText style={styles(currentTheme).filtersTitle}>
                 Wybierz filtry:
               </ThemedText>
-
               <TextInput
-                placeholder="Wiek (liczba)"
-                value={current.age?.replace("L", "") || ""}
-                onChangeText={(text) => {
-                  const numeric = text.replace(/\D/g, "");
-                  const withL = numeric ? `L${numeric}` : "";
-                  handleChange("age", withL);
-                }}
+                placeholder="0"
+                value={current.age?.toString()}
+                onChangeText={(text) => handleChange("age", +text)}
                 style={styles(currentTheme).input}
                 placeholderTextColor={Colors[currentTheme].text + "80"}
                 keyboardType="numeric"
