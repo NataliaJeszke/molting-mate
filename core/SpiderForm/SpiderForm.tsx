@@ -342,8 +342,15 @@ export default function SpiderForm() {
             Wiek "L"
           </ThemedText>
           <TextInput
-            value={age?.toString()}
-            onChangeText={(text) => setAge(+text)}
+            value={age?.toString() ?? "0"}
+            onChangeText={(text) => {
+              const parsedAge = parseInt(text, 10);
+              if (isNaN(parsedAge)) {
+                setAge(0);
+              } else {
+                setAge(parsedAge);
+              }
+            }}
             keyboardType="numeric"
             style={styles(currentTheme).input}
             placeholder="0"
