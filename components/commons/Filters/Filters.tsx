@@ -13,10 +13,11 @@ import {
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { isAfter, parseISO } from "date-fns";
 
-import { FilterViewTypes, useFiltersStore } from "@/store/filtersStore";
+import { useFiltersStore } from "@/store/filtersStore";
 import { useUserStore } from "@/store/userStore";
 
 import { Colors, ThemeType } from "@/constants/Colors";
+import { FilterViewTypes } from "@/models/Filters.model";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
@@ -39,8 +40,6 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   const [individualTypes, setIndividualTypes] = useState<IndividualType[]>(
     current.individualType || []
   );
-  // const [ageFrom, setAgeFrom] = useState<number | undefined>(current.ageFrom);
-  // const [ageTo, setAgeTo] = useState<number | undefined>(current.ageTo);
 
   const today = new Date();
   const individualTypeOptions: { label: string; value: IndividualType }[] = [
@@ -48,12 +47,6 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
     { label: "Samica", value: "Samica" },
     { label: "Niezidentyfikowany", value: "Niezidentyfikowany" },
   ];
-
-  useEffect(() => {
-    console.log("current:", current);
-    console.log("current.ageFrom:", current.ageFrom);
-    console.log("current.ageTo:", current.ageTo);
-  }, [current]);
 
   const handleChange = (
     field: keyof typeof current,
@@ -174,7 +167,6 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                 ]}
                 label="Wiek"
                 onChange={([from, to]) => {
-                  console.log("Slider changed", from, to);
                   handleRangeChange(from, to);
                 }}
                 allowSameValue={true}

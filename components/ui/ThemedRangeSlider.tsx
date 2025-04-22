@@ -35,10 +35,8 @@ export const ThemedRangeSlider = ({
     null
   );
 
-  // Use refs to track the previous values
   const prevInitialValues = useRef(initialValues);
 
-  // Update state when initialValues change from props
   useEffect(() => {
     const [newFrom, newTo] = initialValues;
     const [oldFrom, oldTo] = prevInitialValues.current;
