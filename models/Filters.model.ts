@@ -8,4 +8,5 @@ export type FilterType = {
   spiderSpecies?: string;
   dateFrom?: string;
   dateTo?: string;
+  isActive?: boolean;
 };

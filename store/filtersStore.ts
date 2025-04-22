@@ -10,6 +10,7 @@ const DEFAULT_FILTERS: FilterType = {
   spiderSpecies: "",
   dateFrom: undefined,
   dateTo: undefined,
+  isActive: false,
 };
 
 type FiltersStore = {
@@ -41,6 +42,7 @@ export const useFiltersStore = create<FiltersStore>((set) => ({
         [key]: {
           ...state.filters[key],
           ...filters,
+          isActive: true,
         },
       },
     }));
@@ -56,6 +58,7 @@ export const useFiltersStore = create<FiltersStore>((set) => ({
           ...state.filters[key],
           ageFrom,
           ageTo,
+          isActive: true,
         },
       },
     }));
@@ -66,6 +69,7 @@ export const useFiltersStore = create<FiltersStore>((set) => ({
       filters: {
         ...state.filters,
         [key]: { ...DEFAULT_FILTERS },
+        isActive: false,
       },
     }));
   },
