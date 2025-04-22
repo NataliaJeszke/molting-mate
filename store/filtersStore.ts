@@ -1,17 +1,6 @@
 import { create } from "zustand";
 import { FilterType } from "@/models/Filters.model";
-
-export type FilterViewTypes = "molting" | "feeding" | "collection";
-
-const DEFAULT_FILTERS: FilterType = {
-  ageFrom: 0,
-  ageTo: 20,
-  individualType: [],
-  spiderSpecies: "",
-  dateFrom: undefined,
-  dateTo: undefined,
-  isActive: false,
-};
+import { DEFAULT_FILTERS } from "@/constants/Filters";
 
 type FiltersStore = {
   filters: {
@@ -35,7 +24,6 @@ export const useFiltersStore = create<FiltersStore>((set) => ({
     collection: { ...DEFAULT_FILTERS },
   },
   setFilters: (key, filters) => {
-    console.log(`setFilters for ${key}:`, filters);
     set((state) => ({
       filters: {
         ...state.filters,
@@ -48,9 +36,6 @@ export const useFiltersStore = create<FiltersStore>((set) => ({
     }));
   },
   setRangeFilters: (key, ageFrom, ageTo) => {
-    console.log(
-      `setRangeFilters for ${key}: ageFrom=${ageFrom}, ageTo=${ageTo}`
-    );
     set((state) => ({
       filters: {
         ...state.filters,
@@ -64,7 +49,6 @@ export const useFiltersStore = create<FiltersStore>((set) => ({
     }));
   },
   resetFilters: (key) => {
-    console.log(`resetFilters for ${key}`);
     set((state) => ({
       filters: {
         ...state.filters,
