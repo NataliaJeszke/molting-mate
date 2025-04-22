@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { View, PanResponder, StyleSheet, Dimensions } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { useUserStore } from "@/store/userStore";
@@ -32,14 +32,33 @@ export const ThemedRangeSlider = ({
   const [from, setFrom] = useState(initialValues[0]);
   const [to, setTo] = useState(initialValues[1]);
   const [lastMovedThumb, setLastMovedThumb] = useState<"from" | "to" | null>(
-    null,
+    null
   );
+
+  // Use refs to track the previous values
+  const prevInitialValues = useRef(initialValues);
+
+  // Update state when initialValues change from props
+  useEffect(() => {
+    const [newFrom, newTo] = initialValues;
+    const [oldFrom, oldTo] = prevInitialValues.current;
+
+    if (newFrom !== oldFrom || newTo !== oldTo) {
+      console.log(
+        `InitialValues changed: [${oldFrom}, ${oldTo}] -> [${newFrom}, ${newTo}]`
+      );
+      setFrom(newFrom);
+      setTo(newTo);
+      prevInitialValues.current = initialValues;
+    }
+  }, [initialValues]);
 
   const positionFrom = ((from - min) / (max - min)) * SLIDER_WIDTH;
   const positionTo = ((to - min) / (max - min)) * SLIDER_WIDTH;
 
   const stepPixels = SLIDER_WIDTH / ((max - min) / step);
 
+  // Handle thumb movement - left thumb
   const panFrom = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: () => {
@@ -48,16 +67,20 @@ export const ThemedRangeSlider = ({
     onPanResponderMove: (_, gesture) => {
       const newPos = Math.min(
         allowSameValue ? positionTo : positionTo - stepPixels,
-        positionFrom + gesture.dx,
+        Math.max(0, positionFrom + gesture.dx)
       );
       const value = Math.round((newPos / SLIDER_WIDTH) * (max - min) + min);
       if (value >= min && value <= (allowSameValue ? to : to - step)) {
         setFrom(value);
-        onChange([value, to]);
       }
+    },
+    onPanResponderRelease: () => {
+      console.log("Calling onChange after from thumb release:", from, to);
+      onChange([from, to]);
     },
   });
 
+  // Handle thumb movement - right thumb
   const panTo = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: () => {
@@ -66,13 +89,16 @@ export const ThemedRangeSlider = ({
     onPanResponderMove: (_, gesture) => {
       const newPos = Math.max(
         allowSameValue ? positionFrom : positionFrom + stepPixels,
-        positionTo + gesture.dx,
+        Math.min(SLIDER_WIDTH, positionTo + gesture.dx)
       );
       const value = Math.round((newPos / SLIDER_WIDTH) * (max - min) + min);
       if (value <= max && value >= (allowSameValue ? from : from + step)) {
         setTo(value);
-        onChange([from, value]);
       }
+    },
+    onPanResponderRelease: () => {
+      console.log("Calling onChange after to thumb release:", from, to);
+      onChange([from, to]);
     },
   });
 
