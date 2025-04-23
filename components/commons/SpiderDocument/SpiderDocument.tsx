@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   TouchableOpacity,
@@ -11,28 +11,40 @@ import { Feather } from "@expo/vector-icons";
 
 import CardComponent from "@/components/ui/CardComponent";
 import { ThemedText } from "@/components/ui/ThemedText";
+import { ThemeType } from "@/constants/Colors";
 
-interface SpiderDocumentProps {
-  documentUri: string | undefined;
-  isImageDocument: boolean;
+type SpiderDocumentProps = {
+  documentUris: string[];
+  isImageDocument: (uri: string) => boolean;
   onChooseDocument: () => void;
-  currentTheme: "light" | "dark";
+  onRemoveDocument: (index: number) => void;
+  currentTheme: ThemeType;
   styles: any;
   showDocumentModal: boolean;
   setShowDocumentModal: (value: boolean) => void;
-}
+};
 
 const SpiderDocument = ({
-  documentUri,
+  documentUris,
   isImageDocument,
   onChooseDocument,
+  onRemoveDocument,
   currentTheme,
   styles,
   showDocumentModal,
   setShowDocumentModal,
 }: SpiderDocumentProps) => {
+  const [selectedDocumentUri, setSelectedDocumentUri] = useState<string | null>(
+    null,
+  );
+
+  const openPreview = (uri: string) => {
+    setSelectedDocumentUri(uri);
+    setShowDocumentModal(true);
+  };
+
   const renderContent = () => {
-    if (!documentUri) {
+    if (documentUris.length === 0) {
       return (
         <View style={styles(currentTheme).documentCard__noDocument}>
           <Feather
@@ -47,30 +59,56 @@ const SpiderDocument = ({
       );
     }
 
-    return isImageDocument ? (
-      <TouchableOpacity
-        onPress={() => setShowDocumentModal(true)}
+    return documentUris.map((uri, index) => (
+      <View
+        key={index}
         style={styles(currentTheme).documentCard__previewContainer}
       >
-        <Image
-          source={{ uri: documentUri }}
-          style={styles(currentTheme).documentCard__preview}
-        />
+        {isImageDocument(uri) ? (
+          <Image
+            source={{ uri }}
+            style={styles(currentTheme).documentCard__preview}
+          />
+        ) : (
+          <View style={styles(currentTheme).documentCard__noDocument}>
+            <Feather name="file" size={48} color={Colors[currentTheme].text} />
+            <ThemedText
+              style={styles(currentTheme).documentCard__noDocumentText}
+            >
+              Obsługiwane są tylko obrazy jako dokumenty.
+            </ThemedText>
+          </View>
+        )}
 
-        <Feather
-          name="eye"
-          size={16}
-          style={styles(currentTheme).documentCard__viewButton}
-        />
-      </TouchableOpacity>
-    ) : (
-      <View style={styles(currentTheme).documentCard__noDocument}>
-        <Feather name="file" size={48} color={Colors[currentTheme].text} />
-        <ThemedText style={styles(currentTheme).documentCard__noDocumentText}>
-          Obsługiwane są tylko obrazy jako dokumenty.
-        </ThemedText>
+        <View style={styles(currentTheme).documentCard__buttonContainer}>
+          <TouchableOpacity
+            onPress={() => openPreview(uri)}
+            style={styles(currentTheme).documentCard__viewButton}
+          >
+            <Feather name="eye" size={16} color={Colors[currentTheme].text} />
+            <ThemedText style={styles(currentTheme).documentCard__buttonText}>
+              Podgląd
+            </ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => onRemoveDocument(index)}
+            style={styles(currentTheme).documentCard__removeButton}
+          >
+            <Feather
+              name="trash-2"
+              size={16}
+              color={Colors[currentTheme].destructive}
+            />
+            <ThemedText
+              style={styles(currentTheme).documentCard__removeButtonText}
+            >
+              Usuń
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
       </View>
-    );
+    ));
   };
 
   return (
@@ -84,7 +122,7 @@ const SpiderDocument = ({
                 size={20}
                 style={styles(currentTheme).documentCard__icon}
               />
-              <ThemedText style={styles(currentTheme).documentTitle}>
+              <ThemedText style={styles(currentTheme).documentCard__title}>
                 Dokumentacja
               </ThemedText>
             </View>
@@ -122,9 +160,9 @@ const SpiderDocument = ({
             </TouchableOpacity>
           </View>
 
-          {documentUri && isImageDocument && (
+          {selectedDocumentUri && isImageDocument(selectedDocumentUri) && (
             <Image
-              source={{ uri: documentUri }}
+              source={{ uri: selectedDocumentUri }}
               style={styles(currentTheme)["modal__fullscreen-image"]}
               resizeMode="contain"
             />

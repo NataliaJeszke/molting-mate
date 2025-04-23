@@ -24,10 +24,10 @@ interface Props {
 
 const SpiderDetails = ({ spider }: Props) => {
   const { currentTheme } = useUserStore();
+  const { updateSpider } = useSpidersStore();
   const [showFeedingHistory, setShowFeedingHistory] = useState(false);
   const [showMoltingHistory, setShowMoltingHistory] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
-  const [documentUri, setDocumentUri] = useState<string>();
 
   const nextFeedingDate = getNextFeedingDate(
     spider.lastFed,
@@ -128,10 +128,11 @@ const SpiderDetails = ({ spider }: Props) => {
 
           if (!result.canceled) {
             const uri = result.assets[0].uri;
-            setDocumentUri(uri);
-            useSpidersStore
-              .getState()
-              .updateSpider(spider.id, { documentUri: documentUri });
+            updateSpider(spider.id, {
+              documentUris: spider.documentUris
+                ? [...spider.documentUris, uri]
+                : [uri],
+            });
           }
         },
       },
@@ -153,10 +154,12 @@ const SpiderDetails = ({ spider }: Props) => {
 
           if (!result.canceled) {
             const uri = result.assets[0].uri;
-            setDocumentUri(uri);
-            useSpidersStore
-              .getState()
-              .updateSpider(spider.id, { documentUri: documentUri });
+            updateSpider(spider.id, {
+              documentUris: spider.documentUris
+                ? [...spider.documentUris, uri]
+                : [uri],
+            });
+            console.log("update spider", spider);
           }
         },
       },
@@ -165,6 +168,28 @@ const SpiderDetails = ({ spider }: Props) => {
         style: "cancel",
       },
     ]);
+  };
+
+  const handleRemoveDocument = (index: number) => {
+    Alert.alert(
+      "Usuń dokument",
+      "Czy na pewno chcesz usunąć dokument pochodzenia?",
+      [
+        {
+          text: "Anuluj",
+          style: "cancel",
+        },
+        {
+          text: "Usuń",
+          style: "destructive",
+          onPress: () => {
+            const newUris = [...(spider.documentUris || [])];
+            newUris.splice(index, 1);
+            updateSpider(spider.id, { documentUris: newUris });
+          },
+        },
+      ],
+    );
   };
 
   return (
@@ -410,9 +435,10 @@ const SpiderDetails = ({ spider }: Props) => {
 
       {/* Document Card */}
       <SpiderDocument
-        documentUri={spider.documentUri}
-        isImageDocument={isImageDocument(spider.documentUri)}
+        documentUris={spider.documentUris || []}
+        isImageDocument={(uri) => isImageDocument(uri)}
         onChooseDocument={handleChooseDocument}
+        onRemoveDocument={handleRemoveDocument}
         currentTheme={currentTheme}
         styles={styles}
         showDocumentModal={showDocumentModal}
@@ -425,7 +451,6 @@ const SpiderDetails = ({ spider }: Props) => {
 /* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
-    // Block: spiderDetails
     spiderDetails: {
       gap: 16,
     },
@@ -710,6 +735,12 @@ const styles = (theme: ThemeType) =>
       borderRadius: 16,
       padding: 0,
       overflow: "hidden",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+      marginVertical: 8,
     },
     documentCard__header: {
       flexDirection: "row",
@@ -732,9 +763,13 @@ const styles = (theme: ThemeType) =>
       fontWeight: "600",
     },
     documentCard__addButton: {
-      padding: 8,
+      padding: 6,
       borderRadius: 8,
-      backgroundColor: Colors[theme].card.backgroundColor,
+      backgroundColor: Colors[theme].background || "#007AFF",
+      width: 36,
+      height: 36,
+      justifyContent: "center",
+      alignItems: "center",
     },
     documentCard__content: {
       padding: 16,
@@ -744,41 +779,87 @@ const styles = (theme: ThemeType) =>
     },
     documentCard__previewContainer: {
       alignItems: "center",
-      position: "relative",
+      width: "100%",
     },
     documentCard__preview: {
-      width: 200,
-      height: 200,
-      borderRadius: 8,
+      width: "100%",
+      height: 240,
+      borderRadius: 12,
       borderWidth: 1,
       borderColor: Colors[theme].spider_detail.borderColor,
       resizeMode: "cover",
     },
+    documentCard__buttonContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      width: "100%",
+      marginTop: 16,
+      marginBottom: 16,
+      paddingHorizontal: 8,
+    },
+    // Enhanced view button styling
     documentCard__viewButton: {
-      position: "absolute",
-      bottom: 12,
       flexDirection: "row",
       alignItems: "center",
-      backgroundColor: Colors[theme].card.backgroundColor,
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      borderRadius: 20,
+      justifyContent: "center",
+      backgroundColor: Colors[theme].card.backgroundColor || "#007AFF",
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      borderRadius: 24,
+      flex: 1,
+      marginRight: 8,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.2,
       shadowRadius: 3,
       elevation: 3,
+      borderWidth: 1,
+      borderColor: Colors[theme].card.borderColor,
+    },
+    documentCard__buttonText: {
+      marginLeft: 8,
+      fontSize: 14,
+      fontWeight: "600",
       color: Colors[theme].text,
+    },
+    documentCard__removeButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: Colors[theme].card.backgroundColor,
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      borderRadius: 24,
+      borderWidth: 1,
+      borderColor: Colors[theme].warning.text || "#FF3B30",
+      flex: 1,
+      marginLeft: 8,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
+      elevation: 3,
+    },
+    documentCard__removeButtonText: {
+      marginLeft: 8,
+      fontSize: 14,
+      fontWeight: "600",
+      color: Colors[theme].text || "#FF3B30",
     },
     documentCard__noDocument: {
       alignItems: "center",
       justifyContent: "center",
       padding: 20,
+      backgroundColor: Colors[theme].spider_detail.backgroundColor || "#F2F2F7",
+      borderRadius: 12,
+      width: "100%",
+      height: 200,
     },
     documentCard__noDocumentText: {
       marginTop: 12,
       textAlign: "center",
-      color: Colors[theme].text,
+      color: Colors[theme].text || "#8E8E93",
+      fontSize: 14,
     },
 
     // Block: modal - existing styles kept
