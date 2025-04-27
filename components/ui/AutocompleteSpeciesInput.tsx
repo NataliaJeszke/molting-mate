@@ -9,7 +9,7 @@ import {
   Keyboard,
 } from "react-native";
 import { ThemedText } from "./ThemedText";
-import { spiderSpeciesList } from "@/core/SpiderForm/SpiderForm.constants";
+import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
 import { Colors, ThemeType } from "@/constants/Colors";
 
 type Props = {
@@ -19,6 +19,7 @@ type Props = {
 };
 
 const AutocompleteSpeciesInput = ({ value, onSelect, theme }: Props) => {
+  const { spiderSpeciesList } = useSpiderSpeciesStore();
   const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState(spiderSpeciesList);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
@@ -29,10 +30,11 @@ const AutocompleteSpeciesInput = ({ value, onSelect, theme }: Props) => {
         spiderSpeciesList.find((item) => item.value === value)?.label ?? value,
       );
     }
-  }, [value]);
+  }, [spiderSpeciesList, value]);
 
   const handleChange = (text: string) => {
     setQuery(text);
+    onSelect(text);
     if (text.trim() === "") {
       setFilteredData(spiderSpeciesList);
       setDropdownVisible(false);
