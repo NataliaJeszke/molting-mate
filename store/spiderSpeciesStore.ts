@@ -8,6 +8,7 @@ interface SpiderSpeciesList {
 interface SpiderSpeciesStore {
   spiderSpeciesList: SpiderSpeciesList[];
   addSpecies: (label: string) => void;
+  removeSpecies: (value: string) => void;
 }
 
 export const useSpiderSpeciesStore = create<SpiderSpeciesStore>((set) => ({
@@ -64,4 +65,10 @@ export const useSpiderSpeciesStore = create<SpiderSpeciesStore>((set) => ({
         ],
       };
     }),
+  removeSpecies: (value) =>
+    set((state) => ({
+      spiderSpeciesList: state.spiderSpeciesList.filter(
+        (species) => species.value !== value,
+      ),
+    })),
 }));
