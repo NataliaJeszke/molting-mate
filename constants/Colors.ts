@@ -104,6 +104,10 @@ export const Colors = {
       borderColor: "#a855f7",
       borderWidth: 0.5,
     },
+    button_menu: {
+      closed: tintColorLight,
+      open: tintColorDark,
+    },
   },
   dark: {
     text: "rgb(255, 255, 255)",
@@ -198,6 +202,10 @@ export const Colors = {
       backgroundColor: "#1f1f1f",
       borderColor: "#6a4c9c",
       borderWidth: 0.5,
+    },
+    button_menu: {
+      closed: tintColorDark,
+      open: tintColorLight,
     },
   },
 };

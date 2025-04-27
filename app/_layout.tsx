@@ -115,6 +115,13 @@ export default function RootLayout() {
               contentStyle: { backgroundColor: "transparent" },
             }}
           />
+          <Stack.Screen
+            name="addNewSPPtoList"
+            options={{
+              presentation: "modal",
+              title: "Dodaj nowy gatunek pająka",
+            }}
+          />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar currentTheme={currentTheme} systemTheme={systemTheme} />

@@ -32,11 +32,13 @@ import { ThemedText } from "@/components/ui/ThemedText";
 
 import SpiderImage from "@/components/commons/SpiderImage/SpiderImage";
 import { ensureLatestDate, sortDateStrings } from "@/utils/dateUtils";
+import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
 
 export default function SpiderForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { currentTheme } = useUserStore();
   const { addSpider, updateSpider, spiders } = useSpidersStore();
+  const { addSpecies, spiderSpeciesList } = useSpiderSpeciesStore();
 
   const [name, setName] = useState<string>();
   const [age, setAge] = useState<number>();
@@ -117,6 +119,16 @@ export default function SpiderForm() {
       !lastMolt?.trim()
     ) {
       return Alert.alert("Błąd walidacji", "Uzupełnij wszystkie pola.");
+    }
+
+    const speciesExists = spiderSpeciesList.some(
+      (species) =>
+        species.value.toLowerCase() === spiderSpecies.toLowerCase() ||
+        species.label.toLowerCase() === spiderSpecies.toLowerCase(),
+    );
+
+    if (!speciesExists) {
+      addSpecies(spiderSpecies);
     }
 
     const existingSpider = id ? spiders.find((s) => s.id === id) : null;

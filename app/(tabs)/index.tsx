@@ -1,9 +1,15 @@
-import { StyleSheet, TouchableOpacity, ScrollView, View } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  View,
+  Animated,
+} from "react-native";
 
 import { useRouter } from "expo-router";
 
 import Feather from "@expo/vector-icons/build/Feather";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { useUserStore } from "@/store/userStore";
 
@@ -17,10 +23,30 @@ import WrapperComponent from "@/components/ui/WrapperComponent";
 import CardComponent from "@/components/ui/CardComponent";
 import SpiderGallery from "@/components/ui/SpiderGallery";
 import UpcomingFeedingListComponent from "@/core/UpcomingFeedingListComponent/UpcomingFeedingListComponent";
+import { useState } from "react";
+import { ThemedText } from "@/components/ui/ThemedText";
+import {
+  getAddSpeciesStyle,
+  getAddSpiderStyle,
+} from "@/utils/animations.constants";
 
 export default function HomeScreen() {
   const router = useRouter();
   const { currentTheme } = useUserStore();
+  const [isFabOpen, setIsFabOpen] = useState(false);
+  const [animation] = useState(new Animated.Value(0));
+
+  const toggleFab = () => {
+    const toValue = isFabOpen ? 0 : 1;
+
+    Animated.spring(animation, {
+      toValue,
+      friction: 5,
+      useNativeDriver: true,
+    }).start();
+
+    setIsFabOpen(!isFabOpen);
+  };
 
   return (
     <WrapperComponent>
@@ -46,12 +72,75 @@ export default function HomeScreen() {
         <PostMoltingListComponent />
       </ScrollView>
 
-      <TouchableOpacity
-        style={styles(currentTheme)["dashboard__fab"]}
-        onPress={() => router.push("/spiderForm")}
-      >
-        <Feather name="plus" size={28} color="#FFFFFF" />
-      </TouchableOpacity>
+      <View style={styles(currentTheme).fabContainer}>
+        <Animated.View
+          style={[styles(currentTheme).fabItem, getAddSpeciesStyle(animation)]}
+        >
+          <TouchableOpacity
+            style={[
+              styles(currentTheme).fabItemButton,
+              {
+                backgroundColor: Colors[currentTheme].tint || "#4CAF50",
+              },
+            ]}
+            onPress={() => {
+              toggleFab();
+              router.push("/addNewSPPtoList");
+            }}
+          >
+            <Feather name="book" size={20} color="#FFFFFF" />
+          </TouchableOpacity>
+          <View style={styles(currentTheme).fabItemLabel}>
+            <ThemedText style={styles(currentTheme).fabItemText}>
+              Dodaj gatunek
+            </ThemedText>
+          </View>
+        </Animated.View>
+
+        <Animated.View
+          style={[styles(currentTheme).fabItem, getAddSpiderStyle(animation)]}
+        >
+          <TouchableOpacity
+            style={styles(currentTheme).fabItemButton}
+            onPress={() => {
+              toggleFab();
+              router.push("/spiderForm");
+            }}
+          >
+            <MaterialCommunityIcons name="spider" size={20} color="#FFFFFF" />
+          </TouchableOpacity>
+          <View style={styles(currentTheme).fabItemLabel}>
+            <ThemedText style={styles(currentTheme).fabItemText}>
+              Dodaj pająka
+            </ThemedText>
+          </View>
+        </Animated.View>
+
+        <TouchableOpacity
+          style={[
+            styles(currentTheme).dashboardFab,
+            isFabOpen && {
+              backgroundColor: Colors[currentTheme].button_menu.open,
+            },
+          ]}
+          onPress={toggleFab}
+        >
+          <Animated.View
+            style={{
+              transform: [
+                {
+                  rotate: animation.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: ["0deg", "45deg"],
+                  }),
+                },
+              ],
+            }}
+          >
+            <Feather name="plus" size={28} color="#FFFFFF" />
+          </Animated.View>
+        </TouchableOpacity>
+      </View>
     </WrapperComponent>
   );
 }
@@ -106,5 +195,77 @@ const styles = (theme: ThemeType) =>
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
+    },
+
+    "dashboard__add-new-species-button": {
+      position: "absolute",
+      bottom: 10,
+      left: 20,
+      right: 20,
+      backgroundColor: Colors[theme].tint,
+      paddingVertical: 12,
+      borderRadius: 8,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+
+    fabContainer: {
+      position: "absolute",
+      right: 20,
+      bottom: 60,
+      alignItems: "center",
+      zIndex: 10,
+    },
+    fabItem: {
+      position: "absolute",
+      right: 4,
+      bottom: 0,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "flex-end",
+      zIndex: 12,
+    },
+    fabItemButton: {
+      width: 42,
+      height: 42,
+      borderRadius: 21,
+      backgroundColor: Colors[theme].tint,
+      justifyContent: "center",
+      alignItems: "center",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 3,
+    },
+    fabItemLabel: {
+      position: "absolute",
+      right: 50,
+      backgroundColor: "rgba(0,0,0,0.7)",
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      borderRadius: 5,
+      marginRight: 5,
+    },
+    fabItemText: {
+      color: "#FFF",
+      fontSize: 12,
+    },
+    dashboardFab: {
+      position: "absolute",
+      right: 0,
+      bottom: 0,
+      width: 50,
+      height: 50,
+      borderRadius: 30,
+      backgroundColor: Colors[theme].tint,
+      justifyContent: "center",
+      alignItems: "center",
+      elevation: 5,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      zIndex: 11,
     },
   });
