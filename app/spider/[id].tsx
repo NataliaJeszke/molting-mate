@@ -11,7 +11,7 @@ import { ThemedText } from "@/components/ui/ThemedText";
 export default function SpiderDetail() {
   const { id } = useLocalSearchParams();
   const spider = useSpidersStore((state) =>
-    state.spiders.find((spider) => spider.id === id),
+    state.spiders.find((spider) => spider.id === Number(id)),
   );
 
   if (!spider) return <ThemedText>Pająk nie znaleziony.</ThemedText>;

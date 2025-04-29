@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { View, Image, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons"; // Dodajemy FontAwesome dla ikon płci
+import { FontAwesome } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 
 import { useUserStore } from "@/store/userStore";
 import { useSpidersStore } from "@/store/spidersStore";
-import { Spider } from "@/models/Spider.model";
+import { IndividualType, Spider } from "@/models/Spider.model";
 import { Colors, ThemeType } from "@/constants/Colors";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import { getNextFeedingDate, getFeedingStatus } from "@/utils/feedingUtils";
@@ -17,9 +17,10 @@ import HistoryInformation from "@/components/commons/HistoryInformation/HistoryI
 import SpiderDocument from "@/components/commons/SpiderDocument/SpiderDocument";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 import { router } from "expo-router";
+import { SpiderDB } from "@/db/schema";
 
 interface Props {
-  spider: Spider;
+  spider: SpiderDB;
 }
 
 const SpiderDetails = ({ spider }: Props) => {
@@ -38,7 +39,7 @@ const SpiderDetails = ({ spider }: Props) => {
     spider.feedingFrequency,
   );
 
-  const getFeedingStatusLabel = (status: FeedingStatus | null) => {
+  const getFeedingStatusLabel = (status: FeedingStatus | undefined) => {
     switch (status) {
       case FeedingStatus.HUNGRY:
         return "Tak";
@@ -51,7 +52,7 @@ const SpiderDetails = ({ spider }: Props) => {
     }
   };
 
-  const getFeedingStatusColor = (status: FeedingStatus | null) => {
+  const getFeedingStatusColor = (status: FeedingStatus | undefined) => {
     switch (status) {
       case FeedingStatus.HUNGRY:
         return Colors[currentTheme].feedingStatus.hungry;
@@ -64,7 +65,7 @@ const SpiderDetails = ({ spider }: Props) => {
     }
   };
 
-  const getIndividualTypeIcon = (type: string | undefined) => {
+  const getIndividualTypeIcon = (type: IndividualType | undefined) => {
     switch (type) {
       case "Samiec":
         return (
@@ -97,100 +98,100 @@ const SpiderDetails = ({ spider }: Props) => {
     return type || "Niezidentyfikowany";
   };
 
-  const isImageDocument = (uri: string | undefined) => {
-    if (!uri) return false;
-    const lower = uri.toLowerCase();
-    return (
-      lower.endsWith(".jpg") ||
-      lower.endsWith(".jpeg") ||
-      lower.endsWith(".png") ||
-      lower.endsWith(".heic") ||
-      lower.includes("image")
-    );
-  };
+  // const isImageDocument = (uri: string | undefined) => {
+  //   if (!uri) return false;
+  //   const lower = uri.toLowerCase();
+  //   return (
+  //     lower.endsWith(".jpg") ||
+  //     lower.endsWith(".jpeg") ||
+  //     lower.endsWith(".png") ||
+  //     lower.endsWith(".heic") ||
+  //     lower.includes("image")
+  //   );
+  // };
 
-  const handleChooseDocument = () => {
-    Alert.alert("Wybierz źródło", "Dołącz dokument pochodzenia", [
-      {
-        text: "Zrób zdjęcie",
-        onPress: async () => {
-          const permission = await ImagePicker.requestCameraPermissionsAsync();
-          if (permission.status !== "granted") {
-            Alert.alert("Brak uprawnień", "Nie masz dostępu do kamery.");
-            return;
-          }
+  // const handleChooseDocument = () => {
+  //   Alert.alert("Wybierz źródło", "Dołącz dokument pochodzenia", [
+  //     {
+  //       text: "Zrób zdjęcie",
+  //       onPress: async () => {
+  //         const permission = await ImagePicker.requestCameraPermissionsAsync();
+  //         if (permission.status !== "granted") {
+  //           Alert.alert("Brak uprawnień", "Nie masz dostępu do kamery.");
+  //           return;
+  //         }
 
-          const result = await ImagePicker.launchCameraAsync({
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-          });
+  //         const result = await ImagePicker.launchCameraAsync({
+  //           allowsEditing: true,
+  //           aspect: [1, 1],
+  //           quality: 1,
+  //         });
 
-          if (!result.canceled) {
-            const uri = result.assets[0].uri;
-            updateSpider(spider.id, {
-              documentUris: spider.documentUris
-                ? [...spider.documentUris, uri]
-                : [uri],
-            });
-          }
-        },
-      },
-      {
-        text: "Wybierz z galerii",
-        onPress: async () => {
-          const permission =
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
-          if (permission.status !== "granted") {
-            Alert.alert("Brak uprawnień", "Nie masz dostępu do galerii.");
-            return;
-          }
+  //         if (!result.canceled) {
+  //           const uri = result.assets[0].uri;
+  //           updateSpider(spider.id, {
+  //             documentUris: spider.documentUris
+  //               ? [...spider.documentUris, uri]
+  //               : [uri],
+  //           });
+  //         }
+  //       },
+  //     },
+  //     {
+  //       text: "Wybierz z galerii",
+  //       onPress: async () => {
+  //         const permission =
+  //           await ImagePicker.requestMediaLibraryPermissionsAsync();
+  //         if (permission.status !== "granted") {
+  //           Alert.alert("Brak uprawnień", "Nie masz dostępu do galerii.");
+  //           return;
+  //         }
 
-          const result = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-          });
+  //         const result = await ImagePicker.launchImageLibraryAsync({
+  //           allowsEditing: true,
+  //           aspect: [1, 1],
+  //           quality: 1,
+  //         });
 
-          if (!result.canceled) {
-            const uri = result.assets[0].uri;
-            updateSpider(spider.id, {
-              documentUris: spider.documentUris
-                ? [...spider.documentUris, uri]
-                : [uri],
-            });
-            console.log("update spider", spider);
-          }
-        },
-      },
-      {
-        text: "Anuluj",
-        style: "cancel",
-      },
-    ]);
-  };
+  //         if (!result.canceled) {
+  //           const uri = result.assets[0].uri;
+  //           updateSpider(spider.id, {
+  //             documentUris: spider.documentUris
+  //               ? [...spider.documentUris, uri]
+  //               : [uri],
+  //           });
+  //           console.log("update spider", spider);
+  //         }
+  //       },
+  //     },
+  //     {
+  //       text: "Anuluj",
+  //       style: "cancel",
+  //     },
+  //   ]);
+  // };
 
-  const handleRemoveDocument = (index: number) => {
-    Alert.alert(
-      "Usuń dokument",
-      "Czy na pewno chcesz usunąć dokument pochodzenia?",
-      [
-        {
-          text: "Anuluj",
-          style: "cancel",
-        },
-        {
-          text: "Usuń",
-          style: "destructive",
-          onPress: () => {
-            const newUris = [...(spider.documentUris || [])];
-            newUris.splice(index, 1);
-            updateSpider(spider.id, { documentUris: newUris });
-          },
-        },
-      ],
-    );
-  };
+  // const handleRemoveDocument = (index: number) => {
+  //   Alert.alert(
+  //     "Usuń dokument",
+  //     "Czy na pewno chcesz usunąć dokument pochodzenia?",
+  //     [
+  //       {
+  //         text: "Anuluj",
+  //         style: "cancel",
+  //       },
+  //       {
+  //         text: "Usuń",
+  //         style: "destructive",
+  //         onPress: () => {
+  //           const newUris = [...(spider.documentUris || [])];
+  //           newUris.splice(index, 1);
+  //           updateSpider(spider.id, { documentUris: newUris });
+  //         },
+  //       },
+  //     ],
+  //   );
+  // };
 
   return (
     <View style={styles(currentTheme).spiderDetails}>
@@ -408,7 +409,7 @@ const SpiderDetails = ({ spider }: Props) => {
       </CardComponent>
 
       {/* Feeding History Card */}
-      <HistoryInformation
+      {/* <HistoryInformation
         title="Historia karmienia"
         iconName="list"
         data={spider.feedingHistoryData}
@@ -418,10 +419,10 @@ const SpiderDetails = ({ spider }: Props) => {
         styles={styles}
         emptyText="Brak historii karmienia"
         typeKey="feeding"
-      />
+      /> */}
 
       {/* Molting History Card */}
-      <HistoryInformation
+      {/* <HistoryInformation
         title="Historia linienia"
         iconName="repeat"
         data={spider.moltingHistoryData}
@@ -431,10 +432,10 @@ const SpiderDetails = ({ spider }: Props) => {
         styles={styles}
         emptyText="Brak historii linienia"
         typeKey="molting"
-      />
+      /> */}
 
       {/* Document Card */}
-      <SpiderDocument
+      {/* <SpiderDocument
         documentUris={spider.documentUris || []}
         isImageDocument={(uri) => isImageDocument(uri)}
         onChooseDocument={handleChooseDocument}
@@ -443,7 +444,7 @@ const SpiderDetails = ({ spider }: Props) => {
         styles={styles}
         showDocumentModal={showDocumentModal}
         setShowDocumentModal={setShowDocumentModal}
-      />
+      /> */}
     </View>
   );
 };

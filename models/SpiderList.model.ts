@@ -1,9 +1,9 @@
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 
 export type SpiderListItem = {
-  id: string;
+  id: number;
   name: string;
   date: string;
-  imageUri?: string | null;
-  status?: FeedingStatus | string | null;
+  imageUri?: string | undefined;
+  status?: FeedingStatus | string | undefined;
 };

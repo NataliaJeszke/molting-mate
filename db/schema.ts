@@ -1,3 +1,5 @@
+import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
+import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import { IndividualType } from "@/models/Spider.model";
 import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
 
@@ -6,13 +8,17 @@ export const spiders = sqliteTable("spiders", {
   name: text("name").notNull(),
   age: integer("age").notNull(),
   spiderSpecies: text("species").notNull(),
-  individualType: text("individual_type").$type<IndividualType | undefined>(),
+  individualType: text("individual_type")
+    .$type<IndividualType | undefined>()
+    .notNull(),
   lastFed: text("last_fed").notNull(),
-  feedingFrequency: text("feeding_frequency").notNull(),
+  feedingFrequency: text("feeding_frequency")
+    .$type<FeedingFrequency | undefined>()
+    .notNull(),
   lastMolt: text("last_molt").notNull(),
   imageUri: text("image_uri"),
   isFavourite: integer("is_favourite", { mode: "boolean" }).default(false),
-  status: text("status"),
+  status: text("status").$type<FeedingStatus | undefined>(),
   nextFeedingDate: text("next_feeding_date"),
 });
 

@@ -5,16 +5,16 @@ import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 
 export const getFeedingStatus = (
   lastFed: string,
-  frequencyInDays: FeedingFrequency,
-): FeedingStatus | null => {
-  if (!lastFed || !frequencyInDays) return null;
+  frequencyInDays: FeedingFrequency | undefined,
+): FeedingStatus | undefined => {
+  if (!lastFed || !frequencyInDays) return undefined;
 
   const lastFedDate = parse(lastFed, "yyyy-MM-dd", new Date());
   const today = new Date();
 
   if (isNaN(lastFedDate.getTime())) {
     console.warn("Invalid date:", lastFed);
-    return null;
+    return undefined;
   }
 
   const frequencyMap: Record<FeedingFrequency, number> = {
@@ -39,7 +39,7 @@ export const getFeedingStatus = (
 
 export const getNextFeedingDate = (
   lastFed: string,
-  feedingFrequency: FeedingFrequency,
+  feedingFrequency: FeedingFrequency | undefined,
 ): string => {
   if (!lastFed || !feedingFrequency) return "";
 
