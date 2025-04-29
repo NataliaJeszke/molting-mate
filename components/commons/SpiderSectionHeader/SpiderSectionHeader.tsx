@@ -35,7 +35,7 @@ const SpiderSectionHeader = ({
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
   const filters = useFiltersStore((state) => state.filters[viewType]);
-  const areFiltersActive = Object.values(filters).some((value) => value);
+  const areFiltersActive = filters.isActive;
 
   return (
     <CardComponent>
