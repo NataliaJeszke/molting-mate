@@ -19,7 +19,9 @@ const CollectionListComponent = () => {
         const matchspiderSpecies = filters.spiderSpecies
           ? spider.spiderSpecies?.includes(filters.spiderSpecies)
           : true;
-        const matchAge = filters.age ? spider.age === filters.age : true;
+        const matchAge =
+          (filters.ageFrom === undefined || spider.age >= filters.ageFrom) &&
+          (filters.ageTo === undefined || spider.age <= filters.ageTo);
         const matchGender =
           !filters.individualType?.length ||
           (filters.individualType || []).includes(spider.individualType!);

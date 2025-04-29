@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -13,14 +13,16 @@ import {
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { isAfter, parseISO } from "date-fns";
 
-import { FilterViewTypes, useFiltersStore } from "@/store/filtersStore";
+import { useFiltersStore } from "@/store/filtersStore";
 import { useUserStore } from "@/store/userStore";
 
 import { Colors, ThemeType } from "@/constants/Colors";
+import { FilterViewTypes } from "@/models/Filters.model";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
 import { IndividualType } from "@/models/Spider.model";
+import { ThemedRangeSlider } from "@/components/ui/ThemedRangeSlider";
 
 type FiltersProps = {
   viewType: FilterViewTypes;
@@ -29,13 +31,13 @@ type FiltersProps = {
 };
 
 const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
-  const { filters, setFilters, resetFilters } = useFiltersStore();
-  const { currentTheme } = useUserStore();
+  const { filters, setFilters, setRangeFilters, resetFilters } =
+    useFiltersStore();
   const current = filters[viewType];
+  const { currentTheme } = useUserStore();
   const [isDateFromPickerVisible, setDateFromPickerVisible] = useState(false);
   const [isDateToPickerVisible, setDateToPickerVisible] = useState(false);
   const [individualTypes, setIndividualTypes] = useState<IndividualType[]>(
-    // eslint-disable-next-line prettier/prettier
     current.individualType || []
   );
 
@@ -48,7 +50,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
 
   const handleChange = (
     field: keyof typeof current,
-    value: string | number,
+    value: string | number
   ) => {
     setFilters(viewType, {
       ...current,
@@ -85,6 +87,11 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   const handleDateToConfirm = (dateString: string) => {
     handleChange("dateTo", dateString);
     hideDateToPicker();
+  };
+
+  const handleRangeChange = (from: number, to: number) => {
+    console.log("Range slider changed to", from, to);
+    setRangeFilters(viewType, from, to);
   };
 
   const getInitialDateFrom = () => {
@@ -131,34 +138,45 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
             ? "padding"
             : undefined
         }
-        style={styles(currentTheme).container}
+        style={styles(currentTheme)["filters"]}
       >
         <TouchableWithoutFeedback onPress={onClose}>
           <Animated.View
-            style={styles(currentTheme).overlay}
+            style={styles(currentTheme)["filters__overlay"]}
             entering={FadeIn.duration(200)}
             exiting={FadeOut.duration(200)}
           />
         </TouchableWithoutFeedback>
 
-        <Animated.View style={styles(currentTheme).filtersContainer}>
+        <Animated.View style={styles(currentTheme)["filters__modal"]}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles(currentTheme).contentContainer}>
-              <View style={styles(currentTheme).handleBar} />
+            <View style={styles(currentTheme)["filters__content"]}>
+              <View style={styles(currentTheme)["filters__handle-bar"]} />
 
-              <ThemedText style={styles(currentTheme).filtersTitle}>
+              <ThemedText style={styles(currentTheme)["filters__title"]}>
                 Wybierz filtry:
               </ThemedText>
-              <TextInput
-                placeholder="0"
-                value={current.age?.toString()}
-                onChangeText={(text) => handleChange("age", +text)}
-                style={styles(currentTheme).input}
-                placeholderTextColor={Colors[currentTheme].text + "80"}
-                keyboardType="numeric"
+
+              <ThemedRangeSlider
+                min={0}
+                max={20}
+                step={1}
+                initialValues={[
+                  typeof current.ageFrom === "number" ? current.ageFrom : 0,
+                  typeof current.ageTo === "number" ? current.ageTo : 20,
+                ]}
+                label="Wiek"
+                onChange={([from, to]) => {
+                  handleRangeChange(from, to);
+                }}
+                allowSameValue={true}
               />
-              <ThemedText>Płeć</ThemedText>
-              <View style={styles(currentTheme).checkboxWrapper}>
+
+              <ThemedText style={styles(currentTheme)["filters__label"]}>
+                Płeć
+              </ThemedText>
+
+              <View style={styles(currentTheme)["filters__checkbox-group"]}>
                 {individualTypeOptions.map((option) => {
                   const isSelected = individualTypes.includes(option.value);
                   return (
@@ -168,17 +186,23 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                         toggleIndividualType(option.value as IndividualType)
                       }
                       style={[
-                        styles(currentTheme).checkboxItem,
+                        styles(currentTheme)["filters__checkbox"],
                         isSelected
-                          ? styles(currentTheme).checkboxSelected
-                          : styles(currentTheme).checkboxUnselected,
+                          ? styles(currentTheme)["filters__checkbox--selected"]
+                          : styles(currentTheme)[
+                              "filters__checkbox--unselected"
+                            ],
                       ]}
                     >
                       <ThemedText
                         style={
                           isSelected
-                            ? styles(currentTheme).checkboxTextSelected
-                            : styles(currentTheme).checkboxTextUnselected
+                            ? styles(currentTheme)[
+                                "filters__checkbox-text--selected"
+                              ]
+                            : styles(currentTheme)[
+                                "filters__checkbox-text--unselected"
+                              ]
                         }
                       >
                         {option.label}
@@ -187,26 +211,27 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                   );
                 })}
               </View>
+
               <TextInput
                 placeholder="Gatunek"
                 value={current.spiderSpecies || ""}
                 onChangeText={(text) => handleChange("spiderSpecies", text)}
-                style={styles(currentTheme).input}
+                style={styles(currentTheme)["filters__input"]}
                 placeholderTextColor={Colors[currentTheme].text + "80"}
               />
 
               {viewType !== "collection" && (
                 <>
                   <TouchableOpacity
-                    style={styles(currentTheme).dateInput}
+                    style={styles(currentTheme)["filters__date-input"]}
                     onPress={showDateFromPicker}
                     activeOpacity={0.7}
                   >
                     <ThemedText
                       style={
                         current.dateFrom
-                          ? styles(currentTheme).dateText
-                          : styles(currentTheme).datePlaceholder
+                          ? styles(currentTheme)["filters__date-text"]
+                          : styles(currentTheme)["filters__date-placeholder"]
                       }
                     >
                       {current.dateFrom || "Data od (yyyy-MM-dd)"}
@@ -214,15 +239,15 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={styles(currentTheme).dateInput}
+                    style={styles(currentTheme)["filters__date-input"]}
                     onPress={showDateToPicker}
                     activeOpacity={0.7}
                   >
                     <ThemedText
                       style={
                         current.dateTo
-                          ? styles(currentTheme).dateText
-                          : styles(currentTheme).datePlaceholder
+                          ? styles(currentTheme)["filters__date-text"]
+                          : styles(currentTheme)["filters__date-placeholder"]
                       }
                     >
                       {current.dateTo || "Data do (yyyy-MM-dd)"}
@@ -231,23 +256,29 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                 </>
               )}
 
-              <View style={styles(currentTheme).buttonsContainer}>
+              <View style={styles(currentTheme)["filters__buttons"]}>
                 <TouchableOpacity
                   onPress={onClose}
-                  style={styles(currentTheme).closeButton}
+                  style={styles(currentTheme)["filters__button--confirm"]}
                   activeOpacity={0.8}
                 >
-                  <ThemedText style={styles(currentTheme).closeButtonText}>
-                    Zamknij
+                  <ThemedText
+                    style={
+                      styles(currentTheme)["filters__button-text--confirm"]
+                    }
+                  >
+                    Zatwierdź
                   </ThemedText>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   onPress={handleReset}
-                  style={styles(currentTheme).resetButton}
+                  style={styles(currentTheme)["filters__button--reset"]}
                   activeOpacity={0.8}
                 >
-                  <ThemedText style={styles(currentTheme).resetButtonText}>
+                  <ThemedText
+                    style={styles(currentTheme)["filters__button-text--reset"]}
+                  >
                     Wyczyść
                   </ThemedText>
                 </TouchableOpacity>
@@ -278,18 +309,19 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
     </Modal>
   );
 };
+
 /* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>
   StyleSheet.create({
-    container: {
+    filters: {
       flex: 1,
       justifyContent: "flex-end",
     },
-    overlay: {
+    filters__overlay: {
       ...StyleSheet.absoluteFillObject,
       backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
-    filtersContainer: {
+    filters__modal: {
       borderTopLeftRadius: 24,
       borderTopRightRadius: 24,
       backgroundColor: Colors[theme].modal_update.backgroundColor,
@@ -303,10 +335,10 @@ const styles = (theme: ThemeType) =>
       elevation: 10,
       maxHeight: "90%",
     },
-    contentContainer: {
+    filters__content: {
       padding: 20,
     },
-    handleBar: {
+    "filters__handle-bar": {
       width: 40,
       height: 5,
       borderRadius: 3,
@@ -314,13 +346,18 @@ const styles = (theme: ThemeType) =>
       alignSelf: "center",
       marginBottom: 15,
     },
-    filtersTitle: {
+    filters__title: {
       fontSize: 18,
       fontWeight: "600",
       marginBottom: 16,
       color: Colors[theme].text,
     },
-    input: {
+    filters__label: {
+      fontSize: 16,
+      marginBottom: 8,
+      color: Colors[theme].text,
+    },
+    filters__input: {
       padding: 16,
       borderWidth: 1,
       borderRadius: 12,
@@ -338,7 +375,7 @@ const styles = (theme: ThemeType) =>
           ? "#2c2c2e"
           : "#ffffff",
     },
-    dateInput: {
+    "filters__date-input": {
       padding: 16,
       borderWidth: 1,
       borderRadius: 12,
@@ -354,20 +391,20 @@ const styles = (theme: ThemeType) =>
           ? "#2c2c2e"
           : "#ffffff",
     },
-    dateText: {
+    "filters__date-text": {
       color: Colors[theme].text,
       fontSize: 16,
     },
-    datePlaceholder: {
+    "filters__date-placeholder": {
       color: Colors[theme].text + "80",
       fontSize: 16,
     },
-    buttonsContainer: {
+    filters__buttons: {
       flexDirection: "row",
       justifyContent: "space-between",
       marginTop: 5,
     },
-    resetButton: {
+    "filters__button--reset": {
       flex: 1,
       padding: 16,
       borderRadius: 12,
@@ -375,12 +412,12 @@ const styles = (theme: ThemeType) =>
       backgroundColor: "#ff4747",
       marginLeft: 8,
     },
-    resetButtonText: {
+    "filters__button-text--reset": {
       color: "#fff",
       fontWeight: "600",
       fontSize: 16,
     },
-    closeButton: {
+    "filters__button--confirm": {
       flex: 1,
       padding: 16,
       borderRadius: 12,
@@ -388,41 +425,38 @@ const styles = (theme: ThemeType) =>
       backgroundColor: theme === "dark" ? "#3a3a3c" : "#e5e5ea",
       marginRight: 8,
     },
-    closeButtonText: {
+    "filters__button-text--confirm": {
       color: Colors[theme].text,
       fontWeight: "600",
       fontSize: 16,
     },
-    checkboxWrapper: {
+    "filters__checkbox-group": {
       flexDirection: "row",
       flexWrap: "wrap",
       marginBottom: 12,
       gap: 8,
     },
-
-    checkboxItem: {
+    filters__checkbox: {
       paddingVertical: 8,
       paddingHorizontal: 12,
       borderRadius: 16,
       borderWidth: 1,
     },
-
-    checkboxSelected: {
+    "filters__checkbox--selected": {
       borderColor: Colors[theme].card.borderColor,
       backgroundColor: "#4CAF50",
     },
-
-    checkboxUnselected: {
+    "filters__checkbox--unselected": {
       borderColor: Colors[theme].card.borderColor,
       backgroundColor: "transparent",
     },
-
-    checkboxTextSelected: {
+    "filters__checkbox-text--selected": {
       color: "#fff",
+      fontSize: 14,
     },
-
-    checkboxTextUnselected: {
+    "filters__checkbox-text--unselected": {
       color: Colors[theme].text,
+      fontSize: 14,
     },
   });
 
