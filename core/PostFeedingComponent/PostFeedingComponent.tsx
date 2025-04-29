@@ -20,7 +20,7 @@ const PostFeedingListComponent = () => {
         id: spider.id,
         name: spider.name,
         date: spider.lastFed,
-        imageUri: spider.imageUri,
+        imageUri: spider.imageUri ?? undefined,
         status: "GŁODNY",
       }));
   }, [spiders]);

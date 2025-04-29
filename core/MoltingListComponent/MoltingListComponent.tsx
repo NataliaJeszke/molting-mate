@@ -19,10 +19,10 @@ const MoltingListComponent = () => {
     datePropertyKey: "lastMolt",
   });
   const processedSpiders = useMemo(() => {
+    console.log("Filtered spiders:", filteredSpiders);
     return [...filteredSpiders]
       .map((spider) => ({
         ...spider,
-        status: "predykcja linienia",
       }))
       .sort((a, b) => {
         const dateA = parseDate(a.lastMolt)?.getTime() || 0;

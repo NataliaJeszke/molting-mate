@@ -22,7 +22,7 @@ const PostMoltingListComponent = () => {
         id: spider.id,
         name: spider.name,
         date: spider.lastMolt,
-        imageUri: spider.imageUri,
+        imageUri: spider.imageUri ?? undefined,
       }));
   }, [spiders]);
 

@@ -18,7 +18,7 @@ export const spiders = sqliteTable("spiders", {
   lastMolt: text("last_molt").notNull(),
   imageUri: text("image_uri"),
   isFavourite: integer("is_favourite", { mode: "boolean" }).default(false),
-  status: text("status").$type<FeedingStatus | undefined>(),
+  status: text("status").$type<FeedingStatus | string | undefined>(),
   nextFeedingDate: text("next_feeding_date"),
 });
 
