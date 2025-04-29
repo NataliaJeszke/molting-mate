@@ -37,7 +37,7 @@ import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
 export default function SpiderForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { currentTheme } = useUserStore();
-  const { addSpider, spiders } = useSpidersStore();
+  const { addSpider, updateSpider, spiders } = useSpidersStore();
   const { addSpecies, spiderSpeciesList } = useSpiderSpeciesStore();
 
   const [name, setName] = useState<string>();
@@ -57,35 +57,37 @@ export default function SpiderForm() {
     IndividualType | undefined
   >();
 
+  const spiderId = id ? Number(id) : undefined;
+
   useEffect(() => {
-    if (id) {
-      // const spiderToEdit = spiders.find((s) => s.id === id);
-      // console.log("Spider to edit:", spiderToEdit?.spiderSpecies);
-      // if (spiderToEdit) {
-      //   setName(spiderToEdit.name);
-      //   setAge(spiderToEdit.age);
-      //   setSpiderSpecies(spiderToEdit.spiderSpecies);
-      //   setIndividualType(spiderToEdit.individualType);
+    if (spiderId) {
+      const spiderToEdit = spiders.find((s) => s.id === spiderId);
+      console.log("Spider to edit:", spiderToEdit?.spiderSpecies);
+      if (spiderToEdit) {
+        setName(spiderToEdit.name);
+        setAge(spiderToEdit.age);
+        setSpiderSpecies(spiderToEdit.spiderSpecies);
+        setIndividualType(spiderToEdit.individualType ?? undefined);
 
-      //   const latestFedDate = spiderToEdit.feedingHistoryData?.length
-      //     ? ensureLatestDate(
-      //         spiderToEdit.lastFed,
-      //         spiderToEdit.feedingHistoryData,
-      //       )
-      //     : spiderToEdit.lastFed;
+        // const latestFedDate = spiderToEdit.feedingHistoryData?.length
+        //   ? ensureLatestDate(
+        //       spiderToEdit.lastFed,
+        //       spiderToEdit.feedingHistoryData,
+        //     )
+        //   : spiderToEdit.lastFed;
 
-      //   const latestMoltDate = spiderToEdit.moltingHistoryData?.length
-      //     ? ensureLatestDate(
-      //         spiderToEdit.lastMolt,
-      //         spiderToEdit.moltingHistoryData,
-      //       )
-      //     : spiderToEdit.lastMolt;
+        // const latestMoltDate = spiderToEdit.moltingHistoryData?.length
+        //   ? ensureLatestDate(
+        //       spiderToEdit.lastMolt,
+        //       spiderToEdit.moltingHistoryData,
+        //     )
+        //   : spiderToEdit.lastMolt;
 
-      //   setLastFed(latestFedDate);
-      //   setFeedingFrequency(spiderToEdit.feedingFrequency);
-      //   setLastMolt(latestMoltDate);
-      //   setImageUri(spiderToEdit.imageUri);
-      // }
+        setLastFed(spiderToEdit.lastFed);
+        setFeedingFrequency(spiderToEdit.feedingFrequency);
+        setLastMolt(spiderToEdit.lastMolt);
+        setImageUri(spiderToEdit.imageUri ?? undefined);
+      }
       console.log("Spider to edit:", id);
     } else {
       setName("");
@@ -97,7 +99,7 @@ export default function SpiderForm() {
       setLastMolt("");
       setImageUri(undefined);
     }
-  }, [id, spiders]);
+  }, [id, spiderId, spiders]);
 
   const handleSubmit = () => {
     console.log("Submitting spider data...");
@@ -155,9 +157,7 @@ export default function SpiderForm() {
     // const latestFedDate = ensureLatestDate(lastFed, sortedFeedingHistory);
     // const latestMoltDate = ensureLatestDate(lastMolt, sortedMoltingHistory);
 
-    const numericId = id ? Number(id) : undefined;
     const spiderData = {
-      id: numericId ?? Date.now(),
       name,
       age,
       spiderSpecies,
@@ -168,16 +168,16 @@ export default function SpiderForm() {
       imageUri: imageUri || "",
       documentUri: documentUri || "",
       isFavourite: false,
-      status: "healthy",
       nextFeedingDate: feedingFrequency,
+      status: "",
       // moltingHistoryData: sortedMoltingHistory,
       // feedingHistoryData: sortedFeedingHistory,
     };
 
-    if (id) {
+    if (spiderId) {
       console.log("Updating spider data...");
-      // updateSpider(id, spiderData);
-      // Alert.alert("Sukces", `Zaktualizowano pająka o imieniu ${name}!`);
+      updateSpider(spiderId, spiderData);
+      Alert.alert("Sukces", `Zaktualizowano pająka o imieniu ${name}!`);
     } else {
       addSpider(spiderData);
       Alert.alert("Sukces", `Dodano pająka o imieniu ${name}!`);

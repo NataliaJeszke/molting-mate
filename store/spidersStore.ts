@@ -7,6 +7,7 @@ import { db } from "@/db/db";
 import { SpiderDB, spiders } from "@/db/schema";
 import { drizzle } from "drizzle-orm/expo-sqlite";
 import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
+import { eq } from "drizzle-orm/sql";
 
 // type SpidersState = {
 //   nextId: number;
@@ -25,6 +26,10 @@ type SpidersState = {
   setDB: (db: ReturnType<typeof drizzle>) => void;
   loadSpidersFromDB: () => Promise<void>;
   addSpider: (spider: Omit<SpiderDB, "id">) => Promise<void>;
+  updateSpider: (
+    id: number,
+    updatedSpider: Omit<SpiderDB, "id">,
+  ) => Promise<void>;
 };
 
 export const useSpidersStore = create(
@@ -73,7 +78,7 @@ export const useSpidersStore = create(
             lastMolt: newSpider.lastMolt,
             imageUri: newSpider.imageUri,
             isFavourite: newSpider.isFavourite ?? false,
-            status: newSpider.status,
+            status: newSpider.status ?? undefined,
             nextFeedingDate: newSpider.nextFeedingDate,
           })
           .run();
@@ -81,6 +86,34 @@ export const useSpidersStore = create(
         set((state) => ({
           spiders: [newSpider, ...state.spiders],
           nextId: newId + 1,
+        }));
+      },
+
+      updateSpider: async (id: number, updatedSpider: Omit<SpiderDB, "id">) => {
+        const db = get().db;
+        if (!db) return;
+
+        db.update(spiders)
+          .set({
+            name: updatedSpider.name,
+            age: updatedSpider.age,
+            spiderSpecies: updatedSpider.spiderSpecies,
+            individualType: updatedSpider.individualType,
+            lastFed: updatedSpider.lastFed,
+            feedingFrequency: updatedSpider.feedingFrequency,
+            lastMolt: updatedSpider.lastMolt,
+            imageUri: updatedSpider.imageUri,
+            isFavourite: updatedSpider.isFavourite ?? false,
+            status: updatedSpider.status,
+            nextFeedingDate: updatedSpider.nextFeedingDate,
+          })
+          .where(eq(spiders.id, id))
+          .run();
+
+        set((state) => ({
+          spiders: state.spiders.map((spider) =>
+            spider.id === id ? { ...spider, id, ...updatedSpider } : spider,
+          ),
         }));
       },
     }),
