@@ -37,7 +37,7 @@ import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
 export default function SpiderForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { currentTheme } = useUserStore();
-  const { addSpider, updateSpider, spiders } = useSpidersStore();
+  const { addSpider, spiders } = useSpidersStore();
   const { addSpecies, spiderSpeciesList } = useSpiderSpeciesStore();
 
   const [name, setName] = useState<string>();
@@ -59,33 +59,34 @@ export default function SpiderForm() {
 
   useEffect(() => {
     if (id) {
-      const spiderToEdit = spiders.find((s) => s.id === id);
-      console.log("Spider to edit:", spiderToEdit?.spiderSpecies);
-      if (spiderToEdit) {
-        setName(spiderToEdit.name);
-        setAge(spiderToEdit.age);
-        setSpiderSpecies(spiderToEdit.spiderSpecies);
-        setIndividualType(spiderToEdit.individualType);
+      // const spiderToEdit = spiders.find((s) => s.id === id);
+      // console.log("Spider to edit:", spiderToEdit?.spiderSpecies);
+      // if (spiderToEdit) {
+      //   setName(spiderToEdit.name);
+      //   setAge(spiderToEdit.age);
+      //   setSpiderSpecies(spiderToEdit.spiderSpecies);
+      //   setIndividualType(spiderToEdit.individualType);
 
-        const latestFedDate = spiderToEdit.feedingHistoryData?.length
-          ? ensureLatestDate(
-              spiderToEdit.lastFed,
-              spiderToEdit.feedingHistoryData,
-            )
-          : spiderToEdit.lastFed;
+      //   const latestFedDate = spiderToEdit.feedingHistoryData?.length
+      //     ? ensureLatestDate(
+      //         spiderToEdit.lastFed,
+      //         spiderToEdit.feedingHistoryData,
+      //       )
+      //     : spiderToEdit.lastFed;
 
-        const latestMoltDate = spiderToEdit.moltingHistoryData?.length
-          ? ensureLatestDate(
-              spiderToEdit.lastMolt,
-              spiderToEdit.moltingHistoryData,
-            )
-          : spiderToEdit.lastMolt;
+      //   const latestMoltDate = spiderToEdit.moltingHistoryData?.length
+      //     ? ensureLatestDate(
+      //         spiderToEdit.lastMolt,
+      //         spiderToEdit.moltingHistoryData,
+      //       )
+      //     : spiderToEdit.lastMolt;
 
-        setLastFed(latestFedDate);
-        setFeedingFrequency(spiderToEdit.feedingFrequency);
-        setLastMolt(latestMoltDate);
-        setImageUri(spiderToEdit.imageUri);
-      }
+      //   setLastFed(latestFedDate);
+      //   setFeedingFrequency(spiderToEdit.feedingFrequency);
+      //   setLastMolt(latestMoltDate);
+      //   setImageUri(spiderToEdit.imageUri);
+      // }
+      console.log("Spider to edit:", id);
     } else {
       setName("");
       setAge(0);
@@ -131,48 +132,52 @@ export default function SpiderForm() {
       addSpecies(spiderSpecies);
     }
 
-    const existingSpider = id ? spiders.find((s) => s.id === id) : null;
+    // const existingSpider = id ? spiders.find((s) => s.id === id) : null;
 
-    const updatedMoltingHistory = existingSpider?.moltingHistoryData
-      ? [...existingSpider.moltingHistoryData]
-      : [];
-    const updatedFeedingHistory = existingSpider?.feedingHistoryData
-      ? [...existingSpider.feedingHistoryData]
-      : [];
+    // const updatedMoltingHistory = existingSpider?.moltingHistoryData
+    //   ? [...existingSpider.moltingHistoryData]
+    //   : [];
+    // const updatedFeedingHistory = existingSpider?.feedingHistoryData
+    //   ? [...existingSpider.feedingHistoryData]
+    //   : [];
 
-    if (!updatedMoltingHistory.includes(lastMolt)) {
-      updatedMoltingHistory.push(lastMolt);
-    }
+    // if (!updatedMoltingHistory.includes(lastMolt)) {
+    //   updatedMoltingHistory.push(lastMolt);
+    // }
 
-    if (!updatedFeedingHistory.includes(lastFed)) {
-      updatedFeedingHistory.push(lastFed);
-    }
+    // if (!updatedFeedingHistory.includes(lastFed)) {
+    //   updatedFeedingHistory.push(lastFed);
+    // }
 
-    const sortedMoltingHistory = sortDateStrings(updatedMoltingHistory);
-    const sortedFeedingHistory = sortDateStrings(updatedFeedingHistory);
+    // const sortedMoltingHistory = sortDateStrings(updatedMoltingHistory);
+    // const sortedFeedingHistory = sortDateStrings(updatedFeedingHistory);
 
-    const latestFedDate = ensureLatestDate(lastFed, sortedFeedingHistory);
-    const latestMoltDate = ensureLatestDate(lastMolt, sortedMoltingHistory);
+    // const latestFedDate = ensureLatestDate(lastFed, sortedFeedingHistory);
+    // const latestMoltDate = ensureLatestDate(lastMolt, sortedMoltingHistory);
 
+    const numericId = id ? Number(id) : undefined;
     const spiderData = {
-      id: id ? id : Date.now().toString(),
+      id: numericId ?? Date.now(),
       name,
       age,
       spiderSpecies,
       individualType,
-      lastFed: latestFedDate,
+      lastFed: lastFed,
       feedingFrequency: feedingFrequency as FeedingFrequency,
-      lastMolt: latestMoltDate,
+      lastMolt: lastMolt,
       imageUri: imageUri || "",
       documentUri: documentUri || "",
-      isFavourite: existingSpider?.isFavourite ?? false,
-      moltingHistoryData: sortedMoltingHistory,
-      feedingHistoryData: sortedFeedingHistory,
+      isFavourite: false,
+      status: "healthy",
+      nextFeedingDate: feedingFrequency,
+      // moltingHistoryData: sortedMoltingHistory,
+      // feedingHistoryData: sortedFeedingHistory,
     };
 
     if (id) {
-      updateSpider(id, spiderData);
-      Alert.alert("Sukces", `Zaktualizowano pająka o imieniu ${name}!`);
+      console.log("Updating spider data...");
+      // updateSpider(id, spiderData);
+      // Alert.alert("Sukces", `Zaktualizowano pająka o imieniu ${name}!`);
     } else {
       addSpider(spiderData);
       Alert.alert("Sukces", `Dodano pająka o imieniu ${name}!`);

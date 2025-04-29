@@ -23,18 +23,32 @@ import WrapperComponent from "@/components/ui/WrapperComponent";
 import CardComponent from "@/components/ui/CardComponent";
 import SpiderGallery from "@/components/ui/SpiderGallery";
 import UpcomingFeedingListComponent from "@/core/UpcomingFeedingListComponent/UpcomingFeedingListComponent";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ThemedText } from "@/components/ui/ThemedText";
 import {
   getAddSpeciesStyle,
   getAddSpiderStyle,
 } from "@/utils/animations.constants";
+import { useSQLiteContext } from "expo-sqlite";
+import { drizzle } from "drizzle-orm/expo-sqlite";
+import * as schema from "@/db/schema";
+import { useSpidersStore } from "@/store/spidersStore";
 
 export default function HomeScreen() {
   const router = useRouter();
   const { currentTheme } = useUserStore();
   const [isFabOpen, setIsFabOpen] = useState(false);
   const [animation] = useState(new Animated.Value(0));
+  const { setDB, loadSpidersFromDB } = useSpidersStore();
+
+  const db = useSQLiteContext();
+
+  const drizzleDB = useMemo(() => drizzle(db, { schema }), [db]);
+
+  useEffect(() => {
+    setDB(drizzleDB);
+    loadSpidersFromDB();
+  }, [drizzleDB, setDB, loadSpidersFromDB]);
 
   const toggleFab = () => {
     const toValue = isFabOpen ? 0 : 1;

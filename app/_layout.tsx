@@ -1,5 +1,10 @@
-import { useEffect } from "react";
-import { Platform, View, useColorScheme } from "react-native";
+import { Suspense, useEffect } from "react";
+import {
+  ActivityIndicator,
+  Platform,
+  View,
+  useColorScheme,
+} from "react-native";
 import {
   DarkTheme,
   DefaultTheme,
@@ -9,6 +14,7 @@ import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
+import { SQLiteProvider } from "expo-sqlite";
 import * as SplashScreen from "expo-splash-screen";
 
 import { useUserStore } from "@/store/userStore";
@@ -18,6 +24,8 @@ import { Colors } from "@/constants/Colors";
 import StatusBar from "@/components/ui/StatusBar";
 
 SplashScreen.preventAutoHideAsync();
+
+export const DATABASE_NAME = "spiders";
 
 export default function RootLayout() {
   const { currentTheme, userSelectedTheme, setTheme } = useUserStore();
@@ -56,74 +64,82 @@ export default function RootLayout() {
       }}
     >
       <ThemeProvider value={currentTheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen
-            name="(tabs)"
-            options={{ headerShown: false, animation: "fade" }}
-          />
-          <Stack.Screen
-            name="onboarding"
-            options={{
-              headerShown: false,
-              animation: "fade",
-              presentation: "modal",
-            }}
-          />
-          <Stack.Screen
-            name="spiderForm"
-            options={{
-              presentation: "modal",
-              title: "Dodaj pająka do kolekcji",
-            }}
-          />
-          <Stack.Screen
-            name="favourites"
-            options={{
-              title: "Ulubione pająki",
-              headerBackTitle: "Wstecz",
-              headerTintColor: Colors[currentTheme].tint,
-            }}
-          />
+        <Suspense fallback={<ActivityIndicator size="large" />}>
+          <SQLiteProvider
+            databaseName={DATABASE_NAME}
+            options={{ enableChangeListener: true }}
+            useSuspense={true}
+          >
+            <Stack>
+              <Stack.Screen
+                name="(tabs)"
+                options={{ headerShown: false, animation: "fade" }}
+              />
+              <Stack.Screen
+                name="onboarding"
+                options={{
+                  headerShown: false,
+                  animation: "fade",
+                  presentation: "modal",
+                }}
+              />
+              <Stack.Screen
+                name="spiderForm"
+                options={{
+                  presentation: "modal",
+                  title: "Dodaj pająka do kolekcji",
+                }}
+              />
+              <Stack.Screen
+                name="favourites"
+                options={{
+                  title: "Ulubione pająki",
+                  headerBackTitle: "Wstecz",
+                  headerTintColor: Colors[currentTheme].tint,
+                }}
+              />
 
-          <Stack.Screen
-            name="searched"
-            options={({ route }) => {
-              const { query } = (route.params as { query?: string }) || {};
-              return {
-                title: query
-                  ? `Wyniki wyszukiwania dla: ${query}`
-                  : "Wyniki wyszukiwania",
-                headerBackTitle: "Wstecz",
-                headerTintColor: Colors[currentTheme].tint,
-              };
-            }}
-          />
-          <Stack.Screen
-            name="spider/[id]"
-            options={{
-              title: "Pająk",
-              headerBackTitle: "Wstecz",
-              headerTintColor: Colors[currentTheme].tint,
-            }}
-          />
-          <Stack.Screen
-            name="manageModal"
-            options={{
-              presentation: "transparentModal",
-              title: "Wymagana akcja",
-              headerShown: false,
-              contentStyle: { backgroundColor: "transparent" },
-            }}
-          />
-          <Stack.Screen
-            name="addNewSPPtoList"
-            options={{
-              presentation: "modal",
-              title: "Dodaj nowy gatunek pająka",
-            }}
-          />
-          <Stack.Screen name="+not-found" />
-        </Stack>
+              <Stack.Screen
+                name="searched"
+                options={({ route }) => {
+                  const { query } = (route.params as { query?: string }) || {};
+                  return {
+                    title: query
+                      ? `Wyniki wyszukiwania dla: ${query}`
+                      : "Wyniki wyszukiwania",
+                    headerBackTitle: "Wstecz",
+                    headerTintColor: Colors[currentTheme].tint,
+                  };
+                }}
+              />
+              <Stack.Screen
+                name="spider/[id]"
+                options={{
+                  title: "Pająk",
+                  headerBackTitle: "Wstecz",
+                  headerTintColor: Colors[currentTheme].tint,
+                }}
+              />
+              <Stack.Screen
+                name="manageModal"
+                options={{
+                  presentation: "transparentModal",
+                  title: "Wymagana akcja",
+                  headerShown: false,
+                  contentStyle: { backgroundColor: "transparent" },
+                }}
+              />
+              <Stack.Screen
+                name="addNewSPPtoList"
+                options={{
+                  presentation: "modal",
+                  title: "Dodaj nowy gatunek pająka",
+                }}
+              />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </SQLiteProvider>
+        </Suspense>
         <StatusBar currentTheme={currentTheme} systemTheme={systemTheme} />
       </ThemeProvider>
     </Container>
