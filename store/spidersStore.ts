@@ -30,6 +30,7 @@ type SpidersState = {
     id: number,
     updatedSpider: Omit<SpiderDB, "id">,
   ) => Promise<void>;
+  removeSpider: (id: number) => Promise<void>;
 };
 
 export const useSpidersStore = create(
@@ -114,6 +115,17 @@ export const useSpidersStore = create(
           spiders: state.spiders.map((spider) =>
             spider.id === id ? { ...spider, id, ...updatedSpider } : spider,
           ),
+        }));
+      },
+
+      removeSpider: async (id: number) => {
+        const db = get().db;
+        if (!db) return;
+
+        db.delete(spiders).where(eq(spiders.id, id)).run();
+
+        set((state) => ({
+          spiders: state.spiders.filter((spider) => spider.id !== id),
         }));
       },
     }),

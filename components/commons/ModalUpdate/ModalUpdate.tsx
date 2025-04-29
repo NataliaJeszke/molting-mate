@@ -36,14 +36,16 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   const [age, setAge] = useState(0);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
+  const spiderId = Number(id);
+
   useEffect(() => {
-    if (id && type === "molting") {
-      const currentSpider = spiders.find((spider) => spider.id === id);
+    if (spiderId && type === "molting") {
+      const currentSpider = spiders.find((spider) => spider.id === spiderId);
       if (currentSpider?.age) {
         setAge(currentSpider.age);
       }
     }
-  }, [id, type, spiders]);
+  }, [type, spiders, spiderId]);
 
   const getTodayDate = () => {
     const today = new Date();
@@ -57,48 +59,50 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
     let finalDate = date.trim() || getTodayDate();
 
     if (finalDate && id && type) {
-      const currentSpider = spiders.find((spider) => spider.id === id);
+      const currentSpider = spiders.find((spider) => spider.id === spiderId);
 
       if (currentSpider) {
         if (type === "feeding") {
-          const currentFeedingHistory = currentSpider.feedingHistoryData || [];
+          // const currentFeedingHistory = currentSpider.feedingHistoryData || [];
 
-          let newFeedingHistory = [...currentFeedingHistory];
-          if (!currentFeedingHistory.includes(finalDate)) {
-            newFeedingHistory = [...currentFeedingHistory, finalDate];
-          }
+          // let newFeedingHistory = [...currentFeedingHistory];
+          // if (!currentFeedingHistory.includes(finalDate)) {
+          //   newFeedingHistory = [...currentFeedingHistory, finalDate];
+          // }
 
-          const sortedFeedingHistory = sortDateStrings(newFeedingHistory);
+          // const sortedFeedingHistory = sortDateStrings(newFeedingHistory);
 
-          const latestFeedingDate = ensureLatestDate(
-            finalDate,
-            // eslint-disable-next-line prettier/prettier
-            sortedFeedingHistory
-          );
+          // const latestFeedingDate = ensureLatestDate(
+          //   finalDate,
+          //   // eslint-disable-next-line prettier/prettier
+          //   sortedFeedingHistory
+          // );
 
-          updateSpider(id as string, {
-            lastFed: latestFeedingDate,
-            feedingHistoryData: sortedFeedingHistory,
+          updateSpider(spiderId, {
+            ...currentSpider,
+            lastFed: date,
+            // feedingHistoryData: sortedFeedingHistory,
           });
         } else if (type === "molting") {
-          const currentMoltingHistory = currentSpider.moltingHistoryData || [];
+          // const currentMoltingHistory = currentSpider.moltingHistoryData || [];
 
-          let newMoltingHistory = [...currentMoltingHistory];
-          if (!currentMoltingHistory.includes(finalDate)) {
-            newMoltingHistory = [...currentMoltingHistory, finalDate];
-          }
+          // let newMoltingHistory = [...currentMoltingHistory];
+          // if (!currentMoltingHistory.includes(finalDate)) {
+          //   newMoltingHistory = [...currentMoltingHistory, finalDate];
+          // }
 
-          const sortedMoltingHistory = sortDateStrings(newMoltingHistory);
+          // const sortedMoltingHistory = sortDateStrings(newMoltingHistory);
 
-          const latestMoltingDate = ensureLatestDate(
-            finalDate,
-            // eslint-disable-next-line prettier/prettier
-            sortedMoltingHistory
-          );
+          // const latestMoltingDate = ensureLatestDate(
+          //   finalDate,
+          //   // eslint-disable-next-line prettier/prettier
+          //   sortedMoltingHistory
+          // );
 
-          updateSpider(id as string, {
-            lastMolt: latestMoltingDate,
-            moltingHistoryData: sortedMoltingHistory,
+          updateSpider(spiderId, {
+            ...currentSpider,
+            lastMolt: date,
+            // moltingHistoryData: sortedMoltingHistory,
             age: age,
           });
         }

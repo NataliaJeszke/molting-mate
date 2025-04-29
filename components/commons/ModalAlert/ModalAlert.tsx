@@ -22,20 +22,23 @@ type ModalAlertProps = {
 
 const ModalAlert = ({ isVisible, onClose }: ModalAlertProps) => {
   const { id } = useLocalSearchParams();
-  const spiders = useSpidersStore((state) => state.spiders);
-  const deleteSpider = useSpidersStore((state) => state.removeSpider);
+  const { removeSpider, spiders } = useSpidersStore();
   const { currentTheme } = useUserStore();
 
+  const spiderId = Number(id);
+
   const handleConfirm = () => {
-    if (id) {
-      deleteSpider(id as string);
+    if (spiderId) {
+      removeSpider(spiderId);
       onClose();
     } else {
       onClose();
     }
   };
 
-  const spiderName = id ? spiders.find((spider) => spider.id === id)?.name : "";
+  const spiderName = id
+    ? spiders.find((spider) => spider.id === spiderId)?.name
+    : "";
 
   return (
     <Modal

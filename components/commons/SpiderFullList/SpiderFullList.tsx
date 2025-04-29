@@ -12,16 +12,16 @@ import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
-import { Spider } from "@/models/Spider.model";
+import { SpiderDB } from "@/db/schema";
 
 type SpiderListProps = {
-  data: Spider[];
+  data: SpiderDB[];
   viewType?: ViewTypes;
 };
 
 const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
   const { currentTheme } = useUserStore();
-  const { addToFavorites, removeFromFavorites, spiders } = useSpidersStore();
+  const { updateSpider, spiders } = useSpidersStore();
 
   useEffect(() => {
     console.log("Spider data:", spiders);
@@ -31,15 +31,23 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
     console.log("VIEW TYPE", viewType);
   }, [viewType]);
 
-  const toggleFavourite = (spiderId: string, isFavourite: boolean) => {
+  const toggleFavourite = (spiderId: number, isFavourite: boolean) => {
+    const spider = spiders.find((s) => s.id === spiderId);
+    if (!spider) return;
     if (isFavourite) {
-      removeFromFavorites(spiderId);
+      updateSpider(spiderId, {
+        ...spider,
+        isFavourite: false,
+      });
     } else {
-      addToFavorites(spiderId);
+      updateSpider(spiderId, {
+        ...spider,
+        isFavourite: true,
+      });
     }
   };
 
-  const renderStatusIcon = (spider: Spider) => {
+  const renderStatusIcon = (spider: SpiderDB) => {
     if (spider.status === FeedingStatus.HUNGRY) {
       return (
         <TouchableOpacity
@@ -249,7 +257,9 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
               >
                 <TouchableOpacity
                   style={styles(currentTheme)["spider-list__action-button"]}
-                  onPress={() => toggleFavourite(spider.id, spider.isFavourite)}
+                  onPress={() =>
+                    toggleFavourite(spider.id, spider.isFavourite ?? false)
+                  }
                 >
                   <AntDesign
                     size={22}
