@@ -30,7 +30,7 @@ type ModalUpdateProps = {
 const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   const { id, type } = useLocalSearchParams();
   const { currentTheme } = useUserStore();
-  const updateSpider = useSpidersStore((state) => state.updateSpider);
+  const { updateSpider } = useSpidersStore();
   const spiders = useSpidersStore((state) => state.spiders);
   const [date, setDate] = useState("");
   const [age, setAge] = useState(0);

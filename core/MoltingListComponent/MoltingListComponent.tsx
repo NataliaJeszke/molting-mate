@@ -19,7 +19,6 @@ const MoltingListComponent = () => {
     datePropertyKey: "lastMolt",
   });
   const processedSpiders = useMemo(() => {
-    console.log("Filtered spiders:", filteredSpiders);
     return [...filteredSpiders]
       .map((spider) => ({
         ...spider,
