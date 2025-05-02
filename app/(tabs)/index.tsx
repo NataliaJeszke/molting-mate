@@ -23,18 +23,29 @@ import WrapperComponent from "@/components/ui/WrapperComponent";
 import CardComponent from "@/components/ui/CardComponent";
 import SpiderGallery from "@/components/ui/SpiderGallery";
 import UpcomingFeedingListComponent from "@/core/UpcomingFeedingListComponent/UpcomingFeedingListComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemedText } from "@/components/ui/ThemedText";
 import {
   getAddSpeciesStyle,
   getAddSpiderStyle,
 } from "@/utils/animations.constants";
 
+import { getAllSpiders } from "@/db/database";
+
 export default function HomeScreen() {
   const router = useRouter();
   const { currentTheme } = useUserStore();
   const [isFabOpen, setIsFabOpen] = useState(false);
   const [animation] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    const fetchSpiders = async () => {
+      const spiders = await getAllSpiders();
+      console.log("Spiders w bazie:", spiders);
+    };
+
+    fetchSpiders();
+  }, []);
 
   const toggleFab = () => {
     const toValue = isFabOpen ? 0 : 1;
