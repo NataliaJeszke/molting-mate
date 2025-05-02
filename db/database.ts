@@ -60,6 +60,11 @@ export const addSpider = async (spider: any) => {
       INSERT INTO spiders (id, name, age, spiderSpecies, individualType, lastFed, feedingFrequency, lastMolt, imageUri, isFavourite, status, nextFeedingDate)
       VALUES ('${spider.id}', '${spider.name}', ${spider.age}, '${spider.spiderSpecies}', '${spider.individualType}', '${spider.lastFed}', '${spider.feedingFrequency}', '${spider.lastMolt}', '${spider.imageUri}', ${spider.isFavourite ? 1 : 0}, '${spider.status}', '${spider.nextFeedingDate}');
     `);
+    const result = await db.getFirstAsync(
+      `SELECT * FROM spiders WHERE id = ?`,
+      [spider.id],
+    );
+    console.log("✅ Dodano pająka do bazy:", result);
   } catch (error) {
     console.error("Błąd podczas dodawania pająka:", error);
   }

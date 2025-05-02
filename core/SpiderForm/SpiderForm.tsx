@@ -33,11 +33,12 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import SpiderImage from "@/components/commons/SpiderImage/SpiderImage";
 import { ensureLatestDate, sortDateStrings } from "@/utils/dateUtils";
 import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
+import { addSpider } from "@/db/database";
 
 export default function SpiderForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { currentTheme } = useUserStore();
-  const { addSpider, updateSpider, spiders } = useSpidersStore();
+  const { updateSpider, spiders } = useSpidersStore();
   const { addSpecies, spiderSpeciesList } = useSpiderSpeciesStore();
 
   const [name, setName] = useState<string>();
@@ -98,7 +99,7 @@ export default function SpiderForm() {
     }
   }, [id, spiders]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Submitting spider data...");
     console.log(
       name,
@@ -164,17 +165,21 @@ export default function SpiderForm() {
       feedingFrequency: feedingFrequency as FeedingFrequency,
       lastMolt: latestMoltDate,
       imageUri: imageUri || "",
-      documentUri: documentUri || "",
+      // documentUri: documentUri || "",
       isFavourite: existingSpider?.isFavourite ?? false,
-      moltingHistoryData: sortedMoltingHistory,
-      feedingHistoryData: sortedFeedingHistory,
+      // moltingHistoryData: sortedMoltingHistory,
+      // feedingHistoryData: sortedFeedingHistory,
     };
 
     if (id) {
       updateSpider(id, spiderData);
       Alert.alert("Sukces", `Zaktualizowano pająka o imieniu ${name}!`);
     } else {
-      addSpider(spiderData);
+      await addSpider({
+        ...spiderData,
+        status: "",
+        nextFeedingDate: "",
+      });
       Alert.alert("Sukces", `Dodano pająka o imieniu ${name}!`);
     }
 
