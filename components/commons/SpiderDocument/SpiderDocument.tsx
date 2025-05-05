@@ -6,15 +6,13 @@ import {
   Modal,
   SafeAreaView,
 } from "react-native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { Feather } from "@expo/vector-icons";
-
-import CardComponent from "@/components/ui/CardComponent";
+import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
-import { ThemeType } from "@/constants/Colors";
+import CardComponent from "@/components/ui/CardComponent";
 
-type SpiderDocumentProps = {
-  documentUris: string[];
+interface SpiderDocumentProps {
+  documentUris: { document_uri: string }[];
   isImageDocument: (uri: string) => boolean;
   onChooseDocument: () => void;
   onRemoveDocument: (index: number) => void;
@@ -22,7 +20,7 @@ type SpiderDocumentProps = {
   styles: any;
   showDocumentModal: boolean;
   setShowDocumentModal: (value: boolean) => void;
-};
+}
 
 const SpiderDocument = ({
   documentUris,
@@ -59,56 +57,64 @@ const SpiderDocument = ({
       );
     }
 
-    return documentUris.map((uri, index) => (
-      <View
-        key={index}
-        style={styles(currentTheme).documentCard__previewContainer}
-      >
-        {isImageDocument(uri) ? (
-          <Image
-            source={{ uri }}
-            style={styles(currentTheme).documentCard__preview}
-          />
-        ) : (
-          <View style={styles(currentTheme).documentCard__noDocument}>
-            <Feather name="file" size={48} color={Colors[currentTheme].text} />
-            <ThemedText
-              style={styles(currentTheme).documentCard__noDocumentText}
-            >
-              Obsługiwane są tylko obrazy jako dokumenty.
-            </ThemedText>
-          </View>
-        )}
+    return documentUris.map((doc, index) => {
+      const uri = doc.document_uri;
 
-        <View style={styles(currentTheme).documentCard__buttonContainer}>
-          <TouchableOpacity
-            onPress={() => openPreview(uri)}
-            style={styles(currentTheme).documentCard__viewButton}
-          >
-            <Feather name="eye" size={16} color={Colors[currentTheme].text} />
-            <ThemedText style={styles(currentTheme).documentCard__buttonText}>
-              Podgląd
-            </ThemedText>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => onRemoveDocument(index)}
-            style={styles(currentTheme).documentCard__removeButton}
-          >
-            <Feather
-              name="trash-2"
-              size={16}
-              color={Colors[currentTheme].destructive}
+      return (
+        <View
+          key={index}
+          style={styles(currentTheme).documentCard__previewContainer}
+        >
+          {isImageDocument(uri) ? (
+            <Image
+              source={{ uri }}
+              style={styles(currentTheme).documentCard__preview}
             />
-            <ThemedText
-              style={styles(currentTheme).documentCard__removeButtonText}
+          ) : (
+            <View style={styles(currentTheme).documentCard__noDocument}>
+              <Feather
+                name="file"
+                size={48}
+                color={Colors[currentTheme].text}
+              />
+              <ThemedText
+                style={styles(currentTheme).documentCard__noDocumentText}
+              >
+                Obsługiwane są tylko obrazy jako dokumenty.
+              </ThemedText>
+            </View>
+          )}
+
+          <View style={styles(currentTheme).documentCard__buttonContainer}>
+            <TouchableOpacity
+              onPress={() => openPreview(uri)}
+              style={styles(currentTheme).documentCard__viewButton}
             >
-              Usuń
-            </ThemedText>
-          </TouchableOpacity>
+              <Feather name="eye" size={16} color={Colors[currentTheme].text} />
+              <ThemedText style={styles(currentTheme).documentCard__buttonText}>
+                Podgląd
+              </ThemedText>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => onRemoveDocument(index)}
+              style={styles(currentTheme).documentCard__removeButton}
+            >
+              <Feather
+                name="trash-2"
+                size={16}
+                color={Colors[currentTheme].info.text}
+              />
+              <ThemedText
+                style={styles(currentTheme).documentCard__removeButtonText}
+              >
+                Usuń
+              </ThemedText>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    ));
+      );
+    });
   };
 
   return (

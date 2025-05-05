@@ -8,11 +8,11 @@ import CardComponent from "@/components/ui/CardComponent";
 interface HistoryInformationProps {
   title: string;
   iconName: keyof typeof Feather.glyphMap;
-  data: string[] | undefined;
+  data: any[] | undefined;
   currentTheme: ThemeType;
   styles: any;
   emptyText: string;
-  typeKey: string;
+  typeKey: "feeding" | "molting";
   isExpanded: boolean;
   toggleExpanded: () => void;
 }
@@ -28,6 +28,12 @@ const HistoryInformation = ({
   isExpanded,
   toggleExpanded,
 }: HistoryInformationProps) => {
+  const getDateFromItem = (item: any): string => {
+    if (typeKey === "feeding") return item.fed_at;
+    if (typeKey === "molting") return item.molted_at;
+    return "Brak daty";
+  };
+
   return (
     <CardComponent customStyle={styles(currentTheme).historyCard}>
       <TouchableOpacity
@@ -72,7 +78,7 @@ const HistoryInformation = ({
                 style={styles(currentTheme).historyCard__itemIcon}
               />
               <ThemedText style={styles(currentTheme).historyCard__itemText}>
-                {item}
+                {getDateFromItem(item)}
               </ThemedText>
             </View>
           ))}

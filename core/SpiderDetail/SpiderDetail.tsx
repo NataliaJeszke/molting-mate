@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Image, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons"; // Dodajemy FontAwesome dla ikon płci
+import { FontAwesome } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 
 import { useUserStore } from "@/store/userStore";
@@ -17,6 +17,7 @@ import HistoryInformation from "@/components/commons/HistoryInformation/HistoryI
 import SpiderDocument from "@/components/commons/SpiderDocument/SpiderDocument";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 import { router } from "expo-router";
+import { getSpiderById } from "@/db/database";
 
 interface Props {
   spider: Spider;
@@ -28,15 +29,45 @@ const SpiderDetails = ({ spider }: Props) => {
   const [showFeedingHistory, setShowFeedingHistory] = useState(false);
   const [showMoltingHistory, setShowMoltingHistory] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
+  const [feedingHistoryData, setFeedingHistoryData] = useState<any[] | null>(
+    null,
+  );
+  const [moltingHistoryData, setMoltingHistoryData] = useState<any[] | null>(
+    null,
+  );
+  const [documentsData, setDocumentsData] = useState<any[] | null>(null);
+  const [spiderData, setSpiderData] = useState<any | null>(null);
 
-  const nextFeedingDate = getNextFeedingDate(
-    spider.lastFed,
-    spider.feedingFrequency,
-  );
-  const feedingStatus = getFeedingStatus(
-    spider.lastFed,
-    spider.feedingFrequency,
-  );
+  useEffect(() => {
+    const fetchSpider = async () => {
+      const spiderId = "1746460031660";
+      const data = await getSpiderById(spiderId);
+
+      if (!data) return;
+
+      const { feedingHistory, moltingHistory, documents, ...spider } = data;
+
+      console.log("🕷️ Główne dane pająka:", spider);
+      console.log("🍗 Historia karmienia:", feedingHistory);
+      console.log("🕷️ Historia wylinki:", moltingHistory);
+      console.log("📄 Dokumenty:", documents);
+
+      setSpiderData(spider);
+      setFeedingHistoryData(feedingHistory);
+      setMoltingHistoryData(moltingHistory);
+      setDocumentsData(documents);
+    };
+
+    fetchSpider();
+  }, []);
+
+  const nextFeedingDate = spiderData
+    ? getNextFeedingDate(spiderData.lastFed, spiderData.feedingFrequency)
+    : null;
+
+  const feedingStatus = spiderData
+    ? getFeedingStatus(spiderData.lastFed, spiderData.feedingFrequency)
+    : null;
 
   const getFeedingStatusLabel = (status: FeedingStatus | null) => {
     switch (status) {
@@ -128,9 +159,9 @@ const SpiderDetails = ({ spider }: Props) => {
 
           if (!result.canceled) {
             const uri = result.assets[0].uri;
-            updateSpider(spider.id, {
-              documentUris: spider.documentUris
-                ? [...spider.documentUris, uri]
+            updateSpider(spiderData.id, {
+              documentUris: spiderData.documentUris
+                ? [...spiderData.documentUris, uri]
                 : [uri],
             });
           }
@@ -154,9 +185,9 @@ const SpiderDetails = ({ spider }: Props) => {
 
           if (!result.canceled) {
             const uri = result.assets[0].uri;
-            updateSpider(spider.id, {
-              documentUris: spider.documentUris
-                ? [...spider.documentUris, uri]
+            updateSpider(spiderData.id, {
+              documentUris: spiderData.documentUris
+                ? [...spiderData.documentUris, uri]
                 : [uri],
             });
             console.log("update spider", spider);
@@ -197,20 +228,20 @@ const SpiderDetails = ({ spider }: Props) => {
       <CardComponent customStyle={styles(currentTheme).imageCard}>
         <View style={styles(currentTheme).imageCard__header}>
           <ThemedText style={styles(currentTheme).imageCard__title}>
-            {spider.spiderSpecies}
+            {spiderData?.spiderSpecies}
           </ThemedText>
         </View>
         <View style={styles(currentTheme).imageCard__content}>
           <Image
             source={
-              spider.imageUri
-                ? { uri: spider.imageUri }
+              spiderData?.imageUri
+                ? { uri: spiderData?.imageUri }
                 : require("@/assets/images/spider.png")
             }
             style={styles(currentTheme).imageCard__image}
           />
           <ThemedText style={styles(currentTheme).imageCard__name}>
-            {spider.name}
+            {spiderData?.name}
           </ThemedText>
         </View>
       </CardComponent>
@@ -233,13 +264,13 @@ const SpiderDetails = ({ spider }: Props) => {
         <View style={styles(currentTheme).basicInfoCard__content}>
           <View style={styles(currentTheme).basicInfoCard__infoRow}>
             <View style={styles(currentTheme).basicInfoCard__label}>
-              {getIndividualTypeIcon(spider.individualType)}
+              {getIndividualTypeIcon(spiderData?.individualType)}
               <ThemedText style={styles(currentTheme).basicInfoCard__labelText}>
                 Płeć:
               </ThemedText>
             </View>
             <ThemedText style={styles(currentTheme).basicInfoCard__value}>
-              {getIndividualTypeLabel(spider.individualType)}
+              {getIndividualTypeLabel(spiderData?.individualType)}
             </ThemedText>
           </View>
           <View style={styles(currentTheme).basicInfoCard__infoRow}>
@@ -255,7 +286,7 @@ const SpiderDetails = ({ spider }: Props) => {
               </ThemedText>
             </View>
             <ThemedText style={styles(currentTheme).basicInfoCard__value}>
-              L{spider.age}
+              L{spiderData?.age}
             </ThemedText>
           </View>
         </View>
@@ -290,7 +321,7 @@ const SpiderDetails = ({ spider }: Props) => {
               </ThemedText>
             </View>
             <ThemedText style={styles(currentTheme).feedingCard__value}>
-              {spider.lastFed}
+              {spiderData?.lastFed}
             </ThemedText>
           </View>
 
@@ -326,7 +357,7 @@ const SpiderDetails = ({ spider }: Props) => {
                 router.push({
                   pathname: "/manageModal",
                   params: {
-                    id: spider.id,
+                    id: spiderData?.id,
                     type: ViewTypes.VIEW_FEEDING,
                     action: "edit",
                   },
@@ -379,7 +410,7 @@ const SpiderDetails = ({ spider }: Props) => {
               </ThemedText>
             </View>
             <ThemedText style={styles(currentTheme).moltingCard__value}>
-              {spider.lastMolt}
+              {spiderData?.lastMolt}
             </ThemedText>
           </View>
           <View style={styles(currentTheme).moltingCard__addButtonRow}>
@@ -388,7 +419,7 @@ const SpiderDetails = ({ spider }: Props) => {
                 router.push({
                   pathname: "/manageModal",
                   params: {
-                    id: spider.id,
+                    id: spiderData?.id,
                     type: ViewTypes.VIEW_MOLTING,
                     action: "edit",
                   },
@@ -411,7 +442,7 @@ const SpiderDetails = ({ spider }: Props) => {
       <HistoryInformation
         title="Historia karmienia"
         iconName="list"
-        data={spider.feedingHistoryData}
+        data={feedingHistoryData ? feedingHistoryData : []}
         isExpanded={showFeedingHistory}
         toggleExpanded={() => setShowFeedingHistory(!showFeedingHistory)}
         currentTheme={currentTheme}
@@ -424,7 +455,7 @@ const SpiderDetails = ({ spider }: Props) => {
       <HistoryInformation
         title="Historia linienia"
         iconName="repeat"
-        data={spider.moltingHistoryData}
+        data={moltingHistoryData ? moltingHistoryData : []}
         isExpanded={showMoltingHistory}
         toggleExpanded={() => setShowMoltingHistory(!showMoltingHistory)}
         currentTheme={currentTheme}
@@ -435,7 +466,7 @@ const SpiderDetails = ({ spider }: Props) => {
 
       {/* Document Card */}
       <SpiderDocument
-        documentUris={spider.documentUris || []}
+        documentUris={documentsData ? documentsData : []}
         isImageDocument={(uri) => isImageDocument(uri)}
         onChooseDocument={handleChooseDocument}
         onRemoveDocument={handleRemoveDocument}

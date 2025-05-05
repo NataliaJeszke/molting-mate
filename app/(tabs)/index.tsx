@@ -30,7 +30,11 @@ import {
   getAddSpiderStyle,
 } from "@/utils/animations.constants";
 
-import { checkSpiderRecords, getAllSpiders } from "@/db/database";
+import {
+  checkSpiderRecords,
+  getAllSpiders,
+  getSpiderById,
+} from "@/db/database";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -48,12 +52,13 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    const checkRecords = async () => {
+    const fetchSpider = async () => {
       const spiderId = "1746460031660";
-      await checkSpiderRecords(spiderId);
+      const data = await getSpiderById(spiderId);
+      console.log("🕷️ Dane pająka:", data);
     };
 
-    checkRecords();
+    fetchSpider();
   }, []);
 
   const toggleFab = () => {

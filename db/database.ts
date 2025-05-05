@@ -309,3 +309,44 @@ export const checkSpiderRecords = async (spiderId: string) => {
     console.error("Błąd podczas sprawdzania danych pająka:", error);
   }
 };
+
+export const getSpiderById = async (spiderId: string) => {
+  try {
+    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+
+    const spider = await db.getFirstAsync(
+      `SELECT * FROM spiders WHERE id = ?`,
+      [spiderId],
+    );
+
+    if (!spider) {
+      console.warn(`⚠️ Nie znaleziono pająka o ID: ${spiderId}`);
+      return null;
+    }
+
+    const feedingHistory = await db.getAllAsync(
+      `SELECT * FROM feeding_history WHERE spider_id = ? ORDER BY fed_at DESC`,
+      [spiderId],
+    );
+
+    const moltingHistory = await db.getAllAsync(
+      `SELECT * FROM molting_history WHERE spider_id = ? ORDER BY molted_at DESC`,
+      [spiderId],
+    );
+
+    const documents = await db.getAllAsync(
+      `SELECT * FROM spider_documents WHERE spider_id = ?`,
+      [spiderId],
+    );
+
+    return {
+      ...spider,
+      feedingHistory,
+      moltingHistory,
+      documents,
+    };
+  } catch (error) {
+    console.error("❌ Błąd podczas pobierania danych pająka:", error);
+    return null;
+  }
+};
