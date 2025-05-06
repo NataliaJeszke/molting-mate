@@ -1,17 +1,30 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { ScrollView } from "react-native";
 
-import { useSpidersStore } from "@/store/spidersStore";
+import { getAllSpiders, Spider } from "@/db/database";
+import { useFiltersStore } from "@/store/filtersStore";
+import { ViewTypes } from "@/constants/ViewTypes.enums";
+import { IndividualType } from "@/models/Spider.model";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
-import SpiderSectionHeader from "../../components/commons/SpiderSectionHeader/SpiderSectionHeader";
-import { ViewTypes } from "@/constants/ViewTypes.enums";
-import { ScrollView } from "react-native";
-import { useFiltersStore } from "@/store/filtersStore";
+import SpiderSectionHeader from "@/components/commons/SpiderSectionHeader/SpiderSectionHeader";
 
 const CollectionListComponent = () => {
-  const spiders = useSpidersStore((state) => state.spiders);
+  const [spiders, setSpiders] = useState<Spider[]>([]);
   const filters = useFiltersStore((state) => state.filters.collection);
   const viewType = ViewTypes.VIEW_COLLECTION;
+
+  useEffect(() => {
+    const fetchSpiders = async () => {
+      const spiders = await getAllSpiders();
+      if (spiders) {
+        const typedSpiders = spiders as Spider[];
+        setSpiders(typedSpiders);
+      }
+    };
+
+    fetchSpiders();
+  }, []);
 
   const filteredSpiders = useMemo(() => {
     return spiders
@@ -24,7 +37,9 @@ const CollectionListComponent = () => {
           (filters.ageTo === undefined || spider.age <= filters.ageTo);
         const matchGender =
           !filters.individualType?.length ||
-          (filters.individualType || []).includes(spider.individualType!);
+          (filters.individualType || []).includes(
+            spider.individualType! as IndividualType,
+          );
 
         return matchspiderSpecies && matchAge && matchGender;
       })

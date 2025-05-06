@@ -1,7 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ScrollView } from "react-native";
 
-import { useSpidersStore } from "@/store/spidersStore";
+import { getAllSpiders, Spider } from "@/db/database";
 import { useFiltersStore } from "@/store/filtersStore";
 
 import { useSpiderFilter } from "@/hooks/useSpiderFilter";
@@ -14,11 +14,30 @@ import { getFeedingStatus } from "@/utils/feedingUtils";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import SpiderSectionHeader from "@/components/commons/SpiderSectionHeader/SpiderSectionHeader";
+import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
+import { FeedingStatus } from "@/constants/FeedingStatus.enums";
+
+export type ExtendedSpider = Omit<Spider, "status"> & {
+  status: FeedingStatus | null;
+  nextFeedingDate: string;
+};
 
 const FeedingListComponent = () => {
-  const spiders = useSpidersStore((state) => state.spiders);
+  const [spiders, setSpiders] = useState<Spider[]>([]);
   const filters = useFiltersStore((state) => state.filters.feeding);
   const viewType = ViewTypes.VIEW_FEEDING;
+
+  useEffect(() => {
+    const fetchSpiders = async () => {
+      const spiders = await getAllSpiders();
+      if (spiders) {
+        const typedSpiders = spiders as Spider[];
+        setSpiders(typedSpiders);
+      }
+    };
+
+    fetchSpiders();
+  }, []);
 
   const filteredSpiders = useSpiderFilter({
     spiders,
@@ -26,22 +45,22 @@ const FeedingListComponent = () => {
     datePropertyKey: "lastFed",
   });
 
-  const processedSpiders = useMemo(() => {
+  const processedSpiders: ExtendedSpider[] = useMemo(() => {
     return [...filteredSpiders]
       .map((spider) => {
         const nextFeedingDate = getNextFeedingDate(
           spider.lastFed,
-          spider.feedingFrequency,
+          spider.feedingFrequency as unknown as FeedingFrequency,
         );
 
         const status = getFeedingStatus(
           spider.lastFed,
-          spider.feedingFrequency,
+          spider.feedingFrequency as unknown as FeedingFrequency,
         );
 
         return {
           ...spider,
-          status,
+          status: status as FeedingStatus | null,
           nextFeedingDate,
         };
       })

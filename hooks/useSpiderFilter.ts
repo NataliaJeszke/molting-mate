@@ -1,8 +1,10 @@
 import { useMemo } from "react";
 
-import { Spider } from "@/models/Spider.model";
+import { Spider } from "@/db/database";
 import { parseDate } from "@/utils/dateUtils";
+
 import { FilterType } from "@/models/Filters.model";
+import { IndividualType } from "@/models/Spider.model";
 
 type UseSpiderFilterParams<T extends Spider> = {
   spiders: T[];
@@ -26,7 +28,9 @@ export function useSpiderFilter<T extends Spider>({
           (filters.ageTo === undefined || spider.age <= filters.ageTo);
         const matchGender =
           !filters.individualType?.length ||
-          (filters.individualType || []).includes(spider.individualType!);
+          (filters.individualType || []).includes(
+            spider.individualType! as IndividualType,
+          );
         const matchSpecies = filters.spiderSpecies
           ? spider.spiderSpecies?.includes(filters.spiderSpecies)
           : true;

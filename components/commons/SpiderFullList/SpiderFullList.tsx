@@ -13,9 +13,10 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 import { Spider } from "@/db/database";
+import { ExtendedSpider } from "@/core/FeedingListComponent/FeedingListComponent";
 
 type SpiderListProps = {
-  data: Spider[];
+  data: Spider[] | ExtendedSpider[];
   viewType?: ViewTypes;
 };
 
@@ -39,7 +40,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
     }
   };
 
-  const renderStatusIcon = (spider: Spider) => {
+  const renderStatusIcon = (spider: Spider | ExtendedSpider) => {
     if (spider.status === FeedingStatus.HUNGRY) {
       return (
         <TouchableOpacity
