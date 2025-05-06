@@ -12,10 +12,10 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 
 interface SpiderDocumentProps {
-  documentUris: { document_uri: string }[];
+  documentUris: { document_uri: string; id: string }[];
   isImageDocument: (uri: string) => boolean;
   onChooseDocument: () => void;
-  onRemoveDocument: (index: number) => void;
+  onRemoveDocument: (docId: string) => void;
   currentTheme: ThemeType;
   styles: any;
   showDocumentModal: boolean;
@@ -59,10 +59,11 @@ const SpiderDocument = ({
 
     return documentUris.map((doc, index) => {
       const uri = doc.document_uri;
+      const docId = doc.id;
 
       return (
         <View
-          key={index}
+          key={doc.id}
           style={styles(currentTheme).documentCard__previewContainer}
         >
           {isImageDocument(uri) ? (
@@ -97,7 +98,7 @@ const SpiderDocument = ({
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => onRemoveDocument(index)}
+              onPress={() => onRemoveDocument(docId)}
               style={styles(currentTheme).documentCard__removeButton}
             >
               <Feather

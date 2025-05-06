@@ -16,15 +16,21 @@ import HistoryInformation from "@/components/commons/HistoryInformation/HistoryI
 import SpiderDocument from "@/components/commons/SpiderDocument/SpiderDocument";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 import { router } from "expo-router";
-import { getSpiderById } from "@/db/database";
 
 interface Props {
   spiderId: string | string[] | undefined;
 }
 
 const SpiderDetails = ({ spiderId }: Props) => {
+  console.log("spiderId", spiderId);
   const { currentTheme } = useUserStore();
-  const updateSpider = useSpidersStore((state: any) => state.updateSpider);
+  const getSpiderById = useSpidersStore((state: any) => state.getSpiderById);
+  const addDocumentToSpider = useSpidersStore(
+    (state: any) => state.addDocumentToSpider,
+  );
+  const deleteDocument = useSpidersStore(
+    (state: any) => state.deleteSpiderDocument,
+  );
   const [showFeedingHistory, setShowFeedingHistory] = useState(false);
   const [showMoltingHistory, setShowMoltingHistory] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
@@ -38,28 +44,21 @@ const SpiderDetails = ({ spiderId }: Props) => {
   const [spiderData, setSpiderData] = useState<any | null>(null);
 
   useEffect(() => {
-    if (typeof spiderId === "string") {
-      fetchSpider(spiderId);
-    }
-  }, [spiderId]);
+    const fetchSpider = async () => {
+      const data = await getSpiderById(spiderId);
 
-  const fetchSpider = async (id: string) => {
-    const data = await getSpiderById(id);
+      if (!data) return;
 
-    if (!data) return;
+      const { feedingHistory, moltingHistory, documents, ...spider } = data;
 
-    const { feedingHistory, moltingHistory, documents, ...spider } = data;
+      setSpiderData(spider);
+      setFeedingHistoryData(feedingHistory);
+      setMoltingHistoryData(moltingHistory);
+      setDocumentsData(documents);
+    };
 
-    console.log("🕷️ Główne dane pająka:", spider);
-    console.log("🍗 Historia karmienia:", feedingHistory);
-    console.log("🕷️ Historia wylinki:", moltingHistory);
-    console.log("📄 Dokumenty:", documents);
-
-    setSpiderData(spider);
-    setFeedingHistoryData(feedingHistory);
-    setMoltingHistoryData(moltingHistory);
-    setDocumentsData(documents);
-  };
+    fetchSpider();
+  }, [spiderId, getSpiderById]);
 
   const nextFeedingDate = spiderData
     ? getNextFeedingDate(spiderData.lastFed, spiderData.feedingFrequency)
@@ -141,6 +140,17 @@ const SpiderDetails = ({ spiderId }: Props) => {
   };
 
   const handleChooseDocument = () => {
+    const handleAddDocument = async (spiderId: string, uri: string) => {
+      const success = await addDocumentToSpider(spiderId, uri);
+      if (!success) return;
+
+      const data = await getSpiderById(spiderId);
+      if (!data) return;
+
+      const { documents } = data;
+      setDocumentsData(documents);
+    };
+
     Alert.alert("Wybierz źródło", "Dołącz dokument pochodzenia", [
       {
         text: "Zrób zdjęcie",
@@ -159,11 +169,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
 
           if (!result.canceled) {
             const uri = result.assets[0].uri;
-            updateSpider(spiderData.id, {
-              documentUris: spiderData.documentUris
-                ? [...spiderData.documentUris, uri]
-                : [uri],
-            });
+            await handleAddDocument(spiderData.id, uri);
           }
         },
       },
@@ -185,11 +191,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
 
           if (!result.canceled) {
             const uri = result.assets[0].uri;
-            updateSpider(spiderData.id, {
-              documentUris: spiderData.documentUris
-                ? [...spiderData.documentUris, uri]
-                : [uri],
-            });
+            await handleAddDocument(spiderData.id, uri);
           }
         },
       },
@@ -200,7 +202,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
     ]);
   };
 
-  const handleRemoveDocument = (index: number) => {
+  const handleRemoveDocument = (docId: string) => {
     Alert.alert(
       "Usuń dokument",
       "Czy na pewno chcesz usunąć dokument pochodzenia?",
@@ -212,16 +214,24 @@ const SpiderDetails = ({ spiderId }: Props) => {
         {
           text: "Usuń",
           style: "destructive",
-          onPress: () => {
-            const newUris = [...(spiderData.documentUris || [])];
-            newUris.splice(index, 1);
-            updateSpider(spiderData.id, { documentUris: newUris });
+          onPress: async () => {
+            const { success } = await deleteDocument(docId);
+            console.log("success", success);
+
+            if (success) {
+              const data = await getSpiderById(spiderData.id);
+              if (!data) return;
+
+              const { documents } = data;
+              setDocumentsData(documents);
+            } else {
+              Alert.alert("Błąd", "Nie udało się usunąć dokumentu.");
+            }
           },
         },
       ],
     );
   };
-
   return (
     <View style={styles(currentTheme).spiderDetails}>
       <CardComponent customStyle={styles(currentTheme).imageCard}>

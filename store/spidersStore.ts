@@ -1,9 +1,12 @@
 import { create } from "zustand";
 
 import {
+  addDocumentToSpider,
   addSpider,
+  deleteDocument,
   deleteSpider,
   getAllSpiders,
+  getSpiderById,
   Spider,
   updateSpider,
 } from "@/db/database";
@@ -29,6 +32,17 @@ export const useSpidersStore = create((set, get) => ({
     }
   },
 
+  getSpiderById: async (spiderId: string) => {
+    try {
+      const spiderData = await getSpiderById(spiderId);
+      console.log("Pająk:", spiderData);
+      if (!spiderData) throw new Error("Nie znaleziono pająka");
+      return spiderData;
+    } catch (error: any) {
+      console.error("❌ Błąd przy getSpiderByIdFromDB:", error);
+    }
+  },
+
   addNewSpider: async (spider: any) => {
     await addSpider(spider);
     await (get() as SpidersState).fetchSpiders();
@@ -42,5 +56,26 @@ export const useSpidersStore = create((set, get) => ({
   deleteSpider: async (id: string) => {
     await deleteSpider(id);
     await (get() as SpidersState).fetchSpiders();
+  },
+
+  addDocumentToSpider: async (spiderId: string, documentUri: string) => {
+    const result = await addDocumentToSpider(spiderId, documentUri);
+    await (get() as SpidersState).fetchSpiders();
+    return result;
+  },
+
+  deleteSpiderDocument: async (documentId: number) => {
+    try {
+      await deleteDocument(documentId);
+      await (get() as SpidersState).fetchSpiders();
+      return { success: true, message: "Dokument został usunięty." };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      return {
+        success: false,
+        message: "Wystąpił błąd podczas usuwania dokumentu:",
+        error,
+      };
+    }
   },
 }));
