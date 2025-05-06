@@ -30,35 +30,20 @@ import {
   getAddSpiderStyle,
 } from "@/utils/animations.constants";
 
-import { getAllSpiders, getSpiderById, Spider } from "@/db/database";
+import { Spider } from "@/db/database";
+import { useSpidersStore } from "@/store/spidersStore";
 
 export default function HomeScreen() {
   const router = useRouter();
   const { currentTheme } = useUserStore();
-  const [spiders, setSpiders] = useState<Spider[]>([]);
   const [isFabOpen, setIsFabOpen] = useState(false);
   const [animation] = useState(new Animated.Value(0));
+  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
+  const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
 
   useEffect(() => {
-    const fetchSpiders = async () => {
-      const spiders = await getAllSpiders();
-      if (spiders) {
-        const typedSpiders = spiders as Spider[];
-        setSpiders(typedSpiders);
-      }
-    };
-
     fetchSpiders();
-  }, []);
-
-  useEffect(() => {
-    const fetchSpider = async () => {
-      const spiderId = "1746460031660";
-      const data = await getSpiderById(spiderId);
-      console.log("🕷️ Dane pająka:", data);
-    };
-
-    fetchSpider();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleFab = () => {

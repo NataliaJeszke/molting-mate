@@ -21,6 +21,7 @@ import { Colors, ThemeType } from "@/constants/Colors";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
+import { Spider } from "@/db/database";
 
 type ModalUpdateProps = {
   isVisible: boolean;
@@ -30,8 +31,8 @@ type ModalUpdateProps = {
 const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   const { id, type } = useLocalSearchParams();
   const { currentTheme } = useUserStore();
-  const updateSpider = useSpidersStore((state) => state.updateSpider);
-  const spiders = useSpidersStore((state) => state.spiders);
+  const updateSpider = useSpidersStore((state: any) => state.updateSpider);
+  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
   const [date, setDate] = useState("");
   const [age, setAge] = useState(0);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
@@ -53,7 +54,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
     return `${year}-${month}-${day}`;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let finalDate = date.trim() || getTodayDate();
 
     if (finalDate && id && type) {
@@ -61,46 +62,26 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
 
       if (currentSpider) {
         if (type === "feeding") {
-          const currentFeedingHistory = currentSpider.feedingHistoryData || [];
-
-          let newFeedingHistory = [...currentFeedingHistory];
-          if (!currentFeedingHistory.includes(finalDate)) {
-            newFeedingHistory = [...currentFeedingHistory, finalDate];
+          const updatedSpider = {
+            ...currentSpider,
+            lastFed: finalDate,
+          };
+          try {
+            await updateSpider(updatedSpider);
+          } catch (error) {
+            console.error("Błąd podczas zapisywania zmian do bazy:", error);
           }
-
-          const sortedFeedingHistory = sortDateStrings(newFeedingHistory);
-
-          const latestFeedingDate = ensureLatestDate(
-            finalDate,
-            // eslint-disable-next-line prettier/prettier
-            sortedFeedingHistory
-          );
-
-          updateSpider(id as string, {
-            lastFed: latestFeedingDate,
-            feedingHistoryData: sortedFeedingHistory,
-          });
         } else if (type === "molting") {
-          const currentMoltingHistory = currentSpider.moltingHistoryData || [];
-
-          let newMoltingHistory = [...currentMoltingHistory];
-          if (!currentMoltingHistory.includes(finalDate)) {
-            newMoltingHistory = [...currentMoltingHistory, finalDate];
-          }
-
-          const sortedMoltingHistory = sortDateStrings(newMoltingHistory);
-
-          const latestMoltingDate = ensureLatestDate(
-            finalDate,
-            // eslint-disable-next-line prettier/prettier
-            sortedMoltingHistory
-          );
-
-          updateSpider(id as string, {
-            lastMolt: latestMoltingDate,
-            moltingHistoryData: sortedMoltingHistory,
+          const updatedSpider = {
+            ...currentSpider,
+            lastMolt: finalDate,
             age: age,
-          });
+          };
+          try {
+            await updateSpider(updatedSpider);
+          } catch (error) {
+            console.error("Błąd podczas zapisywania zmian do bazy:", error);
+          }
         }
       }
       onClose();

@@ -14,6 +14,7 @@ import { useUserStore } from "@/store/userStore";
 import { Colors, ThemeType } from "@/constants/Colors";
 
 import { ThemedText } from "@/components/ui/ThemedText";
+import { Spider } from "@/db/database";
 
 type ModalAlertProps = {
   isVisible: boolean;
@@ -22,13 +23,13 @@ type ModalAlertProps = {
 
 const ModalAlert = ({ isVisible, onClose }: ModalAlertProps) => {
   const { id } = useLocalSearchParams();
-  const spiders = useSpidersStore((state) => state.spiders);
-  const deleteSpider = useSpidersStore((state) => state.removeSpider);
+  const spiders = useSpidersStore((state: any) => state.spiders as Spider[]);
+  const deleteSpider = useSpidersStore((state: any) => state.deleteSpider);
   const { currentTheme } = useUserStore();
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (id) {
-      deleteSpider(id as string);
+      await deleteSpider(id as string);
       onClose();
     } else {
       onClose();

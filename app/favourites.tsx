@@ -3,24 +3,22 @@ import { ScrollView } from "react-native";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import WrapperComponent from "@/components/ui/WrapperComponent";
-import { getAllSpiders, Spider } from "@/db/database";
+import { Spider } from "@/db/database";
+import { useSpidersStore } from "@/store/spidersStore";
 
 export default function Favourites() {
   const [favouriteSpiders, setFavouriteSpiders] = useState<Spider[]>([]);
+  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
 
-  const fetchFavourites = async () => {
-    const allSpiders = await getAllSpiders();
-    if (!allSpiders) return;
-
-    const typedSpiders: Spider[] = allSpiders as Spider[];
-
-    const favourites = typedSpiders.filter((spider) => spider.isFavourite);
+  const fetchFavourites = () => {
+    const favourites = spiders.filter((spider) => spider.isFavourite);
     setFavouriteSpiders(favourites);
   };
 
   useEffect(() => {
     fetchFavourites();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spiders]);
 
   return (
     <WrapperComponent>

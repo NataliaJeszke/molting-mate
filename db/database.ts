@@ -92,26 +92,187 @@ export const addSpider = async (spider: any) => {
   }
 };
 
+// export const updateSpider = async (spider: any) => {
+//   try {
+//     if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+
+//     await db.runAsync(
+//       `
+//       UPDATE spiders SET
+//         name = ?,
+//         age = ?,
+//         spiderSpecies = ?,
+//         individualType = ?,
+//         lastFed = ?,
+//         feedingFrequency = ?,
+//         lastMolt = ?,
+//         imageUri = ?,
+//         isFavourite = ?,
+//         status = ?,
+//         nextFeedingDate = ?
+//       WHERE id = ?
+//     `,
+//       [
+//         spider.name,
+//         spider.age,
+//         spider.spiderSpecies,
+//         spider.individualType,
+//         spider.lastFed,
+//         spider.feedingFrequency,
+//         spider.lastMolt,
+//         spider.imageUri,
+//         spider.isFavourite ? 1 : 0,
+//         spider.status,
+//         spider.nextFeedingDate,
+//         spider.id,
+//       ],
+//     );
+
+//     if (spider.lastFed) {
+//       const existingFeed = await db.getFirstAsync(
+//         `SELECT * FROM feeding_history WHERE spider_id = ? AND fed_at = ?`,
+//         [spider.id, spider.lastFed],
+//       );
+//       if (!existingFeed) {
+//         await db.runAsync(
+//           `INSERT INTO feeding_history (spider_id, fed_at) VALUES (?, ?)`,
+//           [spider.id, spider.lastFed],
+//         );
+//         console.log(`✅ Dodano wpis karmienia ${spider.lastFed}`);
+//       } else {
+//         console.log(`ℹ️ Karmienie z datą ${spider.lastFed} już istnieje`);
+//       }
+//     }
+
+//     if (spider.lastMolt) {
+//       const existingMolt = await db.getFirstAsync(
+//         `SELECT * FROM molting_history WHERE spider_id = ? AND molted_at = ?`,
+//         [spider.id, spider.lastMolt],
+//       );
+//       if (!existingMolt) {
+//         await db.runAsync(
+//           `INSERT INTO molting_history (spider_id, molted_at) VALUES (?, ?)`,
+//           [spider.id, spider.lastMolt],
+//         );
+//         console.log(`✅ Dodano wpis linienia ${spider.lastMolt}`);
+//       } else {
+//         console.log(`ℹ️ Linienie z datą ${spider.lastMolt} już istnieje`);
+//       }
+//     }
+
+//     if (spider.documentUri) {
+//       const existingDocument = await db.getFirstAsync(
+//         `SELECT * FROM spider_documents WHERE spider_id = ? AND document_uri = ?`,
+//         [spider.id, spider.documentUri],
+//       );
+
+//       const existingDocsCount: { count: number }[] = await db.getAllAsync(
+//         `SELECT COUNT(*) as count FROM spider_documents WHERE spider_id = ?`,
+//         [spider.id],
+//       );
+
+//       if (existingDocument) {
+//         console.log(`ℹ️ Dokument już istnieje dla pająka ID ${spider.id}`);
+//       } else if (existingDocsCount[0].count >= 5) {
+//         console.warn(
+//           `⚠️ Pająk ID ${spider.id} ma już 5 dokumentów. Nie dodano.`,
+//         );
+//       } else {
+//         await db.runAsync(
+//           `INSERT INTO spider_documents (spider_id, document_uri) VALUES (?, ?)`,
+//           [spider.id, spider.documentUri],
+//         );
+//         console.log(`✅ Dodano nowy dokument dla pająka ID ${spider.id}`);
+//       }
+//     }
+
+//     console.log("✅ Zaktualizowano dane pająka:", spider.id);
+//   } catch (error) {
+//     console.error("Błąd podczas aktualizacji pająka:", error);
+//   }
+// };
 export const updateSpider = async (spider: any) => {
   try {
     if (!db) throw new Error("Baza danych nie została zainicjalizowana");
 
+    if (spider.lastFed) {
+      const existingFeed = await db.getFirstAsync(
+        `SELECT * FROM feeding_history WHERE spider_id = ? AND fed_at = ?`,
+        [spider.id, spider.lastFed],
+      );
+
+      if (!existingFeed) {
+        await db.runAsync(
+          `INSERT INTO feeding_history (spider_id, fed_at) VALUES (?, ?)`,
+          [spider.id, spider.lastFed],
+        );
+        console.log(`✅ Dodano wpis karmienia ${spider.lastFed}`);
+      } else {
+        console.log(`ℹ️ Karmienie z datą ${spider.lastFed} już istnieje`);
+      }
+
+      const latestFeedingDate = await db.getFirstAsync<{ fed_at: string }>(
+        `SELECT fed_at FROM feeding_history 
+         WHERE spider_id = ? 
+         ORDER BY datetime(fed_at) DESC 
+         LIMIT 1`,
+        [spider.id],
+      );
+
+      if (latestFeedingDate && latestFeedingDate.fed_at) {
+        spider.lastFed = latestFeedingDate.fed_at;
+        console.log(
+          `ℹ️ Ustawiono lastFed na najnowszą datę: ${spider.lastFed}`,
+        );
+      }
+    }
+
+    if (spider.lastMolt) {
+      const existingMolt = await db.getFirstAsync(
+        `SELECT * FROM molting_history WHERE spider_id = ? AND molted_at = ?`,
+        [spider.id, spider.lastMolt],
+      );
+
+      if (!existingMolt) {
+        await db.runAsync(
+          `INSERT INTO molting_history (spider_id, molted_at) VALUES (?, ?)`,
+          [spider.id, spider.lastMolt],
+        );
+        console.log(`✅ Dodano wpis linienia ${spider.lastMolt}`);
+      } else {
+        console.log(`ℹ️ Linienie z datą ${spider.lastMolt} już istnieje`);
+      }
+
+      const latestMoltingDate = await db.getFirstAsync<{ molted_at: string }>(
+        `SELECT molted_at FROM molting_history 
+         WHERE spider_id = ? 
+         ORDER BY datetime(molted_at) DESC 
+         LIMIT 1`,
+        [spider.id],
+      );
+
+      if (latestMoltingDate && latestMoltingDate.molted_at) {
+        spider.lastMolt = latestMoltingDate.molted_at;
+        console.log(
+          `ℹ️ Ustawiono lastMolt na najnowszą datę: ${spider.lastMolt}`,
+        );
+      }
+    }
+
     await db.runAsync(
-      `
-      UPDATE spiders SET 
-        name = ?, 
-        age = ?, 
-        spiderSpecies = ?, 
-        individualType = ?, 
-        lastFed = ?, 
-        feedingFrequency = ?, 
-        lastMolt = ?, 
-        imageUri = ?, 
-        isFavourite = ?, 
-        status = ?, 
-        nextFeedingDate = ?
-      WHERE id = ?
-    `,
+      `UPDATE spiders SET 
+       name = ?, 
+       age = ?, 
+       spiderSpecies = ?, 
+       individualType = ?, 
+       lastFed = ?, 
+       feedingFrequency = ?, 
+       lastMolt = ?, 
+       imageUri = ?, 
+       isFavourite = ?, 
+       status = ?, 
+       nextFeedingDate = ? 
+       WHERE id = ?`,
       [
         spider.name,
         spider.age,
@@ -127,38 +288,6 @@ export const updateSpider = async (spider: any) => {
         spider.id,
       ],
     );
-
-    if (spider.lastFed) {
-      const existingFeed = await db.getFirstAsync(
-        `SELECT * FROM feeding_history WHERE spider_id = ? AND fed_at = ?`,
-        [spider.id, spider.lastFed],
-      );
-      if (!existingFeed) {
-        await db.runAsync(
-          `INSERT INTO feeding_history (spider_id, fed_at) VALUES (?, ?)`,
-          [spider.id, spider.lastFed],
-        );
-        console.log(`✅ Dodano wpis karmienia ${spider.lastFed}`);
-      } else {
-        console.log(`ℹ️ Karmienie z datą ${spider.lastFed} już istnieje`);
-      }
-    }
-
-    if (spider.lastMolt) {
-      const existingMolt = await db.getFirstAsync(
-        `SELECT * FROM molting_history WHERE spider_id = ? AND molted_at = ?`,
-        [spider.id, spider.lastMolt],
-      );
-      if (!existingMolt) {
-        await db.runAsync(
-          `INSERT INTO molting_history (spider_id, molted_at) VALUES (?, ?)`,
-          [spider.id, spider.lastMolt],
-        );
-        console.log(`✅ Dodano wpis linienia ${spider.lastMolt}`);
-      } else {
-        console.log(`ℹ️ Linienie z datą ${spider.lastMolt} już istnieje`);
-      }
-    }
 
     if (spider.documentUri) {
       const existingDocument = await db.getFirstAsync(
