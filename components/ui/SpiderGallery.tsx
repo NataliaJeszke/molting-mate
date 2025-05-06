@@ -2,12 +2,16 @@ import React, { useRef, useState, useEffect } from "react";
 import { View, ScrollView, Image, StyleSheet, Dimensions } from "react-native";
 
 import { useUserStore } from "@/store/userStore";
-import { useSpidersStore } from "@/store/spidersStore";
 
 import { getRandomUserImages } from "@/utils/getRandomUserImages";
 import { Colors, ThemeType } from "@/constants/Colors";
 
 import CardComponent from "@/components/ui/CardComponent";
+import { Spider } from "@/db/database";
+
+interface SpiderGalleryProps {
+  spiders: Spider[];
+}
 
 const defaultSpiderImages = [
   require("@/assets/images/spider-gallery-1.jpg"),
@@ -17,17 +21,17 @@ const defaultSpiderImages = [
 
 const { width } = Dimensions.get("window");
 
-const SpiderGallery = () => {
+const SpiderGallery = ({ spiders }: SpiderGalleryProps) => {
   const scrollRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { currentTheme } = useUserStore();
-  const { spiders } = useSpidersStore();
   const [imagesToShow, setImagesToShow] = useState(() => {
     const spidersWithImages = spiders.filter((spider) => spider.imageUri);
     return spidersWithImages.length > 0
       ? getRandomUserImages(spidersWithImages)
       : defaultSpiderImages;
   });
+
   useEffect(() => {
     const spidersWithImages = spiders.filter((spider) => spider.imageUri);
     if (spidersWithImages.length > 0) {

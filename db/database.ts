@@ -1,5 +1,20 @@
 import * as SQLite from "expo-sqlite";
 
+export interface Spider {
+  id: string;
+  name: string;
+  age: number;
+  spiderSpecies: string;
+  individualType: string;
+  lastFed: string;
+  feedingFrequency: string;
+  lastMolt: string;
+  imageUri: string;
+  isFavourite: boolean;
+  status: string;
+  nextFeedingDate: string;
+}
+
 let db: SQLite.SQLiteDatabase;
 
 export const initDatabase = async () => {
@@ -19,7 +34,7 @@ export const initDatabase = async () => {
       feedingFrequency TEXT,
       lastMolt TEXT,
       imageUri TEXT,
-      isFavourite INTEGER,
+      isFavourite BOOLEAN,
       status TEXT,
       nextFeedingDate TEXT
     );

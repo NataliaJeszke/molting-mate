@@ -30,22 +30,22 @@ import {
   getAddSpiderStyle,
 } from "@/utils/animations.constants";
 
-import {
-  checkSpiderRecords,
-  getAllSpiders,
-  getSpiderById,
-} from "@/db/database";
+import { getAllSpiders, getSpiderById, Spider } from "@/db/database";
 
 export default function HomeScreen() {
   const router = useRouter();
   const { currentTheme } = useUserStore();
+  const [spiders, setSpiders] = useState<Spider[]>([]);
   const [isFabOpen, setIsFabOpen] = useState(false);
   const [animation] = useState(new Animated.Value(0));
 
   useEffect(() => {
     const fetchSpiders = async () => {
       const spiders = await getAllSpiders();
-      console.log("Spiders w bazie:", spiders);
+      if (spiders) {
+        const typedSpiders = spiders as Spider[];
+        setSpiders(typedSpiders);
+      }
     };
 
     fetchSpiders();
@@ -91,10 +91,10 @@ export default function HomeScreen() {
       </CardComponent>
 
       <ScrollView>
-        <SpiderGallery />
-        <PostFeedingListComponent />
-        <UpcomingFeedingListComponent />
-        <PostMoltingListComponent />
+        <SpiderGallery spiders={spiders} />
+        <PostFeedingListComponent spiders={spiders} />
+        <UpcomingFeedingListComponent spiders={spiders} />
+        <PostMoltingListComponent spiders={spiders} />
       </ScrollView>
 
       <View style={styles(currentTheme).fabContainer}>

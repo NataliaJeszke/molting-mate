@@ -20,10 +20,10 @@ import { router } from "expo-router";
 import { getSpiderById } from "@/db/database";
 
 interface Props {
-  spider: Spider;
+  spiderId: string | string[] | undefined;
 }
 
-const SpiderDetails = ({ spider }: Props) => {
+const SpiderDetails = ({ spiderId }: Props) => {
   const { currentTheme } = useUserStore();
   const { updateSpider } = useSpidersStore();
   const [showFeedingHistory, setShowFeedingHistory] = useState(false);
@@ -39,27 +39,28 @@ const SpiderDetails = ({ spider }: Props) => {
   const [spiderData, setSpiderData] = useState<any | null>(null);
 
   useEffect(() => {
-    const fetchSpider = async () => {
-      const spiderId = "1746460031660";
-      const data = await getSpiderById(spiderId);
+    if (typeof spiderId === "string") {
+      fetchSpider(spiderId);
+    }
+  }, [spiderId]);
 
-      if (!data) return;
+  const fetchSpider = async (id: string) => {
+    const data = await getSpiderById(id);
 
-      const { feedingHistory, moltingHistory, documents, ...spider } = data;
+    if (!data) return;
 
-      console.log("🕷️ Główne dane pająka:", spider);
-      console.log("🍗 Historia karmienia:", feedingHistory);
-      console.log("🕷️ Historia wylinki:", moltingHistory);
-      console.log("📄 Dokumenty:", documents);
+    const { feedingHistory, moltingHistory, documents, ...spider } = data;
 
-      setSpiderData(spider);
-      setFeedingHistoryData(feedingHistory);
-      setMoltingHistoryData(moltingHistory);
-      setDocumentsData(documents);
-    };
+    console.log("🕷️ Główne dane pająka:", spider);
+    console.log("🍗 Historia karmienia:", feedingHistory);
+    console.log("🕷️ Historia wylinki:", moltingHistory);
+    console.log("📄 Dokumenty:", documents);
 
-    fetchSpider();
-  }, []);
+    setSpiderData(spider);
+    setFeedingHistoryData(feedingHistory);
+    setMoltingHistoryData(moltingHistory);
+    setDocumentsData(documents);
+  };
 
   const nextFeedingDate = spiderData
     ? getNextFeedingDate(spiderData.lastFed, spiderData.feedingFrequency)
@@ -190,7 +191,6 @@ const SpiderDetails = ({ spider }: Props) => {
                 ? [...spiderData.documentUris, uri]
                 : [uri],
             });
-            console.log("update spider", spider);
           }
         },
       },
@@ -214,9 +214,9 @@ const SpiderDetails = ({ spider }: Props) => {
           text: "Usuń",
           style: "destructive",
           onPress: () => {
-            const newUris = [...(spider.documentUris || [])];
+            const newUris = [...(spiderData.documentUris || [])];
             newUris.splice(index, 1);
-            updateSpider(spider.id, { documentUris: newUris });
+            updateSpider(spiderData.id, { documentUris: newUris });
           },
         },
       ],

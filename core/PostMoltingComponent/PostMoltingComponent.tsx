@@ -1,13 +1,18 @@
 import React, { useMemo } from "react";
 import { parse } from "date-fns";
-import { useSpidersStore } from "@/store/spidersStore";
+import { Spider } from "@/db/database";
+
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
 import { PostMoltingMsg } from "./PostMolting.constants";
 
-//This component is to change when there is data from AI about molting predictions
-const PostMoltingListComponent = () => {
-  const spiders = useSpidersStore((state) => state.spiders);
+interface PostMoltingListComponentProps {
+  spiders: Spider[];
+}
 
+//This component is to change when there is data from AI about molting predictions
+const PostMoltingListComponent = ({
+  spiders,
+}: PostMoltingListComponentProps) => {
   const postMoltingSpiders = useMemo(() => {
     return spiders
       .filter(

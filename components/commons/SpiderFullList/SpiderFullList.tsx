@@ -12,7 +12,7 @@ import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
-import { Spider } from "@/models/Spider.model";
+import { Spider } from "@/db/database";
 
 type SpiderListProps = {
   data: Spider[];

@@ -1,16 +1,20 @@
 import React, { useMemo } from "react";
 import { addDays, parse, isSameDay } from "date-fns";
 
-import { useSpidersStore } from "@/store/spidersStore";
 import { getNextFeedingDate } from "@/utils/feedingUtils";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { SpiderListItem } from "@/models/SpiderList.model";
 
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
+import { Spider } from "@/db/database";
 
-const UpcomingFeedingListComponent = () => {
-  const spiders = useSpidersStore((state) => state.spiders);
+interface UpcomingFeedingListComponentProps {
+  spiders: Spider[];
+}
 
+const UpcomingFeedingListComponent = ({
+  spiders,
+}: UpcomingFeedingListComponentProps) => {
   const upcomingSpiders = useMemo(() => {
     const now = new Date();
 
