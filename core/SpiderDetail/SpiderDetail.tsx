@@ -6,7 +6,6 @@ import * as ImagePicker from "expo-image-picker";
 
 import { useUserStore } from "@/store/userStore";
 import { useSpidersStore } from "@/store/spidersStore";
-import { Spider } from "@/models/Spider.model";
 import { Colors, ThemeType } from "@/constants/Colors";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import { getNextFeedingDate, getFeedingStatus } from "@/utils/feedingUtils";
@@ -25,7 +24,7 @@ interface Props {
 
 const SpiderDetails = ({ spiderId }: Props) => {
   const { currentTheme } = useUserStore();
-  const { updateSpider } = useSpidersStore();
+  const updateSpider = useSpidersStore((state: any) => state.updateSpider);
   const [showFeedingHistory, setShowFeedingHistory] = useState(false);
   const [showMoltingHistory, setShowMoltingHistory] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);

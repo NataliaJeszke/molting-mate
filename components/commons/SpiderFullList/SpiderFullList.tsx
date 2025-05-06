@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 
 import { router } from "expo-router";
 import { AntDesign, Feather } from "@expo/vector-icons";
 
 import { useUserStore } from "@/store/userStore";
-import { useSpidersStore } from "@/store/spidersStore";
 import { Colors, ThemeType } from "@/constants/Colors";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 
@@ -14,6 +13,7 @@ import CardComponent from "@/components/ui/CardComponent";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 import { Spider } from "@/db/database";
 import { ExtendedSpider } from "@/core/FeedingListComponent/FeedingListComponent";
+import { useSpidersStore } from "@/store/spidersStore";
 
 type SpiderListProps = {
   data: Spider[] | ExtendedSpider[];
@@ -21,22 +21,40 @@ type SpiderListProps = {
 };
 
 const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
+  const [spiders, setSpiders] = useState<ExtendedSpider[] | Spider[]>(data);
   const { currentTheme } = useUserStore();
-  const { addToFavorites, removeFromFavorites, spiders } = useSpidersStore();
+  const updateSpider = useSpidersStore((state: any) => state.updateSpider);
 
   useEffect(() => {
-    console.log("Spider data:", spiders);
-  }, [spiders]);
+    setSpiders(data);
+  }, [data]);
 
   useEffect(() => {
     console.log("VIEW TYPE", viewType);
   }, [viewType]);
 
-  const toggleFavourite = (spiderId: string, isFavourite: boolean) => {
-    if (isFavourite) {
-      removeFromFavorites(spiderId);
-    } else {
-      addToFavorites(spiderId);
+  const toggleFavourite = async (spiderId: string, isFavourite: boolean) => {
+    const spider = spiders.find((s) => s.id === spiderId);
+    if (!spider) return;
+
+    const updatedSpider = {
+      ...spider,
+      isFavourite: !isFavourite,
+      status: spider.status ?? "",
+    };
+
+    try {
+      await updateSpider(updatedSpider);
+
+      setSpiders((prev) =>
+        prev.map((s) => (s.id === spiderId ? updatedSpider : s)),
+      );
+      console.log(`Zmieniono ulubiony status pająka ID ${spiderId}`);
+    } catch (error) {
+      console.error(
+        "Błąd podczas zapisywania zmian ulubionych do bazy:",
+        error,
+      );
     }
   };
 

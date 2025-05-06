@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { ScrollView } from "react-native";
 
-import { getAllSpiders, Spider } from "@/db/database";
+import { Spider } from "@/db/database";
 import { useFiltersStore } from "@/store/filtersStore";
 
 import { useSpiderFilter } from "@/hooks/useSpiderFilter";
@@ -16,27 +16,22 @@ import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import SpiderSectionHeader from "@/components/commons/SpiderSectionHeader/SpiderSectionHeader";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
+import { useSpidersStore } from "@/store/spidersStore";
 
 export type ExtendedSpider = Omit<Spider, "status"> & {
-  status: FeedingStatus | null;
+  status: FeedingStatus | string | null;
   nextFeedingDate: string;
 };
 
 const FeedingListComponent = () => {
-  const [spiders, setSpiders] = useState<Spider[]>([]);
+  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
+  const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
   const filters = useFiltersStore((state) => state.filters.feeding);
   const viewType = ViewTypes.VIEW_FEEDING;
 
   useEffect(() => {
-    const fetchSpiders = async () => {
-      const spiders = await getAllSpiders();
-      if (spiders) {
-        const typedSpiders = spiders as Spider[];
-        setSpiders(typedSpiders);
-      }
-    };
-
     fetchSpiders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filteredSpiders = useSpiderFilter({
