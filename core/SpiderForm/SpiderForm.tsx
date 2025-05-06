@@ -31,20 +31,20 @@ import AutocompleteSpeciesInput from "@/components/ui/AutocompleteSpeciesInput";
 import { ThemedText } from "@/components/ui/ThemedText";
 
 import SpiderImage from "@/components/commons/SpiderImage/SpiderImage";
-import { ensureLatestDate, sortDateStrings } from "@/utils/dateUtils";
 import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
 import {
   addDocumentToSpider,
   addFeedingEntry,
   addMoltingEntry,
-  addSpider,
-  updateSpider,
+  Spider,
 } from "@/db/database";
 
 export default function SpiderForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { currentTheme } = useUserStore();
-  const { spiders } = useSpidersStore();
+  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
+  const addNewSpider = useSpidersStore((state: any) => state.addNewSpider);
+  const updateSpider = useSpidersStore((state: any) => state.updateSpider);
   const { addSpecies, spiderSpeciesList } = useSpiderSpeciesStore();
 
   const [name, setName] = useState<string>();
@@ -72,25 +72,10 @@ export default function SpiderForm() {
         setName(spiderToEdit.name);
         setAge(spiderToEdit.age);
         setSpiderSpecies(spiderToEdit.spiderSpecies);
-        setIndividualType(spiderToEdit.individualType);
-
-        const latestFedDate = spiderToEdit.feedingHistoryData?.length
-          ? ensureLatestDate(
-              spiderToEdit.lastFed,
-              spiderToEdit.feedingHistoryData,
-            )
-          : spiderToEdit.lastFed;
-
-        const latestMoltDate = spiderToEdit.moltingHistoryData?.length
-          ? ensureLatestDate(
-              spiderToEdit.lastMolt,
-              spiderToEdit.moltingHistoryData,
-            )
-          : spiderToEdit.lastMolt;
-
-        setLastFed(latestFedDate);
+        setIndividualType(spiderToEdit.individualType as IndividualType);
+        setLastFed(spiderToEdit.lastFed);
         setFeedingFrequency(spiderToEdit.feedingFrequency);
-        setLastMolt(latestMoltDate);
+        setLastMolt(spiderToEdit.lastMolt);
         setImageUri(spiderToEdit.imageUri);
       }
     } else {
@@ -140,36 +125,15 @@ export default function SpiderForm() {
 
     const existingSpider = id ? spiders.find((s) => s.id === id) : null;
 
-    const updatedMoltingHistory = existingSpider?.moltingHistoryData
-      ? [...existingSpider.moltingHistoryData]
-      : [];
-    const updatedFeedingHistory = existingSpider?.feedingHistoryData
-      ? [...existingSpider.feedingHistoryData]
-      : [];
-
-    if (!updatedMoltingHistory.includes(lastMolt)) {
-      updatedMoltingHistory.push(lastMolt);
-    }
-
-    if (!updatedFeedingHistory.includes(lastFed)) {
-      updatedFeedingHistory.push(lastFed);
-    }
-
-    const sortedMoltingHistory = sortDateStrings(updatedMoltingHistory);
-    const sortedFeedingHistory = sortDateStrings(updatedFeedingHistory);
-
-    const latestFedDate = ensureLatestDate(lastFed, sortedFeedingHistory);
-    const latestMoltDate = ensureLatestDate(lastMolt, sortedMoltingHistory);
-
     const spiderData = {
       id: id ? id : Date.now().toString(),
       name,
       age,
       spiderSpecies,
       individualType,
-      lastFed: latestFedDate,
+      lastFed: lastFed,
       feedingFrequency: feedingFrequency as FeedingFrequency,
-      lastMolt: latestMoltDate,
+      lastMolt: lastMolt,
       imageUri: imageUri || "",
       documentUri: documentUri || "",
       isFavourite: existingSpider?.isFavourite ?? false,
@@ -179,13 +143,13 @@ export default function SpiderForm() {
       updateSpider(spiderData);
       Alert.alert("Sukces", `Zaktualizowano pająka o imieniu ${name}!`);
     } else {
-      await addSpider({
+      await addNewSpider({
         ...spiderData,
         status: "",
         nextFeedingDate: "",
       });
-      await addFeedingEntry(spiderData.id, latestFedDate);
-      await addMoltingEntry(spiderData.id, latestMoltDate);
+      await addFeedingEntry(spiderData.id, lastFed);
+      await addMoltingEntry(spiderData.id, lastMolt);
       await addDocumentToSpider(spiderData.id, spiderData.documentUri);
       Alert.alert("Sukces", `Dodano pająka o imieniu ${name}!`);
     }
