@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { View, Image, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
@@ -15,7 +15,7 @@ import CardComponent from "@/components/ui/CardComponent";
 import HistoryInformation from "@/components/commons/HistoryInformation/HistoryInformation";
 import SpiderDocument from "@/components/commons/SpiderDocument/SpiderDocument";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 
 interface Props {
   spiderId: string | string[] | undefined;
@@ -43,22 +43,23 @@ const SpiderDetails = ({ spiderId }: Props) => {
   const [documentsData, setDocumentsData] = useState<any[] | null>(null);
   const [spiderData, setSpiderData] = useState<any | null>(null);
 
-  useEffect(() => {
-    const fetchSpider = async () => {
-      const data = await getSpiderById(spiderId);
+  useFocusEffect(
+    useCallback(() => {
+      console.log("Modal zamknięty – odśwież dane tutaj 1");
 
-      if (!data) return;
+      const fetchData = async () => {
+        const data = await getSpiderById(spiderId);
+        if (!data) return;
+        setSpiderData(data);
+        setFeedingHistoryData(data.feedingHistory);
+        setMoltingHistoryData(data.moltingHistory);
+      };
 
-      const { feedingHistory, moltingHistory, documents, ...spider } = data;
+      fetchData();
 
-      setSpiderData(spider);
-      setFeedingHistoryData(feedingHistory);
-      setMoltingHistoryData(moltingHistory);
-      setDocumentsData(documents);
-    };
-
-    fetchSpider();
-  }, [spiderId, getSpiderById]);
+      return;
+    }, []),
+  );
 
   const nextFeedingDate = spiderData
     ? getNextFeedingDate(spiderData.lastFed, spiderData.feedingFrequency)
@@ -232,6 +233,17 @@ const SpiderDetails = ({ spiderId }: Props) => {
       ],
     );
   };
+
+  const handleNavigateAndFetchData = async () => {
+    router.push({
+      pathname: "/manageModal",
+      params: {
+        id: spiderData?.id,
+        type: ViewTypes.VIEW_FEEDING,
+        action: "edit",
+      },
+    });
+  };
   return (
     <View style={styles(currentTheme).spiderDetails}>
       <CardComponent customStyle={styles(currentTheme).imageCard}>
@@ -361,18 +373,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
                 Głodny?
               </ThemedText>
             </View>
-            <TouchableOpacity
-              onPress={() => {
-                router.push({
-                  pathname: "/manageModal",
-                  params: {
-                    id: spiderData?.id,
-                    type: ViewTypes.VIEW_FEEDING,
-                    action: "edit",
-                  },
-                });
-              }}
-            >
+            <TouchableOpacity onPress={handleNavigateAndFetchData}>
               <View
                 style={[
                   styles(currentTheme).feedingCard__statusBadge,

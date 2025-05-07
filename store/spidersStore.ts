@@ -39,7 +39,7 @@ export const useSpidersStore = create((set, get) => ({
       if (!spiderData) throw new Error("Nie znaleziono pająka");
       return spiderData;
     } catch (error: any) {
-      console.error("❌ Błąd przy getSpiderByIdFromDB:", error);
+      console.error("Błąd przy getSpiderByIdFromDB:", error);
     }
   },
 
