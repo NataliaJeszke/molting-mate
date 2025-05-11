@@ -511,3 +511,38 @@ export const deleteSpiderSpecies = async (
     return { success: false, count: -1 };
   }
 };
+
+export const updateSpiderSpeciesName = async (id: number, newName: string) => {
+  try {
+    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+
+    await db.runAsync(`UPDATE spider_species SET name = ? WHERE id = ?`, [
+      newName,
+      id,
+    ]);
+
+    console.log(`✅ Zaktualizowano nazwę gatunku ID ${id} na "${newName}"`);
+
+    return {
+      success: true,
+      message: `Zaktualizowano nazwę gatunku.`,
+      id,
+      name: newName,
+    };
+  } catch (error) {
+    if ((error as any)?.message?.includes("UNIQUE constraint failed")) {
+      console.error("❌ Gatunek o tej nazwie już istnieje.");
+      return {
+        success: false,
+        message: "Gatunek o tej nazwie już istnieje.",
+      };
+    } else {
+      console.error("Błąd podczas aktualizacji gatunku:", error);
+      return {
+        success: false,
+        message: "Błąd podczas aktualizacji gatunku.",
+        error,
+      };
+    }
+  }
+};

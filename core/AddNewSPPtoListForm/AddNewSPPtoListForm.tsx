@@ -6,6 +6,8 @@ import {
   Alert,
   FlatList,
   TouchableOpacity,
+  Modal,
+  TextInput,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
@@ -16,8 +18,12 @@ import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
 
 export default function SpiderSpeciesManager() {
-  const { speciesOptions, addSpeciesToDb, deleteSpeciesFromDb } =
-    useSpiderSpeciesStore();
+  const {
+    speciesOptions,
+    addSpeciesToDb,
+    deleteSpeciesFromDb,
+    updateSpeciesInDb,
+  } = useSpiderSpeciesStore();
   const { currentTheme } = useUserStore();
   const [selectedSpeciesValue, setSelectedSpeciesValue] = useState<
     number | null
@@ -25,6 +31,13 @@ export default function SpiderSpeciesManager() {
   const [customInput, setCustomInput] = useState("");
   const [showAddButton, setShowAddButton] = useState(false);
   const router = useRouter();
+
+  const [editingSpecies, setEditingSpecies] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [newSpeciesName, setNewSpeciesName] = useState("");
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
   const filteredSpecies = customInput
     ? speciesOptions.filter((species) =>
@@ -96,7 +109,7 @@ export default function SpiderSpeciesManager() {
               } else {
                 Alert.alert(
                   "Nie można usunąć",
-                  `Nie można usunąć — ${result.count} pająk(i) ma ten gatunek.`,
+                  `Nie można usunąć — ilość pająków o tym gatunku w bazie: ${result.count}`,
                   [{ text: "OK" }],
                 );
               }
@@ -114,109 +127,166 @@ export default function SpiderSpeciesManager() {
   };
 
   const handleEdit = (species: { label: string; value: number }) => {
-    // setEditingSpecies(species);
-    // setCustomInput(species.label);
-    // setSelectedSpeciesValue(species.value);
+    setEditingSpecies({ id: species.value, name: species.label });
+    setNewSpeciesName(species.label);
+    setIsEditModalVisible(true);
     console.log("Edit species:", species);
   };
 
-  return (
-    <View style={styles(currentTheme)["species-manager"]}>
-      <ThemedText style={styles(currentTheme)["species-manager__title"]}>
-        Gatunki pająków
-      </ThemedText>
+  const handleSaveEdit = async () => {
+    if (!editingSpecies || newSpeciesName.trim() === "") return;
 
-      <View style={styles(currentTheme)["species-manager__search"]}>
-        <ThemedText
-          style={styles(currentTheme)["species-manager__search-label"]}
-        >
-          Wyszukaj gatunek:
+    try {
+      await updateSpeciesInDb(editingSpecies.id, newSpeciesName.trim());
+      Alert.alert(
+        "Zmieniono nazwę",
+        `Gatunek został zaktualizowany na "${newSpeciesName}"`,
+      );
+    } catch (error) {
+      console.error("Błąd edycji gatunku:", error);
+      Alert.alert("Błąd", "Wystąpił problem podczas edycji gatunku.");
+    } finally {
+      setIsEditModalVisible(false);
+      setEditingSpecies(null);
+      setNewSpeciesName("");
+    }
+  };
+
+  return (
+    <>
+      <View style={styles(currentTheme)["species-manager"]}>
+        <ThemedText style={styles(currentTheme)["species-manager__title"]}>
+          Gatunki pająków
         </ThemedText>
-        <View
-          style={
-            styles(currentTheme)["species-manager__search-input-container"]
-          }
-        >
-          <AutocompleteSpeciesInput
-            value={selectedSpeciesValue}
-            onSelect={setSelectedSpeciesValue}
-            onCustomInput={setCustomInput}
-            theme={currentTheme}
-          />
+
+        <View style={styles(currentTheme)["species-manager__search"]}>
+          <ThemedText
+            style={styles(currentTheme)["species-manager__search-label"]}
+          >
+            Wyszukaj gatunek:
+          </ThemedText>
+          <View
+            style={
+              styles(currentTheme)["species-manager__search-input-container"]
+            }
+          >
+            <AutocompleteSpeciesInput
+              value={selectedSpeciesValue}
+              onSelect={setSelectedSpeciesValue}
+              onCustomInput={setCustomInput}
+              theme={currentTheme}
+            />
+          </View>
+
+          {showAddButton && customInput.trim() !== "" && (
+            <TouchableOpacity
+              style={styles(currentTheme)["species-manager__add-button"]}
+              onPress={handleAddSpecies}
+            >
+              <ThemedText
+                style={styles(currentTheme)["species-manager__add-button-text"]}
+              >
+                Dodaj gatunek "{customInput}"
+              </ThemedText>
+            </TouchableOpacity>
+          )}
         </View>
 
-        {showAddButton && customInput.trim() !== "" && (
-          <TouchableOpacity
-            style={styles(currentTheme)["species-manager__add-button"]}
-            onPress={handleAddSpecies}
+        <View style={styles(currentTheme)["species-manager__list-section"]}>
+          <ThemedText
+            style={styles(currentTheme)["species-manager__list-title"]}
           >
-            <ThemedText
-              style={styles(currentTheme)["species-manager__add-button-text"]}
-            >
-              Dodaj gatunek "{customInput}"
-            </ThemedText>
-          </TouchableOpacity>
-        )}
-      </View>
+            Lista gatunków:
+          </ThemedText>
 
-      <View style={styles(currentTheme)["species-manager__list-section"]}>
-        <ThemedText style={styles(currentTheme)["species-manager__list-title"]}>
-          Lista gatunków:
-        </ThemedText>
-
-        <FlatList
-          data={filteredSpecies}
-          renderItem={({ item }) => (
-            <View style={styles(currentTheme)["species-manager__species-item"]}>
+          <FlatList
+            data={filteredSpecies}
+            renderItem={({ item }) => (
+              <View
+                style={styles(currentTheme)["species-manager__species-item"]}
+              >
+                <ThemedText
+                  style={styles(currentTheme)["species-manager__species-name"]}
+                >
+                  {item.label}
+                </ThemedText>
+                <TouchableOpacity
+                  style={styles(currentTheme)["species-manager__edit-button"]}
+                  onPress={() => handleEdit(item)}
+                >
+                  <Feather
+                    name="edit-2"
+                    size={20}
+                    color={Colors[currentTheme].tint}
+                    style={
+                      styles(currentTheme)[
+                        "species-manager__delete-button-text"
+                      ]
+                    }
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles(currentTheme)["species-manager__delete-button"]}
+                  onPress={() => handleDelete(item)}
+                >
+                  <Feather
+                    name="trash-2"
+                    size={20}
+                    color={Colors[currentTheme].warning.text}
+                    style={
+                      styles(currentTheme)[
+                        "species-manager__delete-button-text"
+                      ]
+                    }
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+            keyExtractor={(item) => item.value.toString()}
+            style={styles(currentTheme)["species-manager__species-list"]}
+            ListEmptyComponent={
               <ThemedText
-                style={styles(currentTheme)["species-manager__species-name"]}
+                style={styles(currentTheme)["species-manager__empty-list-text"]}
               >
-                {item.label}
+                {customInput
+                  ? "Nie znaleziono gatunków"
+                  : "Brak gatunków na liście"}
               </ThemedText>
-              <TouchableOpacity
-                style={styles(currentTheme)["species-manager__edit-button"]}
-                onPress={() => handleEdit(item)}
-              >
-                <Feather
-                  name="edit-2"
-                  size={20}
-                  color={Colors[currentTheme].tint}
-                  style={
-                    styles(currentTheme)["species-manager__delete-button-text"]
-                  }
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles(currentTheme)["species-manager__delete-button"]}
-                onPress={() => handleDelete(item)}
-              >
-                <Feather
-                  name="trash-2"
-                  size={20}
-                  color={Colors[currentTheme].warning.text}
-                  style={
-                    styles(currentTheme)["species-manager__delete-button-text"]
-                  }
-                />
-              </TouchableOpacity>
-            </View>
-          )}
-          keyExtractor={(item) => item.value.toString()}
-          style={styles(currentTheme)["species-manager__species-list"]}
-          ListEmptyComponent={
-            <ThemedText
-              style={styles(currentTheme)["species-manager__empty-list-text"]}
-            >
-              {customInput
-                ? "Nie znaleziono gatunków"
-                : "Brak gatunków na liście"}
-            </ThemedText>
-          }
-        />
+            }
+          />
 
-        <Button title="Powrót" onPress={() => router.back()} color="#2196F3" />
+          <Button
+            title="Powrót"
+            onPress={() => router.back()}
+            color="#2196F3"
+          />
+        </View>
       </View>
-    </View>
+
+      <Modal visible={isEditModalVisible} transparent animationType="slide">
+        <View style={styles(currentTheme)["modal-overlay"]}>
+          <View style={styles(currentTheme)["modal-container"]}>
+            <ThemedText style={styles(currentTheme)["modal-title"]}>
+              Edytuj nazwę gatunku
+            </ThemedText>
+            <TextInput
+              style={styles(currentTheme)["modal-input"]}
+              value={newSpeciesName}
+              onChangeText={setNewSpeciesName}
+              placeholder="Nowa nazwa gatunku"
+              placeholderTextColor={Colors[currentTheme].input.placeholder}
+            />
+            <View style={styles(currentTheme)["modal-buttons"]}>
+              <Button
+                title="Anuluj"
+                onPress={() => setIsEditModalVisible(false)}
+              />
+              <Button title="Zapisz" onPress={handleSaveEdit} />
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
 }
 
@@ -307,5 +377,33 @@ const styles = (theme: ThemeType) =>
       textAlign: "center",
       fontStyle: "italic",
       marginTop: 20,
+    },
+    "modal-overlay": {
+      flex: 1,
+      backgroundColor: "rgba(0,0,0,0.5)",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    "modal-container": {
+      width: "80%",
+      backgroundColor: Colors[theme].card.backgroundColor,
+      padding: 20,
+      borderRadius: 10,
+    },
+    "modal-title": {
+      fontSize: 18,
+      marginBottom: 10,
+    },
+    "modal-input": {
+      borderWidth: 1,
+      backgroundColor: Colors[theme].input.backgroundColor,
+      padding: 10,
+      marginBottom: 20,
+      borderRadius: 5,
+      color: Colors[theme].text,
+    },
+    "modal-buttons": {
+      flexDirection: "row",
+      justifyContent: "space-between",
     },
   });

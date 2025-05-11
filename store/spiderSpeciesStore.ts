@@ -3,6 +3,7 @@ import {
   deleteSpiderSpecies,
   getAllSpiderSpecies,
   SpiderSpecies,
+  updateSpiderSpeciesName,
 } from "@/db/database";
 import { create } from "zustand";
 
@@ -19,6 +20,15 @@ interface SpiderSpeciesStore {
   deleteSpeciesFromDb: (
     id: number,
   ) => Promise<{ success: boolean; count: number }>;
+  updateSpeciesInDb: (
+    id: number,
+    newName: string,
+  ) => Promise<{
+    success: boolean;
+    message: string;
+    id?: number;
+    name?: string;
+  }>;
 }
 
 export const useSpiderSpeciesStore = create<SpiderSpeciesStore>((set) => ({
@@ -65,6 +75,29 @@ export const useSpiderSpeciesStore = create<SpiderSpeciesStore>((set) => ({
       console.warn(
         `Nie można usunąć gatunku ID ${id} — przypisane pająki: ${result.count}`,
       );
+    }
+
+    return result;
+  },
+
+  updateSpeciesInDb: async (
+    id: number,
+    newName: string,
+  ): Promise<{
+    success: boolean;
+    message: string;
+    id?: number;
+    name?: string;
+  }> => {
+    const result = await updateSpiderSpeciesName(id, newName);
+
+    if (result.success) {
+      const updatedSpecies = await getAllSpiderSpecies();
+      const updatedOptions = updatedSpecies.map((s) => ({
+        label: s.name,
+        value: s.id,
+      }));
+      set({ species: updatedSpecies, speciesOptions: updatedOptions });
     }
 
     return result;
