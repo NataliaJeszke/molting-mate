@@ -472,7 +472,11 @@ export const getAllSpiderSpecies = async (): Promise<SpiderSpecies[]> => {
   return results;
 };
 
-export const addSpecies = async (name: string): Promise<void> => {
+export const addSpecies = async (name: string): Promise<number> => {
   const db = await SQLite.openDatabaseAsync("spiders.db");
-  await db.runAsync("INSERT INTO spider_species (name) VALUES (?)", [name]);
+  const result = await db.runAsync(
+    "INSERT INTO spider_species (name) VALUES (?)",
+    [name],
+  );
+  return result.lastInsertRowId as number;
 };

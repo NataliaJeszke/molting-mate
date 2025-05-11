@@ -9,7 +9,7 @@ interface SpiderSpeciesOptions {
 interface SpiderSpeciesStore {
   species: SpiderSpecies[];
   fetchSpecies: () => Promise<void>;
-  addSpeciesToDb: (name: string) => Promise<void>;
+  addSpeciesToDb: (name: string) => Promise<number>;
   speciesOptions: SpiderSpeciesOptions[];
 }
 
@@ -26,14 +26,18 @@ export const useSpiderSpeciesStore = create<SpiderSpeciesStore>((set, get) => ({
     set({ species: data, speciesOptions: options });
   },
 
-  addSpeciesToDb: async (name: string) => {
-    await addSpecies(name);
+  addSpeciesToDb: async (name: string): Promise<number> => {
+    const insertedId = await addSpecies(name);
     const updatedSpecies = await getAllSpiderSpecies();
     const updatedOptions = updatedSpecies.map((s) => ({
       label: s.name,
       value: s.id,
     }));
     set({ species: updatedSpecies, speciesOptions: updatedOptions });
+    console.log("Species added to DB:", name);
+    console.log("Updated species:", updatedSpecies);
+    console.log("Updated options:", updatedOptions);
+    return insertedId;
   },
 }));
 // interface SpiderSpeciesStore {

@@ -15,21 +15,30 @@ import { Colors, ThemeType } from "@/constants/Colors";
 type Props = {
   value: number | null;
   onSelect: (value: number) => void;
+  onCustomInput?: (text: string) => void;
   theme: ThemeType;
 };
 
-const AutocompleteSpeciesInput = ({ value, onSelect, theme }: Props) => {
+const AutocompleteSpeciesInput = ({
+  value,
+  onSelect,
+  onCustomInput,
+  theme,
+}: Props) => {
   const { speciesOptions } = useSpiderSpeciesStore();
   const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState(speciesOptions);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
 
   useEffect(() => {
-    if (value != null) {
-      const match = speciesOptions.find((item) => item.value === value);
-      setQuery(match?.label ?? "");
+    const exactMatch = speciesOptions.find(
+      (item) => item.label.toLowerCase() === query.toLowerCase(),
+    );
+    if (!exactMatch && onCustomInput && query.trim().length > 0) {
+      onCustomInput(query.trim());
     }
-  }, [speciesOptions, value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
 
   const handleChange = (text: string) => {
     setQuery(text);

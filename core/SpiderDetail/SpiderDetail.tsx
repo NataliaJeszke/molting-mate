@@ -50,8 +50,10 @@ const SpiderDetails = ({ spiderId }: Props) => {
 
       const fetchData = async () => {
         const data = await getSpiderById(spiderId);
+        console.log("pokaz dane", data);
         if (!data) return;
         setSpiderData(data);
+        setDocumentsData(data.documents);
         setFeedingHistoryData(data.feedingHistory);
         setMoltingHistoryData(data.moltingHistory);
       };

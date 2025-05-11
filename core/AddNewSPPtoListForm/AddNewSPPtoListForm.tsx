@@ -14,8 +14,7 @@ import AutocompleteSpeciesInput from "@/components/ui/AutocompleteSpeciesInput";
 import { useUserStore } from "@/store/userStore";
 
 export default function SpiderSpeciesManager() {
-  const { species, speciesOptions, fetchSpecies, addSpeciesToDb } =
-    useSpiderSpeciesStore();
+  const { speciesOptions, addSpeciesToDb } = useSpiderSpeciesStore();
   const { currentTheme } = useUserStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddButton, setShowAddButton] = useState(false);

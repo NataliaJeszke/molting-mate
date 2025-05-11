@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   TextInput,
   Alert,
@@ -66,6 +66,7 @@ export default function SpiderForm() {
   const [individualType, setIndividualType] = useState<
     IndividualType | undefined
   >();
+  const newSpeciesLabelRef = useRef<string | null>(null);
 
   useEffect(() => {
     console.log("Fetched species:", species);
@@ -110,23 +111,29 @@ export default function SpiderForm() {
       lastMolt,
       imageUri,
     );
+
+    let speciesId = spiderSpecies;
+
+    if (newSpeciesLabelRef.current && !spiderSpecies) {
+      const newLabel = newSpeciesLabelRef.current;
+      try {
+        speciesId = await addSpeciesToDb(newLabel);
+        newSpeciesLabelRef.current = null;
+      } catch {
+        Alert.alert("Błąd", "Nie udało się dodać nowego gatunku.");
+        return;
+      }
+    }
+
     if (
       !name?.trim() ||
       !age ||
-      !spiderSpecies ||
+      !speciesId ||
       !lastFed?.trim() ||
       !feedingFrequency?.trim() ||
       !lastMolt?.trim()
     ) {
       return Alert.alert("Błąd walidacji", "Uzupełnij wszystkie pola.");
-    }
-
-    const speciesExists = speciesOptions.some(
-      (species) => species.value === spiderSpecies,
-    );
-
-    if (!speciesExists) {
-      return Alert.alert("Błąd", "Wybrany gatunek nie istnieje w bazie.");
     }
 
     const existingSpider = id ? spiders.find((s) => s.id === id) : null;
@@ -135,11 +142,11 @@ export default function SpiderForm() {
       id: id ? id : Date.now().toString(),
       name,
       age,
-      spiderSpecies,
+      spiderSpecies: speciesId,
       individualType,
-      lastFed: lastFed,
+      lastFed,
       feedingFrequency: feedingFrequency as FeedingFrequency,
-      lastMolt: lastMolt,
+      lastMolt,
       imageUri: imageUri || "",
       documentUri: documentUri || "",
       isFavourite: existingSpider?.isFavourite ?? false,
@@ -157,7 +164,7 @@ export default function SpiderForm() {
       await addFeedingEntry(spiderData.id, lastFed);
       await addMoltingEntry(spiderData.id, lastMolt);
       await addDocumentToSpider(spiderData.id, spiderData.documentUri);
-      Alert.alert("Sukces", `Dodano pająka o imieniu ${name}!`);
+      Alert.alert("Sukces", `Dodano pająka o imieniu "${name}"`);
     }
 
     clearForm();
@@ -357,6 +364,10 @@ export default function SpiderForm() {
               onSelect={(value) => {
                 console.log("Selected species:", value);
                 setSpiderSpecies(value);
+                newSpeciesLabelRef.current = null;
+              }}
+              onCustomInput={(text) => {
+                newSpeciesLabelRef.current = text;
               }}
               theme={currentTheme}
             />
