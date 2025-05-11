@@ -95,17 +95,30 @@ export const initDatabase = async () => {
   await seedSpiderSpecies(db);
 };
 
+// export const getAllSpiders = async (): Promise<Spider[]> => {
+//   try {
+//     if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+
+//     const result = await db.getAllAsync(`
+//       SELECT
+//         spiders.*,
+//         spider_species.name as spiderSpecies
+//       FROM spiders
+//       LEFT JOIN spider_species ON spiders.spiderSpecies = spider_species.id
+//     `);
+
+//     return result as Spider[];
+//   } catch (error) {
+//     console.error("Błąd podczas pobierania pająków:", error);
+//     return [];
+//   }
+// };
+
 export const getAllSpiders = async (): Promise<Spider[]> => {
   try {
     if (!db) throw new Error("Baza danych nie została zainicjalizowana");
 
-    const result = await db.getAllAsync(`
-      SELECT 
-        spiders.*, 
-        spider_species.name as spiderSpecies 
-      FROM spiders 
-      LEFT JOIN spider_species ON spiders.spiderSpecies = spider_species.id
-    `);
+    const result = await db.getAllAsync(`SELECT * FROM spiders`);
 
     return result as Spider[];
   } catch (error) {

@@ -71,7 +71,6 @@ export const useSpidersStore = create((set, get) => ({
       await deleteDocument(documentId);
       await (get() as SpidersState).fetchSpiders();
       return { success: true, message: "Dokument został usunięty." };
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return {
         success: false,

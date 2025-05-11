@@ -54,7 +54,6 @@ export default function SpiderForm() {
   const [lastFed, setLastFed] = useState<string>();
   const [feedingFrequency, setFeedingFrequency] = useState<string>();
   const [lastMolt, setLastMolt] = useState<string>();
-  // const [spiderSpecies, setSpiderSpecies] = useState<string>("");
   const [spiderSpecies, setSpiderSpecies] = useState<number | null>(null);
   const [imageUri, setImageUri] = useState<string>();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -77,10 +76,11 @@ export default function SpiderForm() {
     if (id) {
       const spiderToEdit = spiders.find((s) => s.id === id);
       console.log("Spider to edit:", spiderToEdit?.spiderSpecies);
+      console.log("pająk do edycji", spiderToEdit);
       if (spiderToEdit) {
         setName(spiderToEdit.name);
         setAge(spiderToEdit.age);
-        setSpiderSpecies(spiderToEdit.spiderSpecies);
+        setSpiderSpecies(Number(spiderToEdit.spiderSpecies));
         setIndividualType(spiderToEdit.individualType as IndividualType);
         setLastFed(spiderToEdit.lastFed);
         setFeedingFrequency(spiderToEdit.feedingFrequency);

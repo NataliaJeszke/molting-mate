@@ -40,6 +40,17 @@ const AutocompleteSpeciesInput = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
+  useEffect(() => {
+    if (value !== null) {
+      const matched = speciesOptions.find((item) => item.value === value);
+      if (matched) {
+        setQuery(matched.label);
+      }
+    } else {
+      setQuery("");
+    }
+  }, [value, speciesOptions]);
+
   const handleChange = (text: string) => {
     setQuery(text);
     if (text.trim() === "") {
