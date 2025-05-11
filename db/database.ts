@@ -95,17 +95,6 @@ export const initDatabase = async () => {
   await seedSpiderSpecies(db);
 };
 
-// export const getAllSpiders = async () => {
-//   try {
-//     if (!db) throw new Error("Baza danych nie została zainicjalizowana");
-
-//     const result = await db.getAllAsync("SELECT * FROM spiders");
-//     return result;
-//   } catch (error) {
-//     console.error("Błąd podczas pobierania pająków:", error);
-//     return [];
-//   }
-// };
 export const getAllSpiders = async (): Promise<Spider[]> => {
   try {
     if (!db) throw new Error("Baza danych nie została zainicjalizowana");
@@ -479,4 +468,46 @@ export const addSpecies = async (name: string): Promise<number> => {
     [name],
   );
   return result.lastInsertRowId as number;
+};
+
+export const countSpidersBySpecies = async (
+  speciesId: number,
+): Promise<number> => {
+  try {
+    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+
+    const result = await db.getFirstAsync<{ count: number }>(
+      `SELECT COUNT(*) as count FROM spiders WHERE spiderSpecies = ?`,
+      [speciesId],
+    );
+
+    return result?.count ?? 0;
+  } catch (error) {
+    console.error("Błąd podczas liczenia pająków dla gatunku:", error);
+    return -1;
+  }
+};
+
+export const deleteSpiderSpecies = async (
+  speciesId: number,
+): Promise<{ success: boolean; count: number }> => {
+  try {
+    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+
+    const count = await countSpidersBySpecies(speciesId);
+
+    if (count > 0) {
+      console.warn(
+        `❌ Gatunek ma ${count} przypisanych pająków, nie można usunąć.`,
+      );
+      return { success: false, count };
+    }
+
+    await db.runAsync(`DELETE FROM spider_species WHERE id = ?`, [speciesId]);
+    console.log(`✅ Usunięto gatunek ID ${speciesId}`);
+    return { success: true, count: 0 };
+  } catch (error) {
+    console.error("Błąd podczas usuwania gatunku pająka:", error);
+    return { success: false, count: -1 };
+  }
 };

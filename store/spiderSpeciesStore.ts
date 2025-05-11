@@ -1,4 +1,9 @@
-import { addSpecies, getAllSpiderSpecies, SpiderSpecies } from "@/db/database";
+import {
+  addSpecies,
+  deleteSpiderSpecies,
+  getAllSpiderSpecies,
+  SpiderSpecies,
+} from "@/db/database";
 import { create } from "zustand";
 
 interface SpiderSpeciesOptions {
@@ -8,12 +13,15 @@ interface SpiderSpeciesOptions {
 
 interface SpiderSpeciesStore {
   species: SpiderSpecies[];
+  speciesOptions: SpiderSpeciesOptions[];
   fetchSpecies: () => Promise<void>;
   addSpeciesToDb: (name: string) => Promise<number>;
-  speciesOptions: SpiderSpeciesOptions[];
+  deleteSpeciesFromDb: (
+    id: number,
+  ) => Promise<{ success: boolean; count: number }>;
 }
 
-export const useSpiderSpeciesStore = create<SpiderSpeciesStore>((set, get) => ({
+export const useSpiderSpeciesStore = create<SpiderSpeciesStore>((set) => ({
   species: [],
   speciesOptions: [],
 
@@ -38,6 +46,28 @@ export const useSpiderSpeciesStore = create<SpiderSpeciesStore>((set, get) => ({
     console.log("Updated species:", updatedSpecies);
     console.log("Updated options:", updatedOptions);
     return insertedId;
+  },
+
+  deleteSpeciesFromDb: async (
+    id: number,
+  ): Promise<{ success: boolean; count: number }> => {
+    const result = await deleteSpiderSpecies(id);
+
+    if (result.success) {
+      const updatedSpecies = await getAllSpiderSpecies();
+      const updatedOptions = updatedSpecies.map((s) => ({
+        label: s.name,
+        value: s.id,
+      }));
+      set({ species: updatedSpecies, speciesOptions: updatedOptions });
+      console.log("Species deleted from DB:", id);
+    } else {
+      console.warn(
+        `Nie można usunąć gatunku ID ${id} — przypisane pająki: ${result.count}`,
+      );
+    }
+
+    return result;
   },
 }));
 // interface SpiderSpeciesStore {
