@@ -16,6 +16,7 @@ import { useUserStore } from "@/store/userStore";
 import { Colors } from "@/constants/Colors";
 
 import StatusBar from "@/components/ui/StatusBar";
+import { initDatabase } from "@/db/database";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -40,6 +41,10 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  useEffect(() => {
+    initDatabase().catch(console.error);
+  }, []);
 
   if (!loaded) {
     return null;

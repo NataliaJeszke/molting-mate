@@ -1,17 +1,24 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { ScrollView } from "react-native";
-import { useSpidersStore } from "@/store/spidersStore";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import SpiderSectionHeader from "../../components/commons/SpiderSectionHeader/SpiderSectionHeader";
 import { useFiltersStore } from "@/store/filtersStore";
 import { parseDate } from "@/utils/dateUtils";
 import { useSpiderFilter } from "@/hooks/useSpiderFilter";
+import { Spider } from "@/db/database";
+import { useSpidersStore } from "@/store/spidersStore";
 
 const MoltingListComponent = () => {
-  const spiders = useSpidersStore((state) => state.spiders);
+  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
+  const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
   const filters = useFiltersStore((state) => state.filters.molting);
   const viewType = ViewTypes.VIEW_MOLTING;
+
+  useEffect(() => {
+    fetchSpiders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filteredSpiders = useSpiderFilter({
     spiders,

@@ -12,7 +12,7 @@ type FiltersStore = {
   setRangeFilters: (
     key: keyof FiltersStore["filters"],
     ageFrom: number,
-    ageTo: number
+    ageTo: number,
   ) => void;
   resetFilters: (key: keyof FiltersStore["filters"]) => void;
 };

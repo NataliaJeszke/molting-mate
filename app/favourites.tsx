@@ -1,18 +1,24 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
-
-import { useSpidersStore } from "@/store/spidersStore";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import WrapperComponent from "@/components/ui/WrapperComponent";
+import { Spider } from "@/db/database";
+import { useSpidersStore } from "@/store/spidersStore";
 
 export default function Favourites() {
-  const spiders = useSpidersStore((state) => state.spiders);
+  const [favouriteSpiders, setFavouriteSpiders] = useState<Spider[]>([]);
+  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
 
-  const favouriteSpiders = useMemo(
-    () => spiders.filter((spider) => spider.isFavourite),
-    [spiders],
-  );
+  const fetchFavourites = () => {
+    const favourites = spiders.filter((spider) => spider.isFavourite);
+    setFavouriteSpiders(favourites);
+  };
+
+  useEffect(() => {
+    fetchFavourites();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spiders]);
 
   return (
     <WrapperComponent>

@@ -13,33 +13,51 @@ import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
 import { Colors, ThemeType } from "@/constants/Colors";
 
 type Props = {
-  value: string;
-  onSelect: (value: string) => void;
+  value: number | null;
+  onSelect: (value: number) => void;
+  onCustomInput?: (text: string) => void;
   theme: ThemeType;
 };
 
-const AutocompleteSpeciesInput = ({ value, onSelect, theme }: Props) => {
-  const { spiderSpeciesList } = useSpiderSpeciesStore();
+const AutocompleteSpeciesInput = ({
+  value,
+  onSelect,
+  onCustomInput,
+  theme,
+}: Props) => {
+  const { speciesOptions } = useSpiderSpeciesStore();
   const [query, setQuery] = useState("");
-  const [filteredData, setFilteredData] = useState(spiderSpeciesList);
+  const [filteredData, setFilteredData] = useState(speciesOptions);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
 
   useEffect(() => {
-    if (value) {
-      setQuery(
-        spiderSpeciesList.find((item) => item.value === value)?.label ?? value,
-      );
+    const exactMatch = speciesOptions.find(
+      (item) => item.label.toLowerCase() === query.toLowerCase(),
+    );
+    if (!exactMatch && onCustomInput && query.trim().length > 0) {
+      onCustomInput(query.trim());
     }
-  }, [spiderSpeciesList, value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
+  useEffect(() => {
+    if (value !== null) {
+      const matched = speciesOptions.find((item) => item.value === value);
+      if (matched) {
+        setQuery(matched.label);
+      }
+    } else {
+      setQuery("");
+    }
+  }, [value, speciesOptions]);
 
   const handleChange = (text: string) => {
     setQuery(text);
-    onSelect(text);
     if (text.trim() === "") {
-      setFilteredData(spiderSpeciesList);
+      setFilteredData(speciesOptions);
       setDropdownVisible(false);
     } else {
-      const filtered = spiderSpeciesList.filter((item) =>
+      const filtered = speciesOptions.filter((item) =>
         item.label.toLowerCase().includes(text.toLowerCase()),
       );
       setFilteredData(filtered);
@@ -47,7 +65,7 @@ const AutocompleteSpeciesInput = ({ value, onSelect, theme }: Props) => {
     }
   };
 
-  const handleSelect = (item: { label: string; value: string }) => {
+  const handleSelect = (item: { label: string; value: number }) => {
     setQuery(item.label);
     onSelect(item.value);
     setDropdownVisible(false);

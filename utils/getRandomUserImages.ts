@@ -1,4 +1,4 @@
-import { Spider } from "@/models/Spider.model";
+import { Spider } from "@/db/database";
 
 export const getRandomUserImages = (spiders: Spider[]) => {
   const userImages = spiders

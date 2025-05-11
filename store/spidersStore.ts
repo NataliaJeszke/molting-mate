@@ -1,68 +1,82 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
 
-import { Spider } from "@/models/Spider.model";
+import {
+  addDocumentToSpider,
+  addSpider,
+  deleteDocument,
+  deleteSpider,
+  getAllSpiders,
+  getSpiderById,
+  Spider,
+  updateSpider,
+} from "@/db/database";
 
 type SpidersState = {
   nextId: number;
   spiders: Spider[];
-  addSpider: (spider: Omit<Spider, "id">) => void;
-  removeSpider: (spiderId: string) => void;
-  addToFavorites: (spiderId: string) => void;
-  removeFromFavorites: (spiderId: string) => void;
-  updateSpider: (spiderId: string, updates: Partial<Spider>) => void;
+  fetchSpiders: () => Promise<void>;
 };
 
-export const useSpidersStore = create(
-  persist<SpidersState>(
-    (set) => ({
-      spiders: [],
-      nextId: 1,
-      addSpider: (spider: Omit<Spider, "id">) =>
-        set((state) => ({
-          spiders: [
-            {
-              id: String(state.spiders.length + 1),
-              ...spider,
-            },
-            ...state.spiders,
-          ],
-        })),
-      removeSpider: (spiderId: string) => {
-        return set((state) => {
-          return {
-            ...state,
-            spiders: state.spiders.filter((spider) => spider.id !== spiderId),
-          };
-        });
-      },
-      addToFavorites: (spiderId: string) =>
-        set((state) => ({
-          ...state,
-          spiders: state.spiders.map((spider) =>
-            spider.id === spiderId ? { ...spider, isFavourite: true } : spider,
-          ),
-        })),
+export const useSpidersStore = create((set, get) => ({
+  spiders: [],
+  loading: false,
+  error: null,
 
-      removeFromFavorites: (spiderId: string) =>
-        set((state) => ({
-          ...state,
-          spiders: state.spiders.map((spider) =>
-            spider.id === spiderId ? { ...spider, isFavourite: false } : spider,
-          ),
-        })),
-      updateSpider: (spiderId, updates) =>
-        set((state) => ({
-          ...state,
-          spiders: state.spiders.map((spider) =>
-            spider.id === spiderId ? { ...spider, ...updates } : spider,
-          ),
-        })),
-    }),
-    {
-      name: "moltingmate-spider-store",
-      storage: createJSONStorage(() => AsyncStorage),
-    },
-  ),
-);
+  fetchSpiders: async () => {
+    set({ loading: true, error: null });
+    try {
+      const spiders = await getAllSpiders();
+      set({ spiders, loading: false });
+    } catch (error) {
+      set({ error, loading: false });
+    }
+  },
+
+  getSpiderById: async (spiderId: string) => {
+    console.log("spider store spider by id", spiderId);
+    try {
+      const spiderData = await getSpiderById(spiderId);
+      console.log("proba wywolania funkcji z bazy", spiderId);
+      console.log("Pająk:", spiderData);
+      if (!spiderData) throw new Error("Nie znaleziono pająka");
+      return spiderData;
+    } catch (error: any) {
+      console.error("Błąd przy getSpiderByIdFromDB:", error);
+    }
+  },
+
+  addNewSpider: async (spider: any) => {
+    await addSpider(spider);
+    await (get() as SpidersState).fetchSpiders();
+  },
+
+  updateSpider: async (spider: any) => {
+    await updateSpider(spider);
+    await (get() as SpidersState).fetchSpiders();
+  },
+
+  deleteSpider: async (id: string) => {
+    await deleteSpider(id);
+    await (get() as SpidersState).fetchSpiders();
+  },
+
+  addDocumentToSpider: async (spiderId: string, documentUri: string) => {
+    const result = await addDocumentToSpider(spiderId, documentUri);
+    await (get() as SpidersState).fetchSpiders();
+    return result;
+  },
+
+  deleteSpiderDocument: async (documentId: number) => {
+    try {
+      await deleteDocument(documentId);
+      await (get() as SpidersState).fetchSpiders();
+      return { success: true, message: "Dokument został usunięty." };
+    } catch (error) {
+      return {
+        success: false,
+        message: "Wystąpił błąd podczas usuwania dokumentu:",
+        error,
+      };
+    }
+  },
+}));

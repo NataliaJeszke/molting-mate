@@ -23,18 +23,33 @@ import WrapperComponent from "@/components/ui/WrapperComponent";
 import CardComponent from "@/components/ui/CardComponent";
 import SpiderGallery from "@/components/ui/SpiderGallery";
 import UpcomingFeedingListComponent from "@/core/UpcomingFeedingListComponent/UpcomingFeedingListComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemedText } from "@/components/ui/ThemedText";
 import {
   getAddSpeciesStyle,
   getAddSpiderStyle,
 } from "@/utils/animations.constants";
 
+import { Spider } from "@/db/database";
+import { useSpidersStore } from "@/store/spidersStore";
+import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
+
 export default function HomeScreen() {
   const router = useRouter();
   const { currentTheme } = useUserStore();
   const [isFabOpen, setIsFabOpen] = useState(false);
   const [animation] = useState(new Animated.Value(0));
+  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
+  const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
+  const fetchSpecies = useSpiderSpeciesStore(
+    (state: any) => state.fetchSpecies,
+  );
+
+  useEffect(() => {
+    fetchSpiders();
+    fetchSpecies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleFab = () => {
     const toValue = isFabOpen ? 0 : 1;
@@ -66,10 +81,10 @@ export default function HomeScreen() {
       </CardComponent>
 
       <ScrollView>
-        <SpiderGallery />
-        <PostFeedingListComponent />
-        <UpcomingFeedingListComponent />
-        <PostMoltingListComponent />
+        <SpiderGallery spiders={spiders} />
+        <PostFeedingListComponent spiders={spiders} />
+        <UpcomingFeedingListComponent spiders={spiders} />
+        <PostMoltingListComponent spiders={spiders} />
       </ScrollView>
 
       <View style={styles(currentTheme).fabContainer}>

@@ -1,18 +1,23 @@
 import React, { useMemo } from "react";
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
-import { useSpidersStore } from "@/store/spidersStore";
 import { getFeedingStatus } from "../../utils/feedingUtils";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
+import { Spider } from "@/db/database";
+import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 
-const PostFeedingListComponent = () => {
-  const spiders = useSpidersStore((state) => state.spiders);
+interface PostFeedingListComponentProps {
+  spiders: Spider[];
+}
 
+const PostFeedingListComponent = ({
+  spiders,
+}: PostFeedingListComponentProps) => {
   const postFeedingSpiders = useMemo(() => {
     return spiders
       .filter((spider) => {
         const feedingStatus = getFeedingStatus(
           spider.lastFed,
-          spider.feedingFrequency,
+          spider.feedingFrequency as unknown as FeedingFrequency,
         );
         return feedingStatus === FeedingStatus.HUNGRY;
       })

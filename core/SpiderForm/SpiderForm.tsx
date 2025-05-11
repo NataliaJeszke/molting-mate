@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   TextInput,
   Alert,
@@ -31,21 +31,30 @@ import AutocompleteSpeciesInput from "@/components/ui/AutocompleteSpeciesInput";
 import { ThemedText } from "@/components/ui/ThemedText";
 
 import SpiderImage from "@/components/commons/SpiderImage/SpiderImage";
-import { ensureLatestDate, sortDateStrings } from "@/utils/dateUtils";
 import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
+import {
+  addDocumentToSpider,
+  addFeedingEntry,
+  addMoltingEntry,
+  Spider,
+} from "@/db/database";
 
 export default function SpiderForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { currentTheme } = useUserStore();
-  const { addSpider, updateSpider, spiders } = useSpidersStore();
-  const { addSpecies, spiderSpeciesList } = useSpiderSpeciesStore();
+  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
+  const addNewSpider = useSpidersStore((state: any) => state.addNewSpider);
+  const updateSpider = useSpidersStore((state: any) => state.updateSpider);
+  const { addSpeciesToDb } = useSpiderSpeciesStore();
+  const speciesOptions = useSpiderSpeciesStore((state) => state.speciesOptions);
+  const species = useSpiderSpeciesStore((state) => state.species);
 
   const [name, setName] = useState<string>();
   const [age, setAge] = useState<number>();
   const [lastFed, setLastFed] = useState<string>();
   const [feedingFrequency, setFeedingFrequency] = useState<string>();
   const [lastMolt, setLastMolt] = useState<string>();
-  const [spiderSpecies, setSpiderSpecies] = useState<string>("");
+  const [spiderSpecies, setSpiderSpecies] = useState<number | null>(null);
   const [imageUri, setImageUri] = useState<string>();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [activeDateField, setActiveDateField] = useState<
@@ -56,40 +65,32 @@ export default function SpiderForm() {
   const [individualType, setIndividualType] = useState<
     IndividualType | undefined
   >();
+  const newSpeciesLabelRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    console.log("Fetched species:", species);
+    console.log("Species options:", speciesOptions);
+  }, []);
 
   useEffect(() => {
     if (id) {
       const spiderToEdit = spiders.find((s) => s.id === id);
       console.log("Spider to edit:", spiderToEdit?.spiderSpecies);
+      console.log("pająk do edycji", spiderToEdit);
       if (spiderToEdit) {
         setName(spiderToEdit.name);
         setAge(spiderToEdit.age);
-        setSpiderSpecies(spiderToEdit.spiderSpecies);
-        setIndividualType(spiderToEdit.individualType);
-
-        const latestFedDate = spiderToEdit.feedingHistoryData?.length
-          ? ensureLatestDate(
-              spiderToEdit.lastFed,
-              spiderToEdit.feedingHistoryData,
-            )
-          : spiderToEdit.lastFed;
-
-        const latestMoltDate = spiderToEdit.moltingHistoryData?.length
-          ? ensureLatestDate(
-              spiderToEdit.lastMolt,
-              spiderToEdit.moltingHistoryData,
-            )
-          : spiderToEdit.lastMolt;
-
-        setLastFed(latestFedDate);
+        setSpiderSpecies(Number(spiderToEdit.spiderSpecies));
+        setIndividualType(spiderToEdit.individualType as IndividualType);
+        setLastFed(spiderToEdit.lastFed);
         setFeedingFrequency(spiderToEdit.feedingFrequency);
-        setLastMolt(latestMoltDate);
+        setLastMolt(spiderToEdit.lastMolt);
         setImageUri(spiderToEdit.imageUri);
       }
     } else {
       setName("");
       setAge(0);
-      setSpiderSpecies("");
+      setSpiderSpecies(null);
       setIndividualType(undefined);
       setLastFed("");
       setFeedingFrequency("");
@@ -98,7 +99,7 @@ export default function SpiderForm() {
     }
   }, [id, spiders]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Submitting spider data...");
     console.log(
       name,
@@ -110,10 +111,24 @@ export default function SpiderForm() {
       lastMolt,
       imageUri,
     );
+
+    let speciesId = spiderSpecies;
+
+    if (newSpeciesLabelRef.current && !spiderSpecies) {
+      const newLabel = newSpeciesLabelRef.current;
+      try {
+        speciesId = await addSpeciesToDb(newLabel);
+        newSpeciesLabelRef.current = null;
+      } catch {
+        Alert.alert("Błąd", "Nie udało się dodać nowego gatunku.");
+        return;
+      }
+    }
+
     if (
       !name?.trim() ||
       !age ||
-      !spiderSpecies?.trim() ||
+      !speciesId ||
       !lastFed?.trim() ||
       !feedingFrequency?.trim() ||
       !lastMolt?.trim()
@@ -121,61 +136,35 @@ export default function SpiderForm() {
       return Alert.alert("Błąd walidacji", "Uzupełnij wszystkie pola.");
     }
 
-    const speciesExists = spiderSpeciesList.some(
-      (species) =>
-        species.value.toLowerCase() === spiderSpecies.toLowerCase() ||
-        species.label.toLowerCase() === spiderSpecies.toLowerCase(),
-    );
-
-    if (!speciesExists) {
-      addSpecies(spiderSpecies);
-    }
-
     const existingSpider = id ? spiders.find((s) => s.id === id) : null;
-
-    const updatedMoltingHistory = existingSpider?.moltingHistoryData
-      ? [...existingSpider.moltingHistoryData]
-      : [];
-    const updatedFeedingHistory = existingSpider?.feedingHistoryData
-      ? [...existingSpider.feedingHistoryData]
-      : [];
-
-    if (!updatedMoltingHistory.includes(lastMolt)) {
-      updatedMoltingHistory.push(lastMolt);
-    }
-
-    if (!updatedFeedingHistory.includes(lastFed)) {
-      updatedFeedingHistory.push(lastFed);
-    }
-
-    const sortedMoltingHistory = sortDateStrings(updatedMoltingHistory);
-    const sortedFeedingHistory = sortDateStrings(updatedFeedingHistory);
-
-    const latestFedDate = ensureLatestDate(lastFed, sortedFeedingHistory);
-    const latestMoltDate = ensureLatestDate(lastMolt, sortedMoltingHistory);
 
     const spiderData = {
       id: id ? id : Date.now().toString(),
       name,
       age,
-      spiderSpecies,
+      spiderSpecies: speciesId,
       individualType,
-      lastFed: latestFedDate,
+      lastFed,
       feedingFrequency: feedingFrequency as FeedingFrequency,
-      lastMolt: latestMoltDate,
+      lastMolt,
       imageUri: imageUri || "",
       documentUri: documentUri || "",
       isFavourite: existingSpider?.isFavourite ?? false,
-      moltingHistoryData: sortedMoltingHistory,
-      feedingHistoryData: sortedFeedingHistory,
     };
 
     if (id) {
-      updateSpider(id, spiderData);
+      updateSpider(spiderData);
       Alert.alert("Sukces", `Zaktualizowano pająka o imieniu ${name}!`);
     } else {
-      addSpider(spiderData);
-      Alert.alert("Sukces", `Dodano pająka o imieniu ${name}!`);
+      await addNewSpider({
+        ...spiderData,
+        status: "",
+        nextFeedingDate: "",
+      });
+      await addFeedingEntry(spiderData.id, lastFed);
+      await addMoltingEntry(spiderData.id, lastMolt);
+      await addDocumentToSpider(spiderData.id, spiderData.documentUri);
+      Alert.alert("Sukces", `Dodano pająka o imieniu "${name}"`);
     }
 
     clearForm();
@@ -184,7 +173,7 @@ export default function SpiderForm() {
   const clearForm = () => {
     setName("");
     setAge(0);
-    setSpiderSpecies("");
+    setSpiderSpecies(null);
     setIndividualType(undefined);
     setLastFed("");
     setFeedingFrequency("");
@@ -375,6 +364,10 @@ export default function SpiderForm() {
               onSelect={(value) => {
                 console.log("Selected species:", value);
                 setSpiderSpecies(value);
+                newSpeciesLabelRef.current = null;
+              }}
+              onCustomInput={(text) => {
+                newSpeciesLabelRef.current = text;
               }}
               theme={currentTheme}
             />
