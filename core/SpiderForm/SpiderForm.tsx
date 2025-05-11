@@ -45,14 +45,17 @@ export default function SpiderForm() {
   const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
   const addNewSpider = useSpidersStore((state: any) => state.addNewSpider);
   const updateSpider = useSpidersStore((state: any) => state.updateSpider);
-  const { addSpecies, spiderSpeciesList } = useSpiderSpeciesStore();
+  const { addSpeciesToDb } = useSpiderSpeciesStore();
+  const speciesOptions = useSpiderSpeciesStore((state) => state.speciesOptions);
+  const species = useSpiderSpeciesStore((state) => state.species);
 
   const [name, setName] = useState<string>();
   const [age, setAge] = useState<number>();
   const [lastFed, setLastFed] = useState<string>();
   const [feedingFrequency, setFeedingFrequency] = useState<string>();
   const [lastMolt, setLastMolt] = useState<string>();
-  const [spiderSpecies, setSpiderSpecies] = useState<string>("");
+  // const [spiderSpecies, setSpiderSpecies] = useState<string>("");
+  const [spiderSpecies, setSpiderSpecies] = useState<number | null>(null);
   const [imageUri, setImageUri] = useState<string>();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [activeDateField, setActiveDateField] = useState<
@@ -63,6 +66,11 @@ export default function SpiderForm() {
   const [individualType, setIndividualType] = useState<
     IndividualType | undefined
   >();
+
+  useEffect(() => {
+    console.log("Fetched species:", species);
+    console.log("Species options:", speciesOptions);
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -81,7 +89,7 @@ export default function SpiderForm() {
     } else {
       setName("");
       setAge(0);
-      setSpiderSpecies("");
+      setSpiderSpecies(null);
       setIndividualType(undefined);
       setLastFed("");
       setFeedingFrequency("");
@@ -105,7 +113,7 @@ export default function SpiderForm() {
     if (
       !name?.trim() ||
       !age ||
-      !spiderSpecies?.trim() ||
+      !spiderSpecies ||
       !lastFed?.trim() ||
       !feedingFrequency?.trim() ||
       !lastMolt?.trim()
@@ -113,14 +121,12 @@ export default function SpiderForm() {
       return Alert.alert("Błąd walidacji", "Uzupełnij wszystkie pola.");
     }
 
-    const speciesExists = spiderSpeciesList.some(
-      (species) =>
-        species.value.toLowerCase() === spiderSpecies.toLowerCase() ||
-        species.label.toLowerCase() === spiderSpecies.toLowerCase(),
+    const speciesExists = speciesOptions.some(
+      (species) => species.value === spiderSpecies,
     );
 
     if (!speciesExists) {
-      addSpecies(spiderSpecies);
+      return Alert.alert("Błąd", "Wybrany gatunek nie istnieje w bazie.");
     }
 
     const existingSpider = id ? spiders.find((s) => s.id === id) : null;
@@ -160,7 +166,7 @@ export default function SpiderForm() {
   const clearForm = () => {
     setName("");
     setAge(0);
-    setSpiderSpecies("");
+    setSpiderSpecies(null);
     setIndividualType(undefined);
     setLastFed("");
     setFeedingFrequency("");

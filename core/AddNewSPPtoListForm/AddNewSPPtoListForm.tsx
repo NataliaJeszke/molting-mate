@@ -14,7 +14,7 @@ import AutocompleteSpeciesInput from "@/components/ui/AutocompleteSpeciesInput";
 import { useUserStore } from "@/store/userStore";
 
 export default function SpiderSpeciesManager() {
-  const { addSpecies, removeSpecies, spiderSpeciesList } =
+  const { species, speciesOptions, fetchSpecies, addSpeciesToDb } =
     useSpiderSpeciesStore();
   const { currentTheme } = useUserStore();
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,10 +24,10 @@ export default function SpiderSpeciesManager() {
   const router = useRouter();
 
   const filteredSpecies = searchQuery
-    ? spiderSpeciesList.filter((species) =>
+    ? speciesOptions.filter((species) =>
         species.label.toLowerCase().includes(searchQuery.toLowerCase()),
       )
-    : spiderSpeciesList;
+    : speciesOptions;
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -35,19 +35,17 @@ export default function SpiderSpeciesManager() {
       return;
     }
 
-    const speciesExists = spiderSpeciesList.some(
-      (species) =>
-        species.value.toLowerCase() === searchQuery.toLowerCase() ||
-        species.label.toLowerCase() === searchQuery.toLowerCase(),
+    const speciesExists = speciesOptions.some(
+      (species) => species.label.toLowerCase() === searchQuery.toLowerCase(),
     );
 
     setShowAddButton(!speciesExists);
-  }, [searchQuery, spiderSpeciesList]);
+  }, [searchQuery, speciesOptions]);
 
   const handleAddSpecies = () => {
     if (searchQuery.trim() === "") return;
 
-    addSpecies(searchQuery);
+    addSpeciesToDb(searchQuery);
     setMessageText(
       `Gatunek "${searchQuery}" został pomyślnie dodany do listy!`,
     );

@@ -16,6 +16,7 @@ import HistoryInformation from "@/components/commons/HistoryInformation/HistoryI
 import SpiderDocument from "@/components/commons/SpiderDocument/SpiderDocument";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 import { router, useFocusEffect } from "expo-router";
+import { SpiderDetailType } from "@/db/database";
 
 interface Props {
   spiderId: string | string[] | undefined;
@@ -41,7 +42,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
     null,
   );
   const [documentsData, setDocumentsData] = useState<any[] | null>(null);
-  const [spiderData, setSpiderData] = useState<any | null>(null);
+  const [spiderData, setSpiderData] = useState<SpiderDetailType | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -170,7 +171,9 @@ const SpiderDetails = ({ spiderId }: Props) => {
 
           if (!result.canceled) {
             const uri = result.assets[0].uri;
-            await handleAddDocument(spiderData.id, uri);
+            if (spiderData) {
+              await handleAddDocument(spiderData.id, uri);
+            }
           }
         },
       },
@@ -192,7 +195,9 @@ const SpiderDetails = ({ spiderId }: Props) => {
 
           if (!result.canceled) {
             const uri = result.assets[0].uri;
-            await handleAddDocument(spiderData.id, uri);
+            if (spiderData) {
+              await handleAddDocument(spiderData.id, uri);
+            }
           }
         },
       },
@@ -219,7 +224,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
             const { success } = await deleteDocument(docId);
             console.log("success", success);
 
-            if (success) {
+            if (success && spiderData) {
               const data = await getSpiderById(spiderData.id);
               if (!data) return;
 

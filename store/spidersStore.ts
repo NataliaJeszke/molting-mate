@@ -33,8 +33,10 @@ export const useSpidersStore = create((set, get) => ({
   },
 
   getSpiderById: async (spiderId: string) => {
+    console.log("spider store spider by id", spiderId);
     try {
       const spiderData = await getSpiderById(spiderId);
+      console.log("proba wywolania funkcji z bazy", spiderId);
       console.log("Pająk:", spiderData);
       if (!spiderData) throw new Error("Nie znaleziono pająka");
       return spiderData;

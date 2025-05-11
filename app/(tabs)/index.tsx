@@ -32,6 +32,7 @@ import {
 
 import { Spider } from "@/db/database";
 import { useSpidersStore } from "@/store/spidersStore";
+import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -40,9 +41,13 @@ export default function HomeScreen() {
   const [animation] = useState(new Animated.Value(0));
   const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
   const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
+  const fetchSpecies = useSpiderSpeciesStore(
+    (state: any) => state.fetchSpecies,
+  );
 
   useEffect(() => {
     fetchSpiders();
+    fetchSpecies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
