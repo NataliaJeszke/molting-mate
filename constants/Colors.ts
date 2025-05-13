@@ -108,6 +108,18 @@ export const Colors = {
       closed: tintColorLight,
       open: tintColorDark,
     },
+    filter: {
+      button: {
+        reset: {
+          backgroundColor: "#f2f2f7",
+          color: "#2e1a47",
+        },
+        confirm: {
+          backgroundColor: "#2e1a47",
+          color: "#ffffff",
+        },
+      },
+    },
   },
   dark: {
     text: "rgb(255, 255, 255)",
@@ -206,6 +218,18 @@ export const Colors = {
     button_menu: {
       closed: tintColorDark,
       open: tintColorLight,
+    },
+    filter: {
+      button: {
+        reset: {
+          backgroundColor: "#3a3a3c",
+          color: "#c9a7f5",
+        },
+        confirm: {
+          backgroundColor: "#c9a7f5",
+          color: "#1f1f1f",
+        },
+      },
     },
   },
 };
