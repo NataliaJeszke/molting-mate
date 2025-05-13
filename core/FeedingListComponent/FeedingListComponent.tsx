@@ -26,6 +26,9 @@ export type ExtendedSpider = Omit<Spider, "status"> & {
 const FeedingListComponent = () => {
   const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
   const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
+  const sortType = useSpidersStore((state: any) => state.sortType);
+  const sortOrder = useSpidersStore((state: any) => state.sortOrder);
+
   const filters = useFiltersStore((state) => state.filters.feeding);
   const viewType = ViewTypes.VIEW_FEEDING;
 
@@ -45,26 +48,35 @@ const FeedingListComponent = () => {
       .map((spider) => {
         const nextFeedingDate = getNextFeedingDate(
           spider.lastFed,
-          spider.feedingFrequency as unknown as FeedingFrequency,
+          spider.feedingFrequency as FeedingFrequency,
         );
 
         const status = getFeedingStatus(
           spider.lastFed,
-          spider.feedingFrequency as unknown as FeedingFrequency,
+          spider.feedingFrequency as FeedingFrequency,
         );
 
         return {
           ...spider,
-          status: status as FeedingStatus | null,
+          status,
           nextFeedingDate,
         };
       })
       .sort((a, b) => {
-        const dateA = parseDate(a.lastFed)?.getTime() || 0;
-        const dateB = parseDate(b.lastFed)?.getTime() || 0;
-        return dateA - dateB;
+        let aValue: number = 0;
+        let bValue: number = 0;
+
+        if (sortType === "lastFed") {
+          aValue = parseDate(a.lastFed)?.getTime() || 0;
+          bValue = parseDate(b.lastFed)?.getTime() || 0;
+        } else if (sortType === "nextFeedingDate") {
+          aValue = parseDate(a.nextFeedingDate)?.getTime() || 0;
+          bValue = parseDate(b.nextFeedingDate)?.getTime() || 0;
+        }
+
+        return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
       });
-  }, [filteredSpiders]);
+  }, [filteredSpiders, sortType, sortOrder]);
 
   return (
     <>
