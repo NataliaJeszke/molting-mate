@@ -14,13 +14,14 @@ import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import Filters from "@/components/commons/Filters/Filters";
-import { FilterViewTypes, useFiltersStore } from "@/store/filtersStore";
+import { useFiltersStore } from "@/store/filtersStore";
+import { FilterViewTypes } from "@/models/Filters.model";
 
 type SpiderSectionHeaderProps = {
   title: string;
   spiderCount: number;
   info: string;
-  viewType: FilterViewTypes;
+  viewType: FilterViewTypes
 };
 
 const SpiderSectionHeader = ({

@@ -38,7 +38,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   const [isDateFromPickerVisible, setDateFromPickerVisible] = useState(false);
   const [isDateToPickerVisible, setDateToPickerVisible] = useState(false);
   const [individualTypes, setIndividualTypes] = useState<IndividualType[]>(
-    current.individualType || []
+    current.individualType || [],
   );
 
   const today = new Date();
@@ -50,7 +50,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
 
   const handleChange = (
     field: keyof typeof current,
-    value: string | number
+    value: string | number,
   ) => {
     setFilters(viewType, {
       ...current,
