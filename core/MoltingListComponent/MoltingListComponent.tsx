@@ -13,6 +13,7 @@ const MoltingListComponent = () => {
   const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
   const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
   const filters = useFiltersStore((state) => state.filters.molting);
+  const sortOrder = useSpidersStore((state: any) => state.sortOrder);
   const viewType = ViewTypes.VIEW_MOLTING;
 
   useEffect(() => {
@@ -34,9 +35,9 @@ const MoltingListComponent = () => {
       .sort((a, b) => {
         const dateA = parseDate(a.lastMolt)?.getTime() || 0;
         const dateB = parseDate(b.lastMolt)?.getTime() || 0;
-        return dateA - dateB;
+        return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
       });
-  }, [filteredSpiders]);
+  }, [filteredSpiders, sortOrder]);
   return (
     <>
       <SpiderSectionHeader

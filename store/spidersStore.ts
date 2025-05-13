@@ -14,6 +14,8 @@ import {
 type SpidersState = {
   nextId: number;
   spiders: Spider[];
+  sortOrder: "asc" | "desc";
+  sortType: "lastMolt" | "lastFed" | "nextFeedingDate";
   fetchSpiders: () => Promise<void>;
 };
 
@@ -21,6 +23,11 @@ export const useSpidersStore = create((set, get) => ({
   spiders: [],
   loading: false,
   error: null,
+  sortOrder: "desc",
+
+  setSortOrder: (order: "asc" | "desc") => set({ sortOrder: order }),
+  setSortType: (type: "lastMolt" | "lastFed" | "nextFeedingDate") =>
+    set({ sortType: type }),
 
   fetchSpiders: async () => {
     set({ loading: true, error: null });
