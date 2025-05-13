@@ -14,7 +14,10 @@ import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import Filters from "@/components/commons/Filters/Filters";
-import { FilterViewTypes, useFiltersStore } from "@/store/filtersStore";
+import { useFiltersStore } from "@/store/filtersStore";
+import { FilterViewTypes } from "@/models/Filters.model";
+import { useSpidersStore } from "@/store/spidersStore";
+import { SortModal } from "@/components/commons/SortModal/SortModal";
 
 type SpiderSectionHeaderProps = {
   title: string;
@@ -33,9 +36,15 @@ const SpiderSectionHeader = ({
   const { currentTheme } = useUserStore();
   const [filtersVisible, setFiltersVisible] = useState(false);
   const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [sortModalVisible, setSortModalVisible] = useState(false);
 
   const filters = useFiltersStore((state) => state.filters[viewType]);
   const areFiltersActive = filters.isActive;
+
+  const sortOrder = useSpidersStore((state: any) => state.sortOrder);
+  const sortType = useSpidersStore((state: any) => state.sortType);
+  const setSortOrder = useSpidersStore((state: any) => state.setSortOrder);
+  const setSortType = useSpidersStore((state: any) => state.setSortType);
 
   return (
     <CardComponent>
@@ -83,21 +92,39 @@ const SpiderSectionHeader = ({
           </ThemedText>
         )}
 
-        <TouchableOpacity
-          onPress={() => setFiltersVisible(true)}
-          style={styles(currentTheme)["spiderSectionHeader__filterButton"]}
-        >
-          <ThemedText
-            style={styles(currentTheme)["spiderSectionHeader__filterText"]}
+        <View style={styles(currentTheme)["spiderSectionHeader__controlsRow"]}>
+          <TouchableOpacity
+            onPress={() => setFiltersVisible(true)}
+            style={styles(currentTheme)["spiderSectionHeader__filterButton"]}
           >
-            Filtry
-          </ThemedText>
-          <MaterialIcons
-            name="filter-list"
-            size={20}
-            color={Colors[currentTheme].text}
-          />
-        </TouchableOpacity>
+            <ThemedText
+              style={styles(currentTheme)["spiderSectionHeader__filterText"]}
+            >
+              Filtry
+            </ThemedText>
+            <MaterialIcons
+              name="filter-list"
+              size={20}
+              color={Colors[currentTheme].text}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => setSortModalVisible(true)}
+            style={styles(currentTheme)["spiderSectionHeader__sortButton"]}
+          >
+            <ThemedText
+              style={styles(currentTheme)["spiderSectionHeader__filterText"]}
+            >
+              Sortowanie
+            </ThemedText>
+            <MaterialIcons
+              name="sort"
+              size={20}
+              color={Colors[currentTheme].text}
+            />
+          </TouchableOpacity>
+        </View>
 
         <Modal
           transparent
@@ -122,11 +149,21 @@ const SpiderSectionHeader = ({
           </TouchableWithoutFeedback>
         </Modal>
 
-        {/* Używamy poprawionego komponentu Filters, który sam ma już Modal */}
         <Filters
           viewType={viewType}
           isVisible={filtersVisible}
           onClose={() => setFiltersVisible(false)}
+        />
+
+        <SortModal
+          visible={sortModalVisible}
+          onClose={() => setSortModalVisible(false)}
+          sortType={sortType}
+          setSortType={setSortType}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          viewType={viewType}
+          currentTheme={currentTheme}
         />
       </View>
     </CardComponent>
@@ -157,44 +194,111 @@ const styles = (theme: ThemeType) =>
     spiderSectionHeader__count: {
       fontSize: 14,
       color: Colors[theme].text,
+      marginRight: 4,
+    },
+    spiderSectionHeader__controlsRow: {
+      flexDirection: "row",
+      marginTop: 10,
+      marginBottom: 4,
     },
     spiderSectionHeader__filterButton: {
       flexDirection: "row",
       alignItems: "center",
-      paddingVertical: 8,
-      paddingHorizontal: 12,
+      paddingVertical: 10,
+      paddingHorizontal: 14,
       backgroundColor: Colors[theme].card.backgroundColor,
       borderRadius: 8,
-      alignSelf: "flex-start",
+      marginRight: 10,
+      elevation: 2,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.2,
+      shadowRadius: 1.5,
+    },
+    spiderSectionHeader__sortButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: 10,
+      paddingHorizontal: 14,
+      backgroundColor: Colors[theme].card.backgroundColor,
+      borderRadius: 8,
+      elevation: 2,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.2,
+      shadowRadius: 1.5,
     },
     spiderSectionHeader__filterText: {
-      fontSize: 16,
+      fontSize: 15,
+      fontWeight: "500",
       color: Colors[theme].text,
-      marginRight: 4,
+      marginRight: 6,
     },
     spiderSectionHeader__filterStatus: {
       fontSize: 14,
       fontWeight: "600",
       color: Colors[theme].tint,
       marginTop: 4,
+      marginBottom: 8,
     },
     spiderSectionHeader__overlay: {
       flex: 1,
-      backgroundColor: "rgba(0,0,0,0.3)",
+      backgroundColor: "rgba(0,0,0,0.4)",
       justifyContent: "center",
       alignItems: "center",
     },
     spiderSectionHeader__tooltip: {
-      backgroundColor: "#fff",
-      padding: 12,
-      borderRadius: 8,
+      backgroundColor: Colors[theme].background,
+      padding: 16,
+      borderRadius: 12,
       maxWidth: 300,
       elevation: 5,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
     },
     spiderSectionHeader__tooltipText: {
       fontSize: 14,
-      color: "#333",
+      color: Colors[theme].text,
       textAlign: "center",
+      lineHeight: 20,
+    },
+    spiderSectionHeader__modal: {
+      backgroundColor: Colors[theme].background,
+      padding: 20,
+      borderRadius: 12,
+      width: "80%",
+      maxWidth: 320,
+      elevation: 5,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+    },
+    spiderSectionHeader__modalTitle: {
+      fontSize: 18,
+      fontWeight: "600",
+      color: Colors[theme].text,
+      marginBottom: 16,
+    },
+    spiderSectionHeader__sortOption: {
+      paddingVertical: 12,
+      paddingHorizontal: 4,
+    },
+    spiderSectionHeader__sortOptionText: {
+      fontSize: 16,
+      color: Colors[theme].text,
+    },
+    spiderSectionHeader__sortDivider: {
+      height: 1,
+      backgroundColor: Colors[theme].tabIconDefault,
+      opacity: 0.3,
+      marginVertical: 16,
+    },
+    spiderSectionHeader__sortDirectionOption: {
+      paddingVertical: 12,
+      paddingHorizontal: 4,
     },
   });
 

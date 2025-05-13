@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -38,7 +38,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   const [isDateFromPickerVisible, setDateFromPickerVisible] = useState(false);
   const [isDateToPickerVisible, setDateToPickerVisible] = useState(false);
   const [individualTypes, setIndividualTypes] = useState<IndividualType[]>(
-    current.individualType || []
+    current.individualType || [],
   );
 
   const today = new Date();
@@ -50,7 +50,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
 
   const handleChange = (
     field: keyof typeof current,
-    value: string | number
+    value: string | number,
   ) => {
     setFilters(viewType, {
       ...current,
@@ -124,7 +124,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
 
   return (
     <Modal
-      animationType="none"
+      animationType="fade"
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
@@ -138,23 +138,23 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
             ? "padding"
             : undefined
         }
-        style={styles(currentTheme)["filters"]}
+        style={styles(currentTheme).filters}
       >
         <TouchableWithoutFeedback onPress={onClose}>
           <Animated.View
-            style={styles(currentTheme)["filters__overlay"]}
+            style={styles(currentTheme).filters__overlay}
             entering={FadeIn.duration(200)}
             exiting={FadeOut.duration(200)}
           />
         </TouchableWithoutFeedback>
 
-        <Animated.View style={styles(currentTheme)["filters__modal"]}>
+        <Animated.View style={styles(currentTheme).filters__modal}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles(currentTheme)["filters__content"]}>
-              <View style={styles(currentTheme)["filters__handle-bar"]} />
+            <View style={styles(currentTheme).filters__content}>
+              <View style={styles(currentTheme).filters__handle} />
 
-              <ThemedText style={styles(currentTheme)["filters__title"]}>
-                Wybierz filtry:
+              <ThemedText style={styles(currentTheme).filters__title}>
+                Wybierz filtry
               </ThemedText>
 
               <ThemedRangeSlider
@@ -172,11 +172,11 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                 allowSameValue={true}
               />
 
-              <ThemedText style={styles(currentTheme)["filters__label"]}>
+              <ThemedText style={styles(currentTheme).filters__label}>
                 Płeć
               </ThemedText>
 
-              <View style={styles(currentTheme)["filters__checkbox-group"]}>
+              <View style={styles(currentTheme).filters__checkbox_group}>
                 {individualTypeOptions.map((option) => {
                   const isSelected = individualTypes.includes(option.value);
                   return (
@@ -186,7 +186,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                         toggleIndividualType(option.value as IndividualType)
                       }
                       style={[
-                        styles(currentTheme)["filters__checkbox"],
+                        styles(currentTheme).filters__checkbox,
                         isSelected
                           ? styles(currentTheme)["filters__checkbox--selected"]
                           : styles(currentTheme)[
@@ -216,51 +216,51 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                 placeholder="Gatunek"
                 value={current.spiderSpecies || ""}
                 onChangeText={(text) => handleChange("spiderSpecies", text)}
-                style={styles(currentTheme)["filters__input"]}
+                style={styles(currentTheme).filters__input}
                 placeholderTextColor={Colors[currentTheme].text + "80"}
               />
 
               {viewType !== "collection" && (
-                <>
+                <View style={styles(currentTheme).filters__dates_container}>
                   <TouchableOpacity
-                    style={styles(currentTheme)["filters__date-input"]}
+                    style={styles(currentTheme).filters__date_input}
                     onPress={showDateFromPicker}
                     activeOpacity={0.7}
                   >
                     <ThemedText
                       style={
                         current.dateFrom
-                          ? styles(currentTheme)["filters__date-text"]
-                          : styles(currentTheme)["filters__date-placeholder"]
+                          ? styles(currentTheme).filters__date_text
+                          : styles(currentTheme).filters__date_placeholder
                       }
                     >
-                      {current.dateFrom || "Data od (yyyy-MM-dd)"}
+                      {current.dateFrom || "Data od"}
                     </ThemedText>
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={styles(currentTheme)["filters__date-input"]}
+                    style={styles(currentTheme).filters__date_input}
                     onPress={showDateToPicker}
                     activeOpacity={0.7}
                   >
                     <ThemedText
                       style={
                         current.dateTo
-                          ? styles(currentTheme)["filters__date-text"]
-                          : styles(currentTheme)["filters__date-placeholder"]
+                          ? styles(currentTheme).filters__date_text
+                          : styles(currentTheme).filters__date_placeholder
                       }
                     >
-                      {current.dateTo || "Data do (yyyy-MM-dd)"}
+                      {current.dateTo || "Data do"}
                     </ThemedText>
                   </TouchableOpacity>
-                </>
+                </View>
               )}
 
-              <View style={styles(currentTheme)["filters__buttons"]}>
+              <View style={styles(currentTheme).filters__buttons}>
                 <TouchableOpacity
                   onPress={onClose}
                   style={styles(currentTheme)["filters__button--confirm"]}
-                  activeOpacity={0.8}
+                  activeOpacity={0.7}
                 >
                   <ThemedText
                     style={
@@ -274,7 +274,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                 <TouchableOpacity
                   onPress={handleReset}
                   style={styles(currentTheme)["filters__button--reset"]}
-                  activeOpacity={0.8}
+                  activeOpacity={0.7}
                 >
                   <ThemedText
                     style={styles(currentTheme)["filters__button-text--reset"]}
@@ -318,145 +318,139 @@ const styles = (theme: ThemeType) =>
       justifyContent: "flex-end",
     },
     filters__overlay: {
-      ...StyleSheet.absoluteFillObject,
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.4)",
     },
     filters__modal: {
-      borderTopLeftRadius: 24,
-      borderTopRightRadius: 24,
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
       backgroundColor: Colors[theme].modal_update.backgroundColor,
       shadowColor: "#000",
       shadowOffset: {
         width: 0,
-        height: -3,
+        height: -2,
       },
-      shadowOpacity: 0.2,
-      shadowRadius: 5,
+      shadowOpacity: 0.15,
+      shadowRadius: 8,
       elevation: 10,
       maxHeight: "90%",
     },
     filters__content: {
-      padding: 20,
+      padding: 24,
     },
-    "filters__handle-bar": {
-      width: 40,
-      height: 5,
-      borderRadius: 3,
-      backgroundColor: Colors[theme].text + "40",
+    filters__handle: {
+      width: 36,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: Colors[theme].text + "30",
       alignSelf: "center",
-      marginBottom: 15,
+      marginBottom: 20,
     },
     filters__title: {
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: "600",
-      marginBottom: 16,
+      marginBottom: 20,
       color: Colors[theme].text,
     },
     filters__label: {
       fontSize: 16,
-      marginBottom: 8,
+      fontWeight: "500",
+      marginBottom: 12,
       color: Colors[theme].text,
+    },
+    filters__checkbox_group: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      marginBottom: 20,
+      gap: 10,
+    },
+    filters__checkbox: {
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      borderRadius: 14,
+      marginBottom: 4,
+    },
+    "filters__checkbox--selected": {
+      backgroundColor: theme === "dark" ? "#2e1a47" : "#e9dff8",
+      borderWidth: 0,
+    },
+    "filters__checkbox--unselected": {
+      backgroundColor: Colors[theme].input.backgroundColor,
+      borderWidth: 0,
+    },
+    "filters__checkbox-text--selected": {
+      color: theme === "dark" ? "#c9a7f5" : "#2e1a47",
+      fontSize: 13,
+      fontWeight: "500",
+    },
+    "filters__checkbox-text--unselected": {
+      color: Colors[theme].text,
+      fontSize: 13,
     },
     filters__input: {
       padding: 16,
-      borderWidth: 1,
-      borderRadius: 12,
-      marginBottom: 12,
-      borderColor: Colors[theme].modal_update
-        ? Colors[theme].modal_update.borderColor
-        : theme === "dark"
-          ? "#3a3a3c"
-          : "#d1d1d6",
+      borderRadius: 14,
+      marginBottom: 20,
       fontSize: 16,
       color: Colors[theme].text,
-      backgroundColor: Colors[theme].input
-        ? Colors[theme].input.backgroundColor
-        : theme === "dark"
-          ? "#2c2c2e"
-          : "#ffffff",
+      backgroundColor: Colors[theme].input.backgroundColor,
+      borderColor: theme === "dark" ? "#3a3a3c" : "#e5e5e7",
+      borderWidth: 1,
     },
-    "filters__date-input": {
+    filters__dates_container: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: 20,
+      gap: 12,
+    },
+    filters__date_input: {
+      flex: 1,
       padding: 16,
-      borderWidth: 1,
-      borderRadius: 12,
-      marginBottom: 12,
-      borderColor: Colors[theme].modal_update
-        ? Colors[theme].modal_update.borderColor
-        : theme === "dark"
-          ? "#3a3a3c"
-          : "#d1d1d6",
-      backgroundColor: Colors[theme].input
-        ? Colors[theme].input.backgroundColor
-        : theme === "dark"
-          ? "#2c2c2e"
-          : "#ffffff",
+      borderRadius: 14,
+      backgroundColor: Colors[theme].input.backgroundColor,
+      borderWidth: 0,
     },
-    "filters__date-text": {
+    filters__date_text: {
       color: Colors[theme].text,
       fontSize: 16,
     },
-    "filters__date-placeholder": {
+    filters__date_placeholder: {
       color: Colors[theme].text + "80",
       fontSize: 16,
     },
     filters__buttons: {
       flexDirection: "row",
       justifyContent: "space-between",
-      marginTop: 5,
+      marginTop: 4,
+      gap: 12,
     },
     "filters__button--reset": {
       flex: 1,
       padding: 16,
-      borderRadius: 12,
+      borderRadius: 14,
       alignItems: "center",
-      backgroundColor: "#ff4747",
-      marginLeft: 8,
+      backgroundColor: Colors[theme].filter.button.reset.backgroundColor,
     },
     "filters__button-text--reset": {
-      color: "#fff",
+      color: Colors[theme].filter.button.reset.color,
       fontWeight: "600",
       fontSize: 16,
     },
     "filters__button--confirm": {
       flex: 1,
       padding: 16,
-      borderRadius: 12,
+      borderRadius: 14,
       alignItems: "center",
-      backgroundColor: theme === "dark" ? "#3a3a3c" : "#e5e5ea",
-      marginRight: 8,
+      backgroundColor: Colors[theme].filter.button.confirm.backgroundColor,
     },
     "filters__button-text--confirm": {
-      color: Colors[theme].text,
+      color: Colors[theme].filter.button.confirm.color,
       fontWeight: "600",
       fontSize: 16,
-    },
-    "filters__checkbox-group": {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      marginBottom: 12,
-      gap: 8,
-    },
-    filters__checkbox: {
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      borderRadius: 16,
-      borderWidth: 1,
-    },
-    "filters__checkbox--selected": {
-      borderColor: Colors[theme].card.borderColor,
-      backgroundColor: "#4CAF50",
-    },
-    "filters__checkbox--unselected": {
-      borderColor: Colors[theme].card.borderColor,
-      backgroundColor: "transparent",
-    },
-    "filters__checkbox-text--selected": {
-      color: "#fff",
-      fontSize: 14,
-    },
-    "filters__checkbox-text--unselected": {
-      color: Colors[theme].text,
-      fontSize: 14,
     },
   });
 
