@@ -32,7 +32,7 @@
     "cancel": "Anuluj",
     "core": {
       "title": "Dodaj pająka",
-        "add": "Dodaj pająka"
+      "add": "Dodaj pająka"
     }
   },
   "favourites": {
@@ -139,9 +139,38 @@
     "day": "dzień",
     "days": "dni"
   },
-  "molting-list":{
+  "molting-list": {
     "title": "Linienie",
     "info": "Lista pająków według linienia"
+  },
+  "spider-full-list": {
+    "choose_image": {
+      "alert": {
+        "permission": {
+          "denied": "Odmowa dostępu"
+        },
+        "choose_option": {
+          "title": "Wybierz opcję",
+          "info": "Chcesz zrobić zdjęcie czy wybrać z galerii?"
+        },
+        "camera": {
+          "title": "Zrób zdjęcie"
+        },
+        "gallery": {
+          "title": "Wybierz z galerii"
+        }
+      }
+    },
+    "submit": {
+      "alert": {
+        "error_species": "Nie udało się dodać nowgo gatunku",
+        "error_validation": "Błąd walidacji",
+        "error_validation_sub": "Uzupełnij wszystkie pola.",
+        "success": "Sukces",
+        "success_sub": "Zaktualizowano pająka o imieniu:",
+        "success_sub_add": "Dodano pająka o imieniu:"
+      }
+    }
   },
   "components": {
     "ui": {

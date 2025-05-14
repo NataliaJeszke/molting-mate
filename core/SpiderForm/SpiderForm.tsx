@@ -38,9 +38,11 @@ import {
   addMoltingEntry,
   Spider,
 } from "@/db/database";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function SpiderForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();
+  const { t } = useTranslation();
   const { currentTheme } = useUserStore();
   const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
   const addNewSpider = useSpidersStore((state: any) => state.addNewSpider);
@@ -120,7 +122,7 @@ export default function SpiderForm() {
         speciesId = await addSpeciesToDb(newLabel);
         newSpeciesLabelRef.current = null;
       } catch {
-        Alert.alert("Błąd", "Nie udało się dodać nowego gatunku.");
+        Alert.alert(t("submit.alert.error_species"));
         return;
       }
     }
@@ -133,7 +135,10 @@ export default function SpiderForm() {
       !feedingFrequency?.trim() ||
       !lastMolt?.trim()
     ) {
-      return Alert.alert("Błąd walidacji", "Uzupełnij wszystkie pola.");
+      return Alert.alert(
+        t("submit.alert.error_validation"),
+        t("submit.alert.error_validation_sub"),
+      );
     }
 
     const existingSpider = id ? spiders.find((s) => s.id === id) : null;
@@ -154,7 +159,10 @@ export default function SpiderForm() {
 
     if (id) {
       updateSpider(spiderData);
-      Alert.alert("Sukces", `Zaktualizowano pająka o imieniu ${name}!`);
+      Alert.alert(
+        t("submit.alert.success"),
+        `${t("submit.alert.success_sub")} "${name}"`,
+      );
     } else {
       await addNewSpider({
         ...spiderData,
@@ -164,7 +172,10 @@ export default function SpiderForm() {
       await addFeedingEntry(spiderData.id, lastFed);
       await addMoltingEntry(spiderData.id, lastMolt);
       await addDocumentToSpider(spiderData.id, spiderData.documentUri);
-      Alert.alert("Sukces", `Dodano pająka o imieniu "${name}"`);
+      Alert.alert(
+        t("submit.alert.success"),
+        `${t("submit.alert.success_sub_add")} "${name}"`,
+      );
     }
 
     clearForm();
@@ -185,22 +196,28 @@ export default function SpiderForm() {
     const galleryPermission =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (galleryPermission.status !== "granted") {
-      Alert.alert("Brak uprawnień", "Nie masz dostępu do galerii.");
+      Alert.alert(
+        t("spider-full-list.choose_image.alert.permission.denied"),
+        t("spider-full-list.choose_image.alert.permission.denied"),
+      );
       return;
     }
 
     const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
     if (cameraPermission.status !== "granted") {
-      Alert.alert("Brak uprawnień", "Nie masz dostępu do kamery.");
+      Alert.alert(
+        t("spider-full-list.choose_image.alert.permission.denied"),
+        t("spider-full-list.choose_image.alert.permission.denied"),
+      );
       return;
     }
 
     Alert.alert(
-      "Wybierz opcję",
-      "Chcesz zrobić zdjęcie czy wybrać z galerii?",
+      t("spider-full-list.choose_image.alert.choose_option.title"),
+      t("spider-full-list.choose_image.alert.choose_option.info"),
       [
         {
-          text: "Zrób zdjęcie",
+          text: t("spider-full-list.choose_image.alert.camera.title"),
           onPress: async () => {
             const result = await ImagePicker.launchCameraAsync({
               allowsEditing: true,
@@ -213,7 +230,7 @@ export default function SpiderForm() {
           },
         },
         {
-          text: "Wybierz z galerii",
+          text: t("spider-full-list.choose_image.alert.gallery.title"),
           onPress: async () => {
             const result = await ImagePicker.launchImageLibraryAsync({
               allowsEditing: true,

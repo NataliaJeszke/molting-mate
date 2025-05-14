@@ -142,6 +142,35 @@
     "title": "Molting list",
     "info": "Molting list of your spiders"
   },
+  "spider-full-list": {
+    "choose_image": {
+      "alert": {
+        "permission": {
+          "denied": "Permission denied"
+        },
+        "choose_option": {
+          "title": "Choose option",
+          "info": "Do you want to take a photo or choose from the gallery?"
+        },
+        "camera": {
+          "title": "Take a photo"
+        },
+        "gallery": {
+          "title": "Choose from gallery"
+        }
+      }
+    },
+    "submit": {
+      "alert": {
+        "error_species": "Failed to add new species",
+        "error_validation": "Validation error",
+        "error_validation_sub": "Please fill out all fields.",
+        "success": "Success",
+        "success_sub": "Updated spider named:",
+        "success_sub_add": "Added spider named:"
+      }
+    }
+  },
   "components": {
     "ui": {
       "autocomplete": {
