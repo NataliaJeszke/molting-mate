@@ -11,17 +11,19 @@ import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
-import { Spider } from "@/db/database";
+import { Spider, SpiderDetailType } from "@/db/database";
 import { ExtendedSpider } from "@/core/FeedingListComponent/FeedingListComponent";
 import { useSpidersStore } from "@/store/spidersStore";
 
 type SpiderListProps = {
-  data: Spider[] | ExtendedSpider[];
+  data: SpiderDetailType[] | ExtendedSpider[];
   viewType?: ViewTypes;
 };
 
 const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
-  const [spiders, setSpiders] = useState<ExtendedSpider[] | Spider[]>(data);
+  const [spiders, setSpiders] = useState<ExtendedSpider[] | SpiderDetailType[]>(
+    data,
+  );
   const { currentTheme } = useUserStore();
   const updateSpider = useSpidersStore((state: any) => state.updateSpider);
 
@@ -46,8 +48,8 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
     try {
       await updateSpider(updatedSpider);
 
-      setSpiders((prev) =>
-        prev.map((s) => (s.id === spiderId ? updatedSpider : s)),
+      setSpiders((prev: any) =>
+        prev.map((s: any) => (s.id === spiderId ? updatedSpider : s)),
       );
       console.log(`Zmieniono ulubiony status pająka ID ${spiderId}`);
     } catch (error) {

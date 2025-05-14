@@ -14,7 +14,7 @@ import { Colors, ThemeType } from "@/constants/Colors";
 import { useTranslation } from "@/hooks/useTranslation";
 
 type Props = {
-  value: number | null;
+  value: number | string | null;
   onSelect: (value: number) => void;
   onCustomInput?: (text: string) => void;
   theme: ThemeType;

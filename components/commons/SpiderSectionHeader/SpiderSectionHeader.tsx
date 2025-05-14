@@ -23,7 +23,7 @@ type SpiderSectionHeaderProps = {
   title: string;
   spiderCount: number;
   info: string;
-  viewType: FilterViewTypes
+  viewType: FilterViewTypes;
 };
 
 const SpiderSectionHeader = ({

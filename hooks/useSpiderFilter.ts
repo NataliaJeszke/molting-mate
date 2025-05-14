@@ -1,19 +1,19 @@
 import { useMemo } from "react";
 
-import { Spider } from "@/db/database";
+import { SpiderDetailType } from "@/db/database";
 import { parseDate } from "@/utils/dateUtils";
 
 import { FilterType } from "@/models/Filters.model";
 import { IndividualType } from "@/models/Spider.model";
 
-type UseSpiderFilterParams<T extends Spider> = {
+type UseSpiderFilterParams<T extends SpiderDetailType> = {
   spiders: T[];
   filters: FilterType;
   datePropertyKey: keyof T;
   statusLabel?: string;
 };
 
-export function useSpiderFilter<T extends Spider>({
+export function useSpiderFilter<T extends SpiderDetailType>({
   spiders,
   filters,
   datePropertyKey,

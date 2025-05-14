@@ -104,6 +104,15 @@
     "save": "Zapisz",
     "cancel": "Anuluj"
   },
+  "collection": {
+    "core": {
+        "title": "Kolekcja",
+        "info": "Lista wszystkich pająków w twojej kolekcji.",
+        "add": "Dodaj pająka",
+        "no_favourites": "Brak ulubionych pająków.",
+        "back": "Wstecz"
+    }
+  },
   "components": {
     "ui": {
       "autocomplete": {

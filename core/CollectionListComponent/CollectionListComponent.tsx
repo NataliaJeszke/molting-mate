@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import { ScrollView } from "react-native";
 
-import { Spider } from "@/db/database";
+import { SpiderDetailType } from "@/db/database";
 import { useFiltersStore } from "@/store/filtersStore";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 import { IndividualType } from "@/models/Spider.model";
@@ -9,17 +9,22 @@ import { IndividualType } from "@/models/Spider.model";
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import SpiderSectionHeader from "@/components/commons/SpiderSectionHeader/SpiderSectionHeader";
 import { useSpidersStore } from "@/store/spidersStore";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const CollectionListComponent = () => {
-  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
+  const spiders = useSpidersStore(
+    (state: any) => state.spiders,
+  ) as SpiderDetailType[];
   const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
 
   const filters = useFiltersStore((state) => state.filters.collection);
+  const { t } = useTranslation();
   const viewType = ViewTypes.VIEW_COLLECTION;
 
   useEffect(() => {
     fetchSpiders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log("CollectionListComponent: fetchSpiders", spiders);
   }, []);
 
   const filteredSpiders = useMemo(() => {
@@ -45,9 +50,9 @@ const CollectionListComponent = () => {
   return (
     <>
       <SpiderSectionHeader
-        title="Kolekcja"
+        title={t("collection.core.title")}
         spiderCount={spiders.length}
-        info="Lista wszystkich pająków"
+        info={t("collection.core.info")}
         viewType={viewType}
       />
       <ScrollView>

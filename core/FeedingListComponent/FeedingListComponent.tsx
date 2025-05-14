@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import { ScrollView } from "react-native";
 
-import { Spider } from "@/db/database";
+import { SpiderDetailType } from "@/db/database";
 import { useFiltersStore } from "@/store/filtersStore";
 
 import { useSpiderFilter } from "@/hooks/useSpiderFilter";
@@ -18,13 +18,15 @@ import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import { useSpidersStore } from "@/store/spidersStore";
 
-export type ExtendedSpider = Omit<Spider, "status"> & {
+export type ExtendedSpider = Omit<SpiderDetailType, "status"> & {
   status: FeedingStatus | string | null;
   nextFeedingDate: string;
 };
 
 const FeedingListComponent = () => {
-  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
+  const spiders = useSpidersStore(
+    (state: any) => state.spiders,
+  ) as SpiderDetailType[];
   const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
   const sortType = useSpidersStore((state: any) => state.sortType);
   const sortOrder = useSpidersStore((state: any) => state.sortOrder);

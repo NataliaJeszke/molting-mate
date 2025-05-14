@@ -103,6 +103,15 @@
     "save": "Save",
     "cancel": "Cancel"
   },
+  "collection": {
+    "core": {
+        "title": "Collection",
+        "info": "List of all spiders in your collection.",
+        "add": "Add spider",
+        "no_favourites": "No favourite spiders.",
+        "back": "Back"
+    }
+  },
   "components": {
     "ui": {
       "autocomplete": {
