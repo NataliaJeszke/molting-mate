@@ -112,6 +112,11 @@
         "back": "Back"
     }
   },
+  "post-feeding-list": {
+    "title": "Post-feeding list",
+    "info": "List of all spiders that haven't been fed.",
+    "status": "HUNGRY"
+  },
   "components": {
     "ui": {
       "autocomplete": {

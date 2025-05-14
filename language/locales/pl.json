@@ -113,6 +113,11 @@
         "back": "Wstecz"
     }
   },
+  "post-feeding-list": {
+    "title": "Pająki po terminie karmienia",
+    "info": "Głodne pająki.",
+    "status": "GŁODNY"
+  },
   "components": {
     "ui": {
       "autocomplete": {

@@ -4,6 +4,7 @@ import { getFeedingStatus } from "../../utils/feedingUtils";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import { Spider } from "@/db/database";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface PostFeedingListComponentProps {
   spiders: Spider[];
@@ -12,6 +13,8 @@ interface PostFeedingListComponentProps {
 const PostFeedingListComponent = ({
   spiders,
 }: PostFeedingListComponentProps) => {
+  const { t } = useTranslation();
+
   const postFeedingSpiders = useMemo(() => {
     return spiders
       .filter((spider) => {
@@ -26,15 +29,16 @@ const PostFeedingListComponent = ({
         name: spider.name,
         date: spider.lastFed,
         imageUri: spider.imageUri,
-        status: "GŁODNY",
+        status: t("post-feeding-list.status"),
       }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spiders]);
 
   return (
     <SpiderList
-      title="Pająki po terminie karmienia"
+      title={t("post-feeding-list.title")}
       data={postFeedingSpiders}
-      info={"Głodne pająki"}
+      info={t("post-feeding-list.info")}
     />
   );
 };
