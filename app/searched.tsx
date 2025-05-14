@@ -8,12 +8,12 @@ import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import WrapperComponent from "@/components/ui/WrapperComponent";
 
 export default function Filtered() {
-  const spiders = useSpidersStore((state) => state.spiders);
+  const spiders = useSpidersStore((state: any) => state.spiders);
   const { query } = useLocalSearchParams();
 
   const filteredSpiders = useMemo(
     () =>
-      spiders.filter((spider) => {
+      spiders.filter((spider: any) => {
         const name = spider.name?.toLowerCase() || "";
         const spiderSpecies = spider.spiderSpecies?.toLowerCase() || "";
 

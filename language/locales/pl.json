@@ -1,0 +1,23 @@
+{
+    "spider-detail": {
+      "spider_not_found": "Nie znaleziono pająka."
+    },
+    "profile": {
+        "profile": "Profil",
+        "user": "Uytkownik",
+        "subtitle": "Entuzjasta pająków",
+        "settings": "Ustawienia aplikacji",
+        "language": "Język",
+        "theme": "Motyw",
+        "dark_mode": "Motyw ciemny",
+        "light_mode": "Motyw jasny",
+        "notifications": "Powiadomienia",
+        "account": {
+            "title": "Konto",
+            "edit_profile": "Edytuj profil",
+            "change_password": "Zmień hasło"
+        },
+        "save": "Zapisz",
+        "cancel": "Anuluj"
+    }
+  }

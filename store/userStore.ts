@@ -1,64 +1,28 @@
-// import { ThemeType } from "@/constants/Colors";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { create } from "zustand";
-// import { persist, createJSONStorage } from "zustand/middleware";
-
-// type UserState = {
-//   hasFinishedOnboarding: boolean;
-//   currentTheme: ThemeType;
-//   userSelectedTheme: boolean;
-//   setTheme: (theme: ThemeType) => void;
-//   toggleTheme: () => void;
-//   toggleHasOnboarded: () => void;
-// };
-
-// export const useUserStore = create(
-//   persist<UserState>(
-//     (set) => ({
-//       hasFinishedOnboarding: false,
-//       currentTheme: "light",
-//       userSelectedTheme: false,
-//       toggleHasOnboarded: () =>
-//         set((state) => ({
-//           ...state,
-//           hasFinishedOnboarding: !state.hasFinishedOnboarding,
-//         })),
-//       toggleTheme: () =>
-//         set((state) => ({
-//           ...state,
-//           currentTheme: state.currentTheme === "light" ? "dark" : "light",
-//           userSelectedTheme: true,
-//         })),
-//       setTheme: (theme) =>
-//         set(() => ({
-//           currentTheme: theme,
-//           userSelectedTheme: true,
-//         })),
-//     }),
-//     {
-//       name: "moltingmate-user-store",
-//       storage: createJSONStorage(() => AsyncStorage),
-//     },
-//   ),
-// );
-
 import { ThemeType } from "@/constants/Colors";
+import { Language } from "@/constants/Language";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
+import * as Localization from "expo-localization";
 
 type UserState = {
   hasFinishedOnboarding: boolean;
   currentTheme: ThemeType;
   userSelectedTheme: boolean;
+  language: Language;
+  setLanguage: (lang: Language) => void;
   setTheme: (theme: ThemeType) => void;
   toggleTheme: () => void;
   toggleHasOnboarded: () => void;
 };
-
 export const useUserStore = create<UserState>((set) => ({
   hasFinishedOnboarding: false,
   currentTheme: "light",
   userSelectedTheme: false,
+  language: Language.EN,
+  setLanguage: (lang: Language) =>
+    set(() => ({
+      language: lang,
+    })),
   toggleHasOnboarded: () =>
     set((state) => ({
       ...state,
@@ -80,12 +44,28 @@ export const useUserStore = create<UserState>((set) => ({
 const loadUserStore = async () => {
   try {
     const storedData = await AsyncStorage.getItem("moltingmate-user-store");
+
+    const systemLang = Localization.getLocales()[0]?.languageCode;
+    const defaultLang = systemLang === "pl" ? Language.PL : Language.EN;
+
     if (storedData) {
       const parsedData = JSON.parse(storedData);
+
+      parsedData.language = defaultLang;
+
       useUserStore.setState(parsedData);
+      console.log("🌍 Loaded store, overwritten language:", defaultLang);
+    } else {
+      useUserStore.setState({
+        hasFinishedOnboarding: false,
+        currentTheme: "light",
+        userSelectedTheme: false,
+        language: defaultLang,
+      });
+      console.log("🆕 Initialized store with system language:", defaultLang);
     }
   } catch (error) {
-    console.error("Error loading user store:", error);
+    console.error("❌ Error loading user store:", error);
   }
 };
 

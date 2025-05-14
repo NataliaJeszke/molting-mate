@@ -1,0 +1,24 @@
+{
+    "spider-detail": {
+      "spider_not_found": "Spider not found."
+    },
+    "profile": {
+      "profile": "Profile",
+      "user": "User",
+      "subtitle": "Spider enthusiast",
+      "settings": "App settings",
+      "language": "Language",
+      "theme": "Theme",
+      "dark_mode": "Dark mode",
+      "light_mode": "Light mode",
+      "notifications": "Notifications",
+      "account": {
+        "title": "Account",
+        "edit_profile": "Edit profile",
+        "change_password": "Change password"
+      },
+      "save": "Save",
+      "cancel": "Cancel"
+    }
+  }
+  
