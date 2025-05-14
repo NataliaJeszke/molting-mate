@@ -107,8 +107,8 @@ export default function RootLayout() {
           <Stack.Screen
             name="spider/[id]"
             options={{
-              title: t("spider.title"),
-              headerBackTitle: t("spider.back"),
+              title: t("spider-detail.title"),
+              headerBackTitle: t("spider-detail.back"),
               headerTintColor: Colors[currentTheme].tint,
             }}
           />
