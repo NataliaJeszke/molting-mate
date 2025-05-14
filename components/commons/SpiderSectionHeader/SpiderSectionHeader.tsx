@@ -18,6 +18,7 @@ import { useFiltersStore } from "@/store/filtersStore";
 import { FilterViewTypes } from "@/models/Filters.model";
 import { useSpidersStore } from "@/store/spidersStore";
 import { SortModal } from "@/components/commons/SortModal/SortModal";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type SpiderSectionHeaderProps = {
   title: string;
@@ -34,6 +35,8 @@ const SpiderSectionHeader = ({
 }: SpiderSectionHeaderProps) => {
   const router = useRouter();
   const { currentTheme } = useUserStore();
+  const { t } = useTranslation();
+
   const [filtersVisible, setFiltersVisible] = useState(false);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [sortModalVisible, setSortModalVisible] = useState(false);
@@ -88,7 +91,7 @@ const SpiderSectionHeader = ({
           <ThemedText
             style={styles(currentTheme)["spiderSectionHeader__filterStatus"]}
           >
-            Filtry są włączone
+            {t("spider-section-header.filters_on")}
           </ThemedText>
         )}
 
@@ -100,7 +103,7 @@ const SpiderSectionHeader = ({
             <ThemedText
               style={styles(currentTheme)["spiderSectionHeader__filterText"]}
             >
-              Filtry
+              {t("spider-section-header.filters")}
             </ThemedText>
             <MaterialIcons
               name="filter-list"
@@ -116,7 +119,7 @@ const SpiderSectionHeader = ({
             <ThemedText
               style={styles(currentTheme)["spiderSectionHeader__filterText"]}
             >
-              Sortowanie
+              {t("spider-section-header.sort")}
             </ThemedText>
             <MaterialIcons
               name="sort"

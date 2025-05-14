@@ -9,6 +9,11 @@
   "manage-modal": {
     "title": "Manage Spider"
   },
+  "spider-section-header": {
+    "filters": "Filters",
+    "filters_on": "Filters on",
+    "sort": "Sort"
+  },
   "spider-detail": {
     "spider_not_found": "Spider not found.",
     "title": "Spider",
@@ -26,7 +31,8 @@
     "save": "Save",
     "cancel": "Cancel",
     "core": {
-      "title": "Add Spider"
+      "title": "Add Spider",
+      "add": "Add spider"
     }
   },
   "favourites": {

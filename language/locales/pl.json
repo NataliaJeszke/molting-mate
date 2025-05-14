@@ -9,6 +9,11 @@
   "manage-modal": {
     "title": "Wymagana akcja"
   },
+  "spider-section-header": {
+    "filters": "Filtry",
+    "filters_on": "Filtry włączone",
+    "sort": "Sortowanie"
+  },
   "spider-detail": {
     "spider_not_found": "Nie znaleziono pająka.",
     "title": "Pająk",
@@ -26,7 +31,8 @@
     "save": "Zapisz",
     "cancel": "Anuluj",
     "core": {
-      "title": "Dodaj pająka"
+      "title": "Dodaj pająka",
+        "add": "Dodaj pająka"
     }
   },
   "favourites": {
