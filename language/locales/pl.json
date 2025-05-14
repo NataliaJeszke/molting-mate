@@ -125,6 +125,10 @@
     "day": "dzień",
     "days": "dni"
   },
+  "molting":{
+    "title": "Linienie",
+    "info": "Lista pająków według linienia"
+  },
   "components": {
     "ui": {
       "autocomplete": {

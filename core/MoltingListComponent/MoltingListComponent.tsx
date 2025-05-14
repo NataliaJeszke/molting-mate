@@ -6,14 +6,18 @@ import SpiderSectionHeader from "../../components/commons/SpiderSectionHeader/Sp
 import { useFiltersStore } from "@/store/filtersStore";
 import { parseDate } from "@/utils/dateUtils";
 import { useSpiderFilter } from "@/hooks/useSpiderFilter";
-import { Spider } from "@/db/database";
+import { SpiderDetailType } from "@/db/database";
 import { useSpidersStore } from "@/store/spidersStore";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const MoltingListComponent = () => {
-  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
+  const spiders = useSpidersStore(
+    (state: any) => state.spiders,
+  ) as SpiderDetailType[];
   const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
   const filters = useFiltersStore((state) => state.filters.molting);
   const sortOrder = useSpidersStore((state: any) => state.sortOrder);
+  const { t } = useTranslation();
   const viewType = ViewTypes.VIEW_MOLTING;
 
   useEffect(() => {
@@ -41,9 +45,9 @@ const MoltingListComponent = () => {
   return (
     <>
       <SpiderSectionHeader
-        title="Linienie"
+        title={t("molting-list.title")}
         spiderCount={processedSpiders.length}
-        info="Lista pająków według linienia."
+        info={t("molting-list.info")}
         viewType={viewType}
       />
       <ScrollView>

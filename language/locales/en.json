@@ -124,6 +124,10 @@
     "day": "day",
     "days": "days"
   },
+  "molting-list": {
+    "title": "Molting list",
+    "info": "Molting list of your spiders"
+  },
   "components": {
     "ui": {
       "autocomplete": {
