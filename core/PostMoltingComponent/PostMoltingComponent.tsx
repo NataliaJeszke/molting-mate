@@ -4,6 +4,7 @@ import { Spider } from "@/db/database";
 
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
 import { PostMoltingMsg } from "./PostMolting.constants";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface PostMoltingListComponentProps {
   spiders: Spider[];
@@ -13,6 +14,7 @@ interface PostMoltingListComponentProps {
 const PostMoltingListComponent = ({
   spiders,
 }: PostMoltingListComponentProps) => {
+  const { t } = useTranslation();
   const postMoltingSpiders = useMemo(() => {
     return spiders
       .filter(
@@ -33,9 +35,9 @@ const PostMoltingListComponent = ({
 
   return (
     <SpiderList
-      title="Linienie"
+      title={t("molting-list.title")}
       data={postMoltingSpiders}
-      info={PostMoltingMsg.INFORMATION}
+      info={t(PostMoltingMsg.INFORMATION)}
     />
   );
 };
