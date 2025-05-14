@@ -247,51 +247,62 @@ export default function SpiderForm() {
   };
 
   const handleChooseDocument = () => {
-    Alert.alert("Wybierz źródło", "Dołącz dokument pochodzenia", [
-      {
-        text: "Zrób zdjęcie",
-        onPress: async () => {
-          const permission = await ImagePicker.requestCameraPermissionsAsync();
-          if (permission.status !== "granted") {
-            Alert.alert("Brak uprawnień", "Nie masz dostępu do kamery.");
-            return;
-          }
+    Alert.alert(
+      t("choose_document.alert.choose_source.title"),
+      t("choose_document.alert.choose_source.info"),
+      [
+        {
+          text: t("choose_document.alert.camera.title"),
+          onPress: async () => {
+            const permission =
+              await ImagePicker.requestCameraPermissionsAsync();
+            if (permission.status !== "granted") {
+              Alert.alert(
+                t("choose_document.alert.permission.denied"),
+                t("choose_document.alert.permission.denied"),
+              );
+              return;
+            }
 
-          const result = await ImagePicker.launchCameraAsync({
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-          });
-          if (!result.canceled) {
-            setDocumentUri(result.assets[0].uri);
-          }
+            const result = await ImagePicker.launchCameraAsync({
+              allowsEditing: true,
+              aspect: [1, 1],
+              quality: 1,
+            });
+            if (!result.canceled) {
+              setDocumentUri(result.assets[0].uri);
+            }
+          },
         },
-      },
-      {
-        text: "Wybierz z galerii",
-        onPress: async () => {
-          const permission =
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
-          if (permission.status !== "granted") {
-            Alert.alert("Brak uprawnień", "Nie masz dostępu do galerii.");
-            return;
-          }
+        {
+          text: t("choose_document.alert.gallery.title"),
+          onPress: async () => {
+            const permission =
+              await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (permission.status !== "granted") {
+              Alert.alert(
+                t("choose_document.alert.permission.denied"),
+                t("choose_document.alert.permission.denied"),
+              );
+              return;
+            }
 
-          const result = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-          });
-          if (!result.canceled) {
-            setDocumentUri(result.assets[0].uri);
-          }
+            const result = await ImagePicker.launchImageLibraryAsync({
+              allowsEditing: true,
+              aspect: [1, 1],
+              quality: 1,
+            });
+            if (!result.canceled) {
+              setDocumentUri(result.assets[0].uri);
+            }
+          },
         },
-      },
-      {
-        text: "Anuluj",
-        style: "cancel",
-      },
-    ]);
+        {
+          text: t("choose_document.alert.cancel"),
+          style: "cancel",
+        },
+      ],
+    );
   };
 
   const parseDate = (dateStr: string): Date => {

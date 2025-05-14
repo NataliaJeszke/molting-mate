@@ -161,6 +161,24 @@
         }
       }
     },
+    "choose_document": {
+        "alert": {
+            "choose_source": {
+                "title": "Wybierz źródło",
+                "info": "Dołącz dokument pochodzenia"
+            },
+            "camera": {
+                "title": "Zrób zdjęcie"
+            },
+            "gallery": {
+                "title": "Wybierz z galerii"
+              },
+            "permission": {
+                "denied": "Odmowa dostępu"
+            },
+            "cancel": "Anuluj"
+        }
+    },
     "submit": {
       "alert": {
         "error_species": "Nie udało się dodać nowgo gatunku",

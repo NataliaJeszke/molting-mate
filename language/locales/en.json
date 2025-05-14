@@ -160,6 +160,24 @@
         }
       }
     },
+    "choose_document": {
+      "alert": {
+        "choose_source": {
+          "title": "Choose source",
+          "info": "Attach origin document"
+        },
+        "camera": {
+          "title": "Take a photo"
+        },
+        "gallery": {
+          "title": "Choose from gallery"
+        },
+        "permission": {
+          "denied": "Permission denied"
+        },
+        "cancel": "Cancel"
+      }
+    },
     "submit": {
       "alert": {
         "error_species": "Failed to add new species",
