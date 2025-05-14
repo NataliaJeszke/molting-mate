@@ -17,6 +17,7 @@ import SpiderSectionHeader from "@/components/commons/SpiderSectionHeader/Spider
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import { useSpidersStore } from "@/store/spidersStore";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export type ExtendedSpider = Omit<SpiderDetailType, "status"> & {
   status: FeedingStatus | string | null;
@@ -24,6 +25,7 @@ export type ExtendedSpider = Omit<SpiderDetailType, "status"> & {
 };
 
 const FeedingListComponent = () => {
+  const { t } = useTranslation();
   const spiders = useSpidersStore(
     (state: any) => state.spiders,
   ) as SpiderDetailType[];
@@ -83,9 +85,9 @@ const FeedingListComponent = () => {
   return (
     <>
       <SpiderSectionHeader
-        title="Karmienie"
+        title={t("feeding.core.title")}
         spiderCount={processedSpiders.length}
-        info="Lista pająków według karmienia."
+        info={t("feeding.core.info")}
         viewType={viewType}
       />
       <ScrollView>

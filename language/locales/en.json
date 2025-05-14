@@ -120,6 +120,12 @@
       "back": "Back"
     }
   },
+  "feeding": {
+    "core": {
+      "title": "Feeding",
+      "info": "List of all spiders in your collection."
+    }
+  },
   "post-feeding-list": {
     "title": "Post-feeding list",
     "info": "List of all spiders that haven't been fed.",

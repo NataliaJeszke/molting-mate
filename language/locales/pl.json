@@ -121,6 +121,12 @@
       "back": "Wstecz"
     }
   },
+  "feeding": {
+    "core": {
+      "title": "Karmienie",
+      "info": "Lista wszystkich pająków w twojej kolekcji."
+    }
+  },
   "post-feeding-list": {
     "title": "Pająki po terminie karmienia",
     "info": "Głodne pająki.",
