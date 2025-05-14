@@ -1,24 +1,114 @@
 {
-    "spider-detail": {
-      "spider_not_found": "Spider not found."
-    },
-    "profile": {
-      "profile": "Profile",
-      "user": "User",
-      "subtitle": "Spider enthusiast",
-      "settings": "App settings",
-      "language": "Language",
-      "theme": "Theme",
-      "dark_mode": "Dark mode",
-      "light_mode": "Light mode",
-      "notifications": "Notifications",
-      "account": {
-        "title": "Account",
-        "edit_profile": "Edit profile",
-        "change_password": "Change password"
+  "menu": {
+    "home": "Home",
+    "molting": "Molting",
+    "feeding": "Feeding",
+    "profile": "Profile",
+    "collection": "Collection"
+  },
+  "manage-modal": {
+    "title": "Manage Spider"
+  },
+  "spider-detail": {
+    "spider_not_found": "Spider not found.",
+    "title": "Spider",
+    "back": "Back"
+  },
+  "spider-form": {
+    "title": "Add Spider to Collection",
+    "name": "Name",
+    "species": "Species",
+    "age": "Age",
+    "weight": "Weight",
+    "feeding_date": "Feeding date",
+    "molting_date": "Molting date",
+    "notes": "Notes",
+    "save": "Save",
+    "cancel": "Cancel",
+    "core": {
+      "title": "Add Spider"
+    }
+  },
+  "favourites": {
+    "title": "Favourites",
+    "empty": "No favourite spiders.",
+    "back": "Back"
+  },
+  "searched": {
+    "titlePrefix": "Search results for:",
+    "titleDefault": "Search results",
+    "back": "Back"
+  },
+  "add-new-spp": {
+    "title": "Add new spider species",
+    "name": "Name",
+    "species": "Species",
+    "save": "Save",
+    "cancel": "Cancel",
+    "core": {
+      "alert": {
+        "confirmation": {
+          "title": "Confirmation",
+          "message": "Are you sure you want to add species {{customInput}} to list?",
+          "cancel": "Cancel",
+          "confirm": "Confirm",
+          "add": "Add",
+          "success": "Success",
+          "success_message": "Species {{customInput}} has been added to the list."
+        },
+        "delete": {
+          "title": "Delete",
+          "message": "Are you sure you want to delete species {{customInput}} from the list?",
+          "cancel": "Cancel",
+          "text": "Delete",
+          "success": "Success",
+          "success_message": "Species {{customInput}} has been deleted from the list.",
+          "error": "Cant delete species",
+          "error_message": "Species cannot be deleted from the list. Number of spiders: {{result.count}} .",
+          "error_alert": "Error while deleting species"
+        },
+        "save_edit": {
+          "title": "Species name changed",
+          "message": "Species were changed to {{newSpeciesName}}"
+        }
       },
-      "save": "Save",
-      "cancel": "Cancel"
+      "title": "Species",
+      "serach": "Search for species",
+      "add": "Add species",
+      "species_list": "Species list",
+      "no_species_found": "No species found",
+      "no_species": "No species on the list",
+      "back": "Back",
+      "edit": "Edit species name",
+      "edit_placeholder": "Enter new species name",
+      "cancel": "Cancel",
+      "save": "Save"
+    }
+  },
+  "profile": {
+    "profile": "Profile",
+    "user": "User",
+    "subtitle": "Spider enthusiast",
+    "settings": "App settings",
+    "language": "Language",
+    "theme": "Theme",
+    "dark_mode": "Dark mode",
+    "light_mode": "Light mode",
+    "notifications": "Notifications",
+    "account": {
+      "title": "Account",
+      "edit_profile": "Edit profile",
+      "change_password": "Change password"
+    },
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "components": {
+    "ui": {
+      "autocomplete": {
+        "placeholder": "Start typing to see suggestions",
+        "no_results": "No results found"
+      }
     }
   }
-  
+}

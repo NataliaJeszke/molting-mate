@@ -1,23 +1,115 @@
 {
-    "spider-detail": {
-      "spider_not_found": "Nie znaleziono pająka."
-    },
-    "profile": {
-        "profile": "Profil",
-        "user": "Uytkownik",
-        "subtitle": "Entuzjasta pająków",
-        "settings": "Ustawienia aplikacji",
-        "language": "Język",
-        "theme": "Motyw",
-        "dark_mode": "Motyw ciemny",
-        "light_mode": "Motyw jasny",
-        "notifications": "Powiadomienia",
-        "account": {
-            "title": "Konto",
-            "edit_profile": "Edytuj profil",
-            "change_password": "Zmień hasło"
+  "menu": {
+    "home": "Home",
+    "molting": "Linienie",
+    "feeding": "Karmienie",
+    "profile": "Profil",
+    "collection": "Kolekcja"
+  },
+  "manage-modal": {
+    "title": "Wymagana akcja"
+  },
+  "spider-detail": {
+    "spider_not_found": "Nie znaleziono pająka.",
+    "title": "Pająk",
+    "back": "Wstecz"
+  },
+  "spider-form": {
+    "title": "Dodaj pająka do kolekcji",
+    "name": "Nazwa",
+    "species": "Gatunek",
+    "age": "Wiek",
+    "weight": "Waga",
+    "feeding_date": "Data karmienia",
+    "molting_date": "Data linienia",
+    "notes": "Notatki",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "core": {
+        "title": "Dodaj pająka"
+    }
+  },
+  "favourites": {
+    "title": "Ulubione",
+    "empty": "Brak ulubionych pająków.",
+    "back": "Wstecz"
+  },
+  "searched": {
+    "titlePrefix": "Wyniki wyszukiwania dla:",
+    "titleDefault": "Wyniki wyszukiwania",
+    "back": "Wstecz"
+  },
+  "add-new-spp": {
+    "title": "Dodaj nowy gatunek pająka",
+    "name": "Nazwa",
+    "species": "Gatunek",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "core": {
+      "alert": {
+        "confirmation": {
+          "title": "Potwierdzenie",
+          "message": "Czy na pewno chcesz dodać gatunek {{customInput}} do listy?",
+          "cancel": "Anuluj",
+          "confirm": "Potwierdź",
+          "add": "Dodaj",
+          "success": "Sukces",
+          "success_message": "Gatunek {{customInput}} został dodany do listy."
         },
-        "save": "Zapisz",
-        "cancel": "Anuluj"
+        "delete": {
+          "title": "Usuń",
+          "message": "Czy na pewno chcesz usunąć gatunek {{customInput}} z listy?",
+          "cancel": "Anuluj",
+          "text": "Usuń",
+          "success": "Sukces",
+          "success_message": "Gatunek {{customInput}} został usunięty z listy.",
+          "error": "Nie można usunąć gatunku",
+          "error_message": "Nie można usunąć gatunku z listy. Liczba pająków: {{result.count}}.",
+          "error_alert": "Błąd podczas usuwania gatunku"
+        },
+        "save_edit": {
+          "title": "Nazwa gatunku zmieniona",
+          "message": "Gatunek został zmieniony na {{newSpeciesName}}",
+          "error_alert": "Błąd podczas usuwania gatunku"
+        }
+      },
+      "title": "Gatunki",
+      "serach": "Wyszukaj gatunek",
+      "add": "Dodaj gatunek",
+      "species_list": "Lista gatunków",
+      "no_species_found": "Nie znaleziono gatunków",
+      "no_species": "Brak gatunków na liście",
+      "back": "Wstecz",
+      "edit": "Edytuj nazwę gatunku",
+      "edit_placeholder": "Wprowadź nową nazwę gatunku",
+      "cancel": "Anuluj",
+      "save": "Zapisz"
+    }
+  },
+  "profile": {
+    "profile": "Profil",
+    "user": "Uytkownik",
+    "subtitle": "Entuzjasta pająków",
+    "settings": "Ustawienia aplikacji",
+    "language": "Język",
+    "theme": "Motyw",
+    "dark_mode": "Motyw ciemny",
+    "light_mode": "Motyw jasny",
+    "notifications": "Powiadomienia",
+    "account": {
+      "title": "Konto",
+      "edit_profile": "Edytuj profil",
+      "change_password": "Zmień hasło"
+    },
+    "save": "Zapisz",
+    "cancel": "Anuluj"
+  },
+  "components": {
+    "ui": {
+      "autocomplete": {
+        "placeholder": "Zacznij pisać aby wyświetlić podpowiedzi",
+        "no_results": "Brak wyników"
+      }
     }
   }
+}

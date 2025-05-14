@@ -17,12 +17,14 @@ import { Colors } from "@/constants/Colors";
 
 import StatusBar from "@/components/ui/StatusBar";
 import { initDatabase } from "@/db/database";
+import { useTranslation } from "@/hooks/useTranslation";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const { currentTheme, userSelectedTheme, setTheme } = useUserStore();
   const systemTheme = useColorScheme();
+  const { t } = useTranslation();
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -78,27 +80,26 @@ export default function RootLayout() {
             name="spiderForm"
             options={{
               presentation: "modal",
-              title: "Dodaj pająka do kolekcji",
+              title: t("spider-form.title"),
             }}
           />
           <Stack.Screen
             name="favourites"
             options={{
-              title: "Ulubione pająki",
-              headerBackTitle: "Wstecz",
+              title: t("favourites.title"),
+              headerBackTitle: t("favourites.back"),
               headerTintColor: Colors[currentTheme].tint,
             }}
           />
-
           <Stack.Screen
             name="searched"
             options={({ route }) => {
               const { query } = (route.params as { query?: string }) || {};
               return {
                 title: query
-                  ? `Wyniki wyszukiwania dla: ${query}`
-                  : "Wyniki wyszukiwania",
-                headerBackTitle: "Wstecz",
+                  ? `${t("searched.titlePrefix")} ${query}`
+                  : t("searched.titleDefault"),
+                headerBackTitle: t("searched.back"),
                 headerTintColor: Colors[currentTheme].tint,
               };
             }}
@@ -106,8 +107,8 @@ export default function RootLayout() {
           <Stack.Screen
             name="spider/[id]"
             options={{
-              title: "Pająk",
-              headerBackTitle: "Wstecz",
+              title: t("spider.title"),
+              headerBackTitle: t("spider.back"),
               headerTintColor: Colors[currentTheme].tint,
             }}
           />
@@ -115,7 +116,7 @@ export default function RootLayout() {
             name="manageModal"
             options={{
               presentation: "transparentModal",
-              title: "Wymagana akcja",
+              title: t("manage-modal.title"),
               headerShown: false,
               contentStyle: { backgroundColor: "transparent" },
             }}
@@ -124,7 +125,7 @@ export default function RootLayout() {
             name="addNewSPPtoList"
             options={{
               presentation: "modal",
-              title: "Dodaj nowy gatunek pająka",
+              title: t("add-new-spp.title"),
             }}
           />
           <Stack.Screen name="+not-found" />

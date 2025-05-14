@@ -9,12 +9,14 @@ import { Colors } from "@/constants/Colors";
 import { HapticTab } from "@/components/ui/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function TabLayout() {
   const { currentTheme } = useUserStore();
   const hasFinishedOnboarding = useUserStore(
     (state) => state.hasFinishedOnboarding,
   );
+  const { t } = useTranslation();
 
   if (!hasFinishedOnboarding) {
     return <Redirect href="/onboarding" />;
@@ -38,7 +40,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: t("menu.home"),
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="house.fill" color={color} />
           ),
@@ -47,7 +49,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="molting"
         options={{
-          title: "Linienie",
+          title: t("menu.molting"),
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons size={28} name="tshirt-v" color={color} />
           ),
@@ -56,7 +58,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="feeding"
         options={{
-          title: "Karmienie",
+          title: t("menu.feeding"),
           tabBarIcon: ({ color }) => (
             <FontAwesome6 name="utensils" size={28} color={color} />
           ),
@@ -65,7 +67,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="collection"
         options={{
-          title: "Kolekcja",
+          title: t("menu.collection"),
           tabBarIcon: ({ color }) => (
             <FontAwesome6 name="bugs" size={28} color={color} />
           ),
@@ -74,7 +76,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Profil",
+          title: t("menu.profile"),
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="spider-web" size={28} color={color} />
           ),

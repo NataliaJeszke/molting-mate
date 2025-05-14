@@ -16,6 +16,7 @@ import { useUserStore } from "@/store/userStore";
 import { Feather } from "@expo/vector-icons";
 import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function SpiderSpeciesManager() {
   const {
@@ -38,6 +39,7 @@ export default function SpiderSpeciesManager() {
   } | null>(null);
   const [newSpeciesName, setNewSpeciesName] = useState("");
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const { t } = useTranslation();
 
   const filteredSpecies = customInput
     ? speciesOptions.filter((species) =>
@@ -62,20 +64,22 @@ export default function SpiderSpeciesManager() {
     if (customInput.trim() === "") return;
 
     Alert.alert(
-      "Potwierdzenie dodania",
-      `Czy chcesz dodać gatunek "${customInput}" do listy?`,
+      t("add-new-spp.core.alert.confirmation.title"),
+      t("add-new-spp.core.alert.confirmation.message", { customInput }),
       [
         {
-          text: "Anuluj",
+          text: t("add-new-spp.core.alert.confirmation.cancel"),
           style: "cancel",
         },
         {
-          text: "Dodaj",
+          text: t("add-new-spp.core.alert.confirmation.add"),
           onPress: () => {
             addSpeciesToDb(customInput);
             Alert.alert(
-              "Sukces",
-              `Gatunek "${customInput}" został pomyślnie dodany do listy!`,
+              t("add-new-spp.core.alert.confirmation.success"),
+              t("add-new-spp.core.alert.confirmation.success_message", {
+                customInput,
+              }),
               [{ text: "OK" }],
             );
             setSelectedSpeciesValue(null);
@@ -88,36 +92,47 @@ export default function SpiderSpeciesManager() {
 
   const handleDelete = async (species: { label: string; value: number }) => {
     Alert.alert(
-      "Potwierdź usunięcie",
-      `Czy na pewno chcesz usunąć gatunek "${species.label}"?`,
+      t("add-new-spp.core.alert.delete.title"),
+      t("add-new-spp.core.alert.delete.message", {
+        customInput: species.label,
+      }),
       [
         {
-          text: "Anuluj",
+          text: t("add-new-spp.core.alert.delete.cancel"),
           style: "cancel",
         },
         {
-          text: "Usuń",
+          text: t("add-new-spp.core.alert.delete.text"),
           onPress: async () => {
             try {
               const result = await deleteSpeciesFromDb(species.value);
               if (result.success) {
                 Alert.alert(
-                  "Sukces",
-                  `Gatunek "${species.label}" został usunięty z listy!`,
+                  t("add-new-spp.core.alert.delete.success"),
+                  t("add-new-spp.core.alert.delete.success_message", {
+                    customInput: species.label,
+                  }),
                   [{ text: "OK" }],
                 );
               } else {
                 Alert.alert(
-                  "Nie można usunąć",
-                  `Nie można usunąć — ilość pająków o tym gatunku w bazie: ${result.count}`,
+                  t("add-new-spp.core.alert.delete.error"),
+                  t("add-new-spp.core.alert.delete.error_message", { result }),
                   [{ text: "OK" }],
                 );
               }
             } catch (error) {
-              console.error("Błąd podczas usuwania gatunku:", error);
-              Alert.alert("Błąd", "Wystąpił błąd podczas usuwania gatunku.", [
-                { text: "OK" },
-              ]);
+              console.error(
+                t("add-new-spp.core.alert.delete.error_alert"),
+                error,
+              );
+              Alert.alert(
+                t("add-new-spp.core.alert.delete.error_alert"),
+                t("add-new-spp.core.alert.delete.error_message", {
+                  result: { count: "?" },
+                }),
+                [{ text: "OK" }],
+              );
             }
           },
           style: "destructive",
@@ -139,12 +154,14 @@ export default function SpiderSpeciesManager() {
     try {
       await updateSpeciesInDb(editingSpecies.id, newSpeciesName.trim());
       Alert.alert(
-        "Zmieniono nazwę",
-        `Gatunek został zaktualizowany na "${newSpeciesName}"`,
+        t("add-new-spp.core.alert.save_edit.title"),
+        t("add-new-spp.core.alert.save_edit.message", {
+          newSpeciesName: newSpeciesName.trim(),
+        }),
       );
     } catch (error) {
-      console.error("Błąd edycji gatunku:", error);
-      Alert.alert("Błąd", "Wystąpił problem podczas edycji gatunku.");
+      console.error("Error:", error);
+      Alert.alert(t("add-new-spp.core.alert.save_edit.error_alert"));
     } finally {
       setIsEditModalVisible(false);
       setEditingSpecies(null);
@@ -156,14 +173,14 @@ export default function SpiderSpeciesManager() {
     <>
       <View style={styles(currentTheme)["species-manager"]}>
         <ThemedText style={styles(currentTheme)["species-manager__title"]}>
-          Gatunki pająków
+          {t("add-new-spp.core.title")}
         </ThemedText>
 
         <View style={styles(currentTheme)["species-manager__search"]}>
           <ThemedText
             style={styles(currentTheme)["species-manager__search-label"]}
           >
-            Wyszukaj gatunek:
+            {t("add-new-spp.core.serach")}:
           </ThemedText>
           <View
             style={
@@ -186,7 +203,7 @@ export default function SpiderSpeciesManager() {
               <ThemedText
                 style={styles(currentTheme)["species-manager__add-button-text"]}
               >
-                Dodaj gatunek "{customInput}"
+                {t("add-new-spp.core.add")}: "{customInput}"
               </ThemedText>
             </TouchableOpacity>
           )}
@@ -196,7 +213,7 @@ export default function SpiderSpeciesManager() {
           <ThemedText
             style={styles(currentTheme)["species-manager__list-title"]}
           >
-            Lista gatunków:
+            {t("add-new-spp.core.species_list")}:
           </ThemedText>
 
           <FlatList
@@ -249,14 +266,14 @@ export default function SpiderSpeciesManager() {
                 style={styles(currentTheme)["species-manager__empty-list-text"]}
               >
                 {customInput
-                  ? "Nie znaleziono gatunków"
-                  : "Brak gatunków na liście"}
+                  ? t("add-new-spp.core.no_species_found")
+                  : t("add-new-spp.core.no_species")}
               </ThemedText>
             }
           />
 
           <Button
-            title="Powrót"
+            title={t("add-new-spp.core.back")}
             onPress={() => router.back()}
             color="#2196F3"
           />
@@ -267,7 +284,7 @@ export default function SpiderSpeciesManager() {
         <View style={styles(currentTheme)["modal-overlay"]}>
           <View style={styles(currentTheme)["modal-container"]}>
             <ThemedText style={styles(currentTheme)["modal-title"]}>
-              Edytuj nazwę gatunku
+              {t("add-new-spp.core.edit")}
             </ThemedText>
             <TextInput
               style={styles(currentTheme)["modal-input"]}
@@ -278,10 +295,13 @@ export default function SpiderSpeciesManager() {
             />
             <View style={styles(currentTheme)["modal-buttons"]}>
               <Button
-                title="Anuluj"
+                title={t("add-new-spp.core.cancel")}
                 onPress={() => setIsEditModalVisible(false)}
               />
-              <Button title="Zapisz" onPress={handleSaveEdit} />
+              <Button
+                title={t("add-new-spp.core.save")}
+                onPress={handleSaveEdit}
+              />
             </View>
           </View>
         </View>

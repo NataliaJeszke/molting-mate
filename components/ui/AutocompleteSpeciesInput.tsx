@@ -11,6 +11,7 @@ import {
 import { ThemedText } from "./ThemedText";
 import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
 import { Colors, ThemeType } from "@/constants/Colors";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type Props = {
   value: number | null;
@@ -29,6 +30,7 @@ const AutocompleteSpeciesInput = ({
   const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState(speciesOptions);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const exactMatch = speciesOptions.find(
@@ -83,7 +85,7 @@ const AutocompleteSpeciesInput = ({
         <TextInput
           style={styles(theme)["autocomplete__input"]}
           value={query}
-          placeholder="Zacznij pisać aby wyświetlić podpowiedzi"
+          placeholder={t("components.ui.autocomplete.placeholder")}
           placeholderTextColor={Colors[theme].text}
           onChangeText={handleChange}
           onFocus={() => {

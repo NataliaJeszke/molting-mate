@@ -33,6 +33,7 @@ import {
 import { Spider } from "@/db/database";
 import { useSpidersStore } from "@/store/spidersStore";
 import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -44,6 +45,7 @@ export default function HomeScreen() {
   const fetchSpecies = useSpiderSpeciesStore(
     (state: any) => state.fetchSpecies,
   );
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchSpiders();
@@ -107,7 +109,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
           <View style={styles(currentTheme).fabItemLabel}>
             <ThemedText style={styles(currentTheme).fabItemText}>
-              Dodaj gatunek
+              {t("add-new-spp.core.add")}
             </ThemedText>
           </View>
         </Animated.View>
@@ -126,7 +128,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
           <View style={styles(currentTheme).fabItemLabel}>
             <ThemedText style={styles(currentTheme).fabItemText}>
-              Dodaj pająka
+              {t("spider-form.core.add")}
             </ThemedText>
           </View>
         </Animated.View>
