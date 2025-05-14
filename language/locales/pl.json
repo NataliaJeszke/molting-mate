@@ -26,7 +26,7 @@
     "save": "Zapisz",
     "cancel": "Anuluj",
     "core": {
-        "title": "Dodaj pająka"
+      "title": "Dodaj pająka"
     }
   },
   "favourites": {
@@ -106,17 +106,24 @@
   },
   "collection": {
     "core": {
-        "title": "Kolekcja",
-        "info": "Lista wszystkich pająków w twojej kolekcji.",
-        "add": "Dodaj pająka",
-        "no_favourites": "Brak ulubionych pająków.",
-        "back": "Wstecz"
+      "title": "Kolekcja",
+      "info": "Lista wszystkich pająków w twojej kolekcji.",
+      "add": "Dodaj pająka",
+      "no_favourites": "Brak ulubionych pająków.",
+      "back": "Wstecz"
     }
   },
   "post-feeding-list": {
     "title": "Pająki po terminie karmienia",
     "info": "Głodne pająki.",
     "status": "GŁODNY"
+  },
+  "upcoming-feeding-list": {
+    "title": "Zbliżające się karmienie",
+    "info": "Lista pająków do nakarmienia za 1–3 dni",
+    "status": "ZA {{i}} {{days}}",
+    "day": "dzień",
+    "days": "dni"
   },
   "components": {
     "ui": {

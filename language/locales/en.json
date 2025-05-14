@@ -105,17 +105,24 @@
   },
   "collection": {
     "core": {
-        "title": "Collection",
-        "info": "List of all spiders in your collection.",
-        "add": "Add spider",
-        "no_favourites": "No favourite spiders.",
-        "back": "Back"
+      "title": "Collection",
+      "info": "List of all spiders in your collection.",
+      "add": "Add spider",
+      "no_favourites": "No favourite spiders.",
+      "back": "Back"
     }
   },
   "post-feeding-list": {
     "title": "Post-feeding list",
     "info": "List of all spiders that haven't been fed.",
     "status": "HUNGRY"
+  },
+  "upcoming-feeding-list": {
+    "title": "Upcoming Feeding",
+    "info": "List of spiders to be fed in 1–3 days",
+    "status": "IN {{i}} {{days}}",
+    "day": "day",
+    "days": "days"
   },
   "components": {
     "ui": {

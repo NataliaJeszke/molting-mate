@@ -7,6 +7,7 @@ import { SpiderListItem } from "@/models/SpiderList.model";
 
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
 import { Spider } from "@/db/database";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface UpcomingFeedingListComponentProps {
   spiders: Spider[];
@@ -15,6 +16,8 @@ interface UpcomingFeedingListComponentProps {
 const UpcomingFeedingListComponent = ({
   spiders,
 }: UpcomingFeedingListComponentProps) => {
+  const { t } = useTranslation();
+
   const upcomingSpiders = useMemo(() => {
     const now = new Date();
 
@@ -35,12 +38,20 @@ const UpcomingFeedingListComponent = ({
 
         for (let i = 1; i <= 3; i++) {
           if (isSameDay(nextFeedingDate, addDays(now, i))) {
+            const statusTemplate = t("upcoming-feeding-list.status", {
+              i: i,
+              days:
+                i === 1
+                  ? t("upcoming-feeding-list.day")
+                  : t("upcoming-feeding-list.days"),
+            });
+
             return {
               id: spider.id,
               name: spider.name,
               date: spider.lastFed,
               imageUri: spider.imageUri,
-              status: `ZA ${i} ${i === 1 ? "DZIEŃ" : "DNI"}`,
+              status: statusTemplate,
             };
           }
         }
@@ -48,13 +59,14 @@ const UpcomingFeedingListComponent = ({
         return null;
       })
       .filter(Boolean) as SpiderListItem[];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spiders]);
 
   return (
     <SpiderList
-      title="Zbliające się karmienie"
+      title={t("upcoming-feeding-list.title")}
       data={upcomingSpiders}
-      info="Lista pająków do nakarmienia za 1–3 dni"
+      info={t("upcoming-feeding-list.info")}
     />
   );
 };
