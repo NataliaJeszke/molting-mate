@@ -37,6 +37,8 @@
   "searched": {
     "titlePrefix": "Search results for:",
     "titleDefault": "Search results",
+    "placeholder": "Search for spider",
+    "error": "Error, please try again",
     "back": "Back"
   },
   "add-new-spp": {

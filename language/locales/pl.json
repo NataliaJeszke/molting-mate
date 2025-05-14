@@ -37,6 +37,8 @@
   "searched": {
     "titlePrefix": "Wyniki wyszukiwania dla:",
     "titleDefault": "Wyniki wyszukiwania",
+    "placeholder": "Wyszukaj pająka",
+    "error": "Błąd, spróbuj ponownie",
     "back": "Wstecz"
   },
   "add-new-spp": {

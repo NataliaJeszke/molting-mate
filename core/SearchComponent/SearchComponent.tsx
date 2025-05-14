@@ -4,10 +4,12 @@ import { router } from "expo-router";
 
 import { useUserStore } from "@/store/userStore";
 import { Colors } from "@/constants/Colors";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const SearchComponent = () => {
   const [searchText, setSearchText] = useState("");
   const { currentTheme } = useUserStore();
+  const { t } = useTranslation();
 
   const isDarkMode = currentTheme === "dark";
   const searchBarColors = isDarkMode
@@ -23,14 +25,14 @@ const SearchComponent = () => {
     <View style={styles.container}>
       <TextInput
         style={[styles.input, searchBarColors]}
-        placeholder="Szukaj pająka..."
+        placeholder={t("searched.placeholder")}
         placeholderTextColor="#888"
         value={searchText}
         onChangeText={handleSearch}
         returnKeyType="search"
         onSubmitEditing={() => {
           if (searchText.trim() === "") {
-            Alert.alert("Błąd", "Wpisz coś, aby wyszukać.");
+            Alert.alert(t("searched.error"));
             return;
           }
 
