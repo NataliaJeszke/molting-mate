@@ -14,6 +14,7 @@ import { ViewTypes } from "@/constants/ViewTypes.enums";
 import { Spider, SpiderDetailType } from "@/db/database";
 import { ExtendedSpider } from "@/core/FeedingListComponent/FeedingListComponent";
 import { useSpidersStore } from "@/store/spidersStore";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type SpiderListProps = {
   data: SpiderDetailType[] | ExtendedSpider[];
@@ -26,6 +27,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
   );
   const { currentTheme } = useUserStore();
   const updateSpider = useSpidersStore((state: any) => state.updateSpider);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setSpiders(data);
@@ -51,12 +53,8 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
       setSpiders((prev: any) =>
         prev.map((s: any) => (s.id === spiderId ? updatedSpider : s)),
       );
-      console.log(`Zmieniono ulubiony status pająka ID ${spiderId}`);
     } catch (error) {
-      console.error(
-        "Błąd podczas zapisywania zmian ulubionych do bazy:",
-        error,
-      );
+      console.error("Error:", error);
     }
   };
 
@@ -152,7 +150,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                       <ThemedText
                         style={styles(currentTheme)["spider-list__info-label"]}
                       >
-                        Ostatnio nakarmiony:
+                        {t("spider-full-list.last_feeding")}:
                       </ThemedText>
                       {spider.status === FeedingStatus.HUNGRY &&
                         renderStatusIcon(spider)}
@@ -173,7 +171,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                               styles(currentTheme)["spider-list__info-label"]
                             }
                           >
-                            Następne karmienie:
+                            {t("spider-full-list.next_feeding")}:
                           </ThemedText>
                           {spider.status === FeedingStatus.FEED_TODAY &&
                             renderStatusIcon(spider)}
@@ -214,7 +212,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                               styles(currentTheme)["spider-list__edit-text"]
                             }
                           >
-                            Edytuj karmienie
+                            {t("spider-full-list.edit_feeding")}
                           </ThemedText>
                         </TouchableOpacity>
                       )}
@@ -227,7 +225,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                     <ThemedText
                       style={styles(currentTheme)["spider-list__info-label"]}
                     >
-                      Ostatnie linienie:
+                      {t("spider-full-list.last_molting")}:
                     </ThemedText>
                     <ThemedText
                       style={styles(currentTheme)["spider-list__info-date"]}
@@ -257,7 +255,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
                         <ThemedText
                           style={styles(currentTheme)["spider-list__edit-text"]}
                         >
-                          Edytuj linienie
+                          {t("spider-full-list.edit_molting")}
                         </ThemedText>
                       </TouchableOpacity>
                     )}

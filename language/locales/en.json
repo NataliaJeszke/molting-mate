@@ -197,10 +197,18 @@
     "info": "Molting list of your spiders"
   },
   "spider-full-list": {
-    "title": "Spider list",
-    "info": "List of all spiders in your collection.",
-    "add": "Add spider",
-    "no_favourites": "No favourite spiders.",
+    "last_feeding": "Last fed",
+    "next_feeding": "Next feeding",
+    "edit_feeding": "Edit feeding",
+    "last_molting": "Last molt",
+    "edit_molting": "Edit molt",
+    "species": "Species",
+    "age": "Age",
+    "weight": "Weight",
+    "individual_type": "Sex",
+    "notes": "Notes",
+    "no_spiders_found": "No spiders found.",
+    "no_spiders": "No spiders on the list.",
     "back": "Back"
   },
   "components": {

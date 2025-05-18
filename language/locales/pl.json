@@ -214,51 +214,19 @@
     "info": "Lista pająków według linienia"
   },
   "spider-full-list": {
-    "choose_image": {
-      "alert": {
-        "permission": {
-          "denied": "Odmowa dostępu"
-        },
-        "choose_option": {
-          "title": "Wybierz opcję",
-          "info": "Chcesz zrobić zdjęcie czy wybrać z galerii?"
-        },
-        "camera": {
-          "title": "Zrób zdjęcie"
-        },
-        "gallery": {
-          "title": "Wybierz z galerii"
-        }
-      }
-    },
-    "choose_document": {
-      "alert": {
-        "choose_source": {
-          "title": "Wybierz źródło",
-          "info": "Dołącz dokument pochodzenia"
-        },
-        "camera": {
-          "title": "Zrób zdjęcie"
-        },
-        "gallery": {
-          "title": "Wybierz z galerii"
-        },
-        "permission": {
-          "denied": "Odmowa dostępu"
-        },
-        "cancel": "Anuluj"
-      }
-    },
-    "submit": {
-      "alert": {
-        "error_species": "Nie udało się dodać nowgo gatunku",
-        "error_validation": "Błąd walidacji",
-        "error_validation_sub": "Uzupełnij wszystkie pola.",
-        "success": "Sukces",
-        "success_sub": "Zaktualizowano pająka o imieniu:",
-        "success_sub_add": "Dodano pająka o imieniu:"
-      }
-    }
+    "last_feeding": "Ostatnio nakarmiony",
+    "next_feeding": "Następne karmienie",
+    "edit_feeding": "Edytuj karmienie",
+    "last_molting": "Ostatnie linienie",
+    "edit_molting": "Edytuj linienie",
+    "species": "Gatunek",
+    "age": "Wiek",
+    "weight": "Waga",
+    "individual_type": "Płeć",
+    "notes": "Notatki",
+    "no_spiders_found": "Nie znaleziono pająków.",
+    "no_spiders": "Brak pająków na liście.",
+    "back": "Wstecz"
   },
   "components": {
     "ui": {
