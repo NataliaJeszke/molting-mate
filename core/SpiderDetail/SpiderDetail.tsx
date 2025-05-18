@@ -36,19 +36,19 @@ const SpiderDetails = ({ spiderId }: Props) => {
 
   const getSpiderById = useSpidersStore((state: any) => state.getSpiderById);
   const addDocumentToSpider = useSpidersStore(
-    (state: any) => state.addDocumentToSpider,
+    (state: any) => state.addDocumentToSpider
   );
   const deleteDocument = useSpidersStore(
-    (state: any) => state.deleteSpiderDocument,
+    (state: any) => state.deleteSpiderDocument
   );
   const [showFeedingHistory, setShowFeedingHistory] = useState(false);
   const [showMoltingHistory, setShowMoltingHistory] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
   const [feedingHistoryData, setFeedingHistoryData] = useState<any[] | null>(
-    null,
+    null
   );
   const [moltingHistoryData, setMoltingHistoryData] = useState<any[] | null>(
-    null,
+    null
   );
   const [documentsData, setDocumentsData] = useState<any[] | null>(null);
   const [spiderData, setSpiderData] = useState<SpiderDetailType | null>(null);
@@ -71,7 +71,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
       fetchData();
 
       return;
-    }, []),
+    }, [])
   );
 
   const nextFeedingDate = spiderData
@@ -147,8 +147,8 @@ const SpiderDetails = ({ spiderId }: Props) => {
             if (permission.status !== "granted") {
               Alert.alert(
                 t(
-                  "spider-detail.handle-choose-document.alert.permission.denied",
-                ),
+                  "spider-detail.handle-choose-document.alert.permission.denied"
+                )
               );
               return;
             }
@@ -175,8 +175,8 @@ const SpiderDetails = ({ spiderId }: Props) => {
             if (permission.status !== "granted") {
               Alert.alert(
                 t(
-                  "spider-detail.handle-choose-document.alert.permission.denied",
-                ),
+                  "spider-detail.handle-choose-document.alert.permission.denied"
+                )
               );
               return;
             }
@@ -199,7 +199,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
           text: t("spider-detail.handle-choose-document.alert.cancel"),
           style: "cancel",
         },
-      ],
+      ]
     );
   };
 
@@ -227,12 +227,12 @@ const SpiderDetails = ({ spiderId }: Props) => {
             } else {
               Alert.alert(
                 t("spider-detail.handle-choose-document.alert.error"),
-                t("spider-detail.handle-choose-document.alert.error_info"),
+                t("spider-detail.handle-choose-document.alert.error_info")
               );
             }
           },
         },
-      ],
+      ]
     );
   };
 
@@ -279,7 +279,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
               style={styles(currentTheme).basicInfoCard__icon}
             />
             <ThemedText style={styles(currentTheme).basicInfoCard__title}>
-              Podstawowe informacje
+              {t("spider-detail.basic_info.title")}
             </ThemedText>
           </View>
         </View>
@@ -289,7 +289,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
             <View style={styles(currentTheme).basicInfoCard__label}>
               {getIndividualTypeIcon(spiderData?.individualType)}
               <ThemedText style={styles(currentTheme).basicInfoCard__labelText}>
-                Płeć:
+                {t("spider-detail.basic_info.individual_type")}
               </ThemedText>
             </View>
             <ThemedText style={styles(currentTheme).basicInfoCard__value}>
@@ -305,11 +305,12 @@ const SpiderDetails = ({ spiderId }: Props) => {
                 style={styles(currentTheme).basicInfoCard__icon}
               />
               <ThemedText style={styles(currentTheme).basicInfoCard__labelText}>
-                Wiek:
+                {t("spider-detail.basic_info.age")}
               </ThemedText>
             </View>
             <ThemedText style={styles(currentTheme).basicInfoCard__value}>
-              L{spiderData?.age}
+              {t("spider-detail.basic_info.l")}
+              {spiderData?.age}
             </ThemedText>
           </View>
         </View>
@@ -326,7 +327,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
               style={styles(currentTheme).feedingCard__icon}
             />
             <ThemedText style={styles(currentTheme).feedingCard__title}>
-              Informacje o karmieniu
+              {t("spider-detail.feeding_info.title")}
             </ThemedText>
           </View>
         </View>
@@ -340,7 +341,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
                 color={Colors[currentTheme].text}
               />
               <ThemedText style={styles(currentTheme).feedingCard__labelText}>
-                Ostatnie karmienie:
+                {t("spider-detail.feeding_info.last_feeding")}
               </ThemedText>
             </View>
             <ThemedText style={styles(currentTheme).feedingCard__value}>
@@ -356,7 +357,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
                 color={Colors[currentTheme].text}
               />
               <ThemedText style={styles(currentTheme).feedingCard__labelText}>
-                Następne karmienie:
+                {t("spider-detail.feeding_info.next_feeding")}
               </ThemedText>
             </View>
             <ThemedText style={styles(currentTheme).feedingCard__value}>
@@ -372,7 +373,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
                 color={Colors[currentTheme].text}
               />
               <ThemedText style={styles(currentTheme).feedingCard__labelText}>
-                Głodny?
+                {t("spider-detail.feeding_info.hungry")}
               </ThemedText>
             </View>
             <TouchableOpacity onPress={handleNavigateAndFetchData}>
@@ -382,7 +383,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
                   {
                     backgroundColor: getFeedingStatusColor(
                       feedingStatus,
-                      currentTheme,
+                      currentTheme
                     ),
                   },
                 ]}
@@ -409,7 +410,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
               style={styles(currentTheme).moltingCard__icon}
             />
             <ThemedText style={styles(currentTheme).moltingCard__title}>
-              Informacje o linieniu
+              {t("spider-detail.molting_info.title")}
             </ThemedText>
           </View>
         </View>
@@ -423,7 +424,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
                 color={Colors[currentTheme].text}
               />
               <ThemedText style={styles(currentTheme).moltingCard__labelText}>
-                Ostatnie linienie:
+                {t("spider-detail.molting_info.last_molting")}
               </ThemedText>
             </View>
             <ThemedText style={styles(currentTheme).moltingCard__value}>
@@ -447,7 +448,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
                 <ThemedText
                   style={styles(currentTheme).moltingCard__addBadgeText}
                 >
-                  Dodaj linienie
+                  {t("spider-detail.molting_info.add_molting")}
                 </ThemedText>
               </View>
             </TouchableOpacity>
@@ -457,27 +458,27 @@ const SpiderDetails = ({ spiderId }: Props) => {
 
       {/* Feeding History Card */}
       <HistoryInformation
-        title="Historia karmienia"
+        title={t("spider-detail.feeding_history.title")}
         iconName="list"
         data={feedingHistoryData ? feedingHistoryData : []}
         isExpanded={showFeedingHistory}
         toggleExpanded={() => setShowFeedingHistory(!showFeedingHistory)}
         currentTheme={currentTheme}
         styles={styles}
-        emptyText="Brak historii karmienia"
+        emptyText={t("spider-detail.feeding_history.empty")}
         typeKey="feeding"
       />
 
       {/* Molting History Card */}
       <HistoryInformation
-        title="Historia linienia"
+        title={t("spider-detail.molting_history.title")}
         iconName="repeat"
         data={moltingHistoryData ? moltingHistoryData : []}
         isExpanded={showMoltingHistory}
         toggleExpanded={() => setShowMoltingHistory(!showMoltingHistory)}
         currentTheme={currentTheme}
         styles={styles}
-        emptyText="Brak historii linienia"
+        emptyText={t("spider-detail.molting_history.empty")}
         typeKey="molting"
       />
 
