@@ -338,6 +338,15 @@
           "cancel": "Anuluj",
           "confirm": "Zapisz"
         }
+      },
+      "spider-document": {
+        "title": "Dokumentacja",
+        "no_document": "Brak dokumentu. Kliknij plus, aby dodać.",
+        "info": "Obsługiwane są tylko obrazy jako dokumenty",
+        "button": {
+          "view": "Podgląd",
+          "remove": "Usuń"
+        }
       }
     }
   },

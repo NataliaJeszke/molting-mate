@@ -10,6 +10,7 @@ import { Feather } from "@expo/vector-icons";
 import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface SpiderDocumentProps {
   documentUris: { document_uri: string; id: string }[];
@@ -35,6 +36,7 @@ const SpiderDocument = ({
   const [selectedDocumentUri, setSelectedDocumentUri] = useState<string | null>(
     null,
   );
+  const { t } = useTranslation();
 
   const openPreview = (uri: string) => {
     setSelectedDocumentUri(uri);
@@ -51,7 +53,7 @@ const SpiderDocument = ({
             color={Colors[currentTheme].text}
           />
           <ThemedText style={styles(currentTheme).documentCard__noDocumentText}>
-            Brak dokumentu. Kliknij plus, aby dodać.
+          {t("components.commons.spider-document.no-document")}
           </ThemedText>
         </View>
       );
@@ -81,7 +83,7 @@ const SpiderDocument = ({
               <ThemedText
                 style={styles(currentTheme).documentCard__noDocumentText}
               >
-                Obsługiwane są tylko obrazy jako dokumenty.
+                {t("components.commons.spider-document.info")}
               </ThemedText>
             </View>
           )}
@@ -93,7 +95,7 @@ const SpiderDocument = ({
             >
               <Feather name="eye" size={16} color={Colors[currentTheme].text} />
               <ThemedText style={styles(currentTheme).documentCard__buttonText}>
-                Podgląd
+              {t("components.commons.spider-document.button.view")}
               </ThemedText>
             </TouchableOpacity>
 
@@ -109,7 +111,7 @@ const SpiderDocument = ({
               <ThemedText
                 style={styles(currentTheme).documentCard__removeButtonText}
               >
-                Usuń
+                {t("components.commons.spider-document.button.remove")}
               </ThemedText>
             </TouchableOpacity>
           </View>
@@ -130,7 +132,7 @@ const SpiderDocument = ({
                 style={styles(currentTheme).documentCard__icon}
               />
               <ThemedText style={styles(currentTheme).documentCard__title}>
-                Dokumentacja
+                {t("components.commons.spider-document.title")}
               </ThemedText>
             </View>
             <TouchableOpacity

@@ -337,6 +337,15 @@
           "cancel": "Cancel",
           "confirm": "Save"
         }
+      },
+      "spider-document": {
+        "title": "Documentation",
+        "no_document": "No document. Click plus to add.",
+        "info": "Only images are supported as documents",
+        "button": {
+          "view": "Preview",
+          "remove": "Remove"
+        }
       }
     }
   },
