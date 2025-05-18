@@ -25,7 +25,9 @@
       "unknown": "Brak informacji"
     },
     "individual_type_status": {
-      "unknown": "Niezidefiniowany"
+      "unknown": "Niezidefiniowany",
+      "male": "samiec",
+      "female": "samica"
     },
     "handle-choose-document": {
       "alert": {

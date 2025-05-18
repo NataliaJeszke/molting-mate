@@ -25,7 +25,9 @@
       "unknown": "No information"
     },
     "individual_type_status": {
-      "unknown": "No data"
+      "unknown": "No data",
+      "male": "male",
+      "female": "female"
     },
     "handle-choose-document": {
       "alert": {

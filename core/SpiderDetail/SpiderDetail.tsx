@@ -18,6 +18,9 @@ import { ViewTypes } from "@/constants/ViewTypes.enums";
 import { router, useFocusEffect } from "expo-router";
 import { SpiderDetailType } from "@/db/database";
 import { useFeedingStatusLabel } from "@/hooks/useFeedingStatusLabel";
+import { useTranslation } from "@/hooks/useTranslation";
+import { IndividualType } from "@/constants/IndividualType.enums";
+import { useIndividualTypeLabel } from "@/hooks/useIndividualTypeTranslation";
 
 interface Props {
   spiderId: string | string[] | undefined;
@@ -26,6 +29,8 @@ interface Props {
 const SpiderDetails = ({ spiderId }: Props) => {
   console.log("spiderId", spiderId);
   const { currentTheme } = useUserStore();
+  const { t } = useTranslation();
+
   const getSpiderById = useSpidersStore((state: any) => state.getSpiderById);
   const addDocumentToSpider = useSpidersStore(
     (state: any) => state.addDocumentToSpider,
@@ -33,7 +38,6 @@ const SpiderDetails = ({ spiderId }: Props) => {
   const deleteDocument = useSpidersStore(
     (state: any) => state.deleteSpiderDocument,
   );
-  const getFeedingStatusLabel = useFeedingStatusLabel();
   const [showFeedingHistory, setShowFeedingHistory] = useState(false);
   const [showMoltingHistory, setShowMoltingHistory] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
@@ -45,6 +49,9 @@ const SpiderDetails = ({ spiderId }: Props) => {
   );
   const [documentsData, setDocumentsData] = useState<any[] | null>(null);
   const [spiderData, setSpiderData] = useState<SpiderDetailType | null>(null);
+
+  const getFeedingStatusLabel = useFeedingStatusLabel();
+  const getIndividualTypeLabel = useIndividualTypeLabel();
 
   useFocusEffect(
     useCallback(() => {
@@ -74,19 +81,6 @@ const SpiderDetails = ({ spiderId }: Props) => {
     ? getFeedingStatus(spiderData.lastFed, spiderData.feedingFrequency)
     : null;
 
-  // const getFeedingStatusLabel = (status: FeedingStatus | null) => {
-  //   switch (status) {
-  //     case FeedingStatus.HUNGRY:
-  //       return "Tak";
-  //     case FeedingStatus.FEED_TODAY:
-  //       return "Tak (karmienie dzisiaj)";
-  //     case FeedingStatus.NOT_HUNGRY:
-  //       return "Nie";
-  //     default:
-  //       return "Brak danych";
-  //   }
-  // };
-
   const getFeedingStatusColor = (status: FeedingStatus | null) => {
     switch (status) {
       case FeedingStatus.HUNGRY:
@@ -102,7 +96,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
 
   const getIndividualTypeIcon = (type: string | undefined) => {
     switch (type) {
-      case "Samiec":
+      case IndividualType.Male:
         return (
           <FontAwesome
             name="mars"
@@ -110,7 +104,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
             color={Colors[currentTheme].text}
           />
         );
-      case "Samica":
+      case IndividualType.Female:
         return (
           <FontAwesome
             name="venus"
@@ -129,9 +123,9 @@ const SpiderDetails = ({ spiderId }: Props) => {
     }
   };
 
-  const getIndividualTypeLabel = (type: string | undefined) => {
-    return type || "Niezidentyfikowany";
-  };
+  // const getIndividualTypeLabel = (type: string | undefined) => {
+  //   return type || "Niezidentyfikowany";
+  // };
 
   const isImageDocument = (uri: string | undefined) => {
     if (!uri) return false;
