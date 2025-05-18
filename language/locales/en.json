@@ -258,6 +258,21 @@
           "cancel": "Cancel",
           "delete": "Delete"
         }
+      },
+      "modal-update": {
+        "feeding_title": "Feeding",
+        "feeding_message": "Time to feed the spider?",
+        "feeding_date": "Feeding date",
+        "molting_title": "Molting",
+        "molting_message": "Did the spider molt?",
+        "molting_date": "Molting date",
+        "age": "Age L",
+        "age_placeholder": "1",
+        "unknown": "Unknown type:",
+        "button": {
+          "cancel": "Cancel",
+          "confirm": "Save"
+        }
       }
     }
   },

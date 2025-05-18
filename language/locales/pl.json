@@ -259,6 +259,21 @@
           "cancel": "Anuluj",
           "delete": "Usuń"
         }
+      },
+      "modal-update": {
+        "feeding_title": "Karmienie",
+        "feeding_message": "Czas nakarmić pająka?",
+        "feeding_date": "Data karmienia",
+        "molting_title": "Linienie",
+        "molting_message": "Czy pająk liniał?",
+        "molting_date": "Data linienia",
+        "age": "Wiek L",
+        "age_placeholder": "1",
+        "unknown": "Nieznany typ:",
+        "button": {
+          "cancel": "Anuluj",
+          "confirm": "Zapisz"
+        }
       }
     }
   },

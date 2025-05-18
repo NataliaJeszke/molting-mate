@@ -16,12 +16,12 @@ import { BlurView } from "expo-blur";
 import { useSpidersStore } from "@/store/spidersStore";
 import { useUserStore } from "@/store/userStore";
 
-import { ensureLatestDate, sortDateStrings } from "@/utils/dateUtils";
 import { Colors, ThemeType } from "@/constants/Colors";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
 import { Spider } from "@/db/database";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type ModalUpdateProps = {
   isVisible: boolean;
@@ -30,6 +30,7 @@ type ModalUpdateProps = {
 
 const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   const { id, type } = useLocalSearchParams();
+  const { t } = useTranslation();
   const { currentTheme } = useUserStore();
   const updateSpider = useSpidersStore((state: any) => state.updateSpider);
   const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
@@ -69,7 +70,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
           try {
             await updateSpider(updatedSpider);
           } catch (error) {
-            console.error("Błąd podczas zapisywania zmian do bazy:", error);
+            console.error("Error during saving to database:", error);
           }
         } else if (type === "molting") {
           const updatedSpider = {
@@ -80,7 +81,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
           try {
             await updateSpider(updatedSpider);
           } catch (error) {
-            console.error("Błąd podczas zapisywania zmian do bazy:", error);
+            console.error("Error during saving to database:", error);
           }
         }
       }
@@ -109,18 +110,18 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
         return (
           <>
             <ThemedText type="title" style={styles(currentTheme).modal__title}>
-              Karmienie
+              {t("components.commons.modal-update.feeding_title")}
             </ThemedText>
             <ThemedText
               type="subtitle"
               style={styles(currentTheme).modal__subtitle}
             >
-              Czy nakarmiłeś pająka?
+              {t("components.commons.modal-update.feeding_message")}
             </ThemedText>
 
             <View style={styles(currentTheme).dateContainer}>
               <ThemedText style={styles(currentTheme).dateContainer__label}>
-                Wybierz datę karmienia:
+                {t("components.commons.modal-update.feeding_date")}:
               </ThemedText>
               <TouchableOpacity
                 style={styles(currentTheme).dateContainer__button}
@@ -140,18 +141,18 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
         return (
           <>
             <ThemedText type="title" style={styles(currentTheme).modal__title}>
-              Linienie
+              {t("components.commons.modal-update.molting_title")}
             </ThemedText>
             <ThemedText
               type="subtitle"
               style={styles(currentTheme).modal__subtitle}
             >
-              Czy pająk przeszedł linienie?
+              {t("components.commons.modal-update.molting_message")}
             </ThemedText>
 
             <View style={styles(currentTheme).dateContainer}>
               <ThemedText style={styles(currentTheme).dateContainer__label}>
-                Wybierz datę linienia:
+                {t("components.commons.modal-update.molting_date")}:
               </ThemedText>
               <TouchableOpacity
                 style={styles(currentTheme).dateContainer__button}
@@ -167,14 +168,16 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
             </View>
             <View style={styles(currentTheme).ageInput}>
               <ThemedText style={styles(currentTheme).ageInput__label}>
-                Wiek "L"
+                {t("components.commons.modal-update.age")}:
               </ThemedText>
               <TextInput
                 value={age?.toString()}
                 onChangeText={(text) => setAge(+text)}
                 keyboardType="numeric"
                 style={styles(currentTheme).ageInput__field}
-                placeholder="0"
+                placeholder={t(
+                  "components.commons.modal-update.age_placeholder",
+                )}
               />
             </View>
           </>
@@ -182,7 +185,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
       default:
         return (
           <ThemedText style={styles(currentTheme).modal__subtitle}>
-            Nieznany typ: {type}
+            {t("components.commons.modal-update.unknown")}: {type}
           </ThemedText>
         );
     }
@@ -234,7 +237,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
                 <ThemedText
                   style={styles(currentTheme).buttonContainer__cancelButtonText}
                 >
-                  Anuluj
+                  {t("components.commons.modal-update.button.cancel")}:
                 </ThemedText>
               </TouchableOpacity>
               <TouchableOpacity
@@ -247,7 +250,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
                     styles(currentTheme).buttonContainer__confirmButtonText
                   }
                 >
-                  Zatwierdź
+                  {t("components.commons.modal-update.button.confirm")}
                 </ThemedText>
               </TouchableOpacity>
             </View>
