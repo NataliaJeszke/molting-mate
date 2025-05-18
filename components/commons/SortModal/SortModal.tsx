@@ -41,6 +41,8 @@ export const SortModal = ({
       setSortType("lastMolt");
     } else if (viewType === "feeding" && !sortType) {
       setSortType("lastFed");
+    } else if (viewType === "collection" && !sortType) {
+      setSortType("lastMolt");
     }
   }, [viewType, sortType, setSortType]);
 
@@ -165,6 +167,80 @@ export const SortModal = ({
                     {t("components.commons.sort-modal.next_feeding")}
                   </ThemedText>
                   {sortType === "nextFeedingDate" && (
+                    <View style={styles(currentTheme).sortModal__checkmark}>
+                      <ThemedText
+                        style={styles(currentTheme).sortModal__checkmarkText}
+                      >
+                        ✓
+                      </ThemedText>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              </>
+            )}
+
+            {viewType === "collection" && (
+              <>
+                <TouchableOpacity
+                  style={[
+                    styles(currentTheme).sortModal__option,
+                    sortType === "lastMolt"
+                      ? styles(currentTheme)["sortModal__option--selected"]
+                      : styles(currentTheme)["sortModal__option--unselected"],
+                  ]}
+                  onPress={() => {
+                    setSortType("lastMolt");
+                  }}
+                >
+                  <ThemedText
+                    style={
+                      sortType === "lastMolt"
+                        ? styles(currentTheme)[
+                            "sortModal__option-text--selected"
+                          ]
+                        : styles(currentTheme)[
+                            "sortModal__option-text--unselected"
+                          ]
+                    }
+                  >
+                    {t("components.commons.sort-modal.last_molting")}
+                  </ThemedText>
+                  {sortType === "lastMolt" && (
+                    <View style={styles(currentTheme).sortModal__checkmark}>
+                      <ThemedText
+                        style={styles(currentTheme).sortModal__checkmarkText}
+                      >
+                        ✓
+                      </ThemedText>
+                    </View>
+                  )}
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    styles(currentTheme).sortModal__option,
+                    sortType === "lastFed"
+                      ? styles(currentTheme)["sortModal__option--selected"]
+                      : styles(currentTheme)["sortModal__option--unselected"],
+                  ]}
+                  onPress={() => {
+                    setSortType("lastFed");
+                  }}
+                >
+                  <ThemedText
+                    style={
+                      sortType === "lastFed"
+                        ? styles(currentTheme)[
+                            "sortModal__option-text--selected"
+                          ]
+                        : styles(currentTheme)[
+                            "sortModal__option-text--unselected"
+                          ]
+                    }
+                  >
+                    {t("components.commons.sort-modal.last_feeding")}
+                  </ThemedText>
+                  {sortType === "lastFed" && (
                     <View style={styles(currentTheme).sortModal__checkmark}>
                       <ThemedText
                         style={styles(currentTheme).sortModal__checkmarkText}

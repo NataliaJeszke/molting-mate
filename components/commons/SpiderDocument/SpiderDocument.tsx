@@ -53,7 +53,7 @@ const SpiderDocument = ({
             color={Colors[currentTheme].text}
           />
           <ThemedText style={styles(currentTheme).documentCard__noDocumentText}>
-          {t("components.commons.spider-document.no-document")}
+            {t("components.commons.spider-document.no-document")}
           </ThemedText>
         </View>
       );
@@ -95,7 +95,7 @@ const SpiderDocument = ({
             >
               <Feather name="eye" size={16} color={Colors[currentTheme].text} />
               <ThemedText style={styles(currentTheme).documentCard__buttonText}>
-              {t("components.commons.spider-document.button.view")}
+                {t("components.commons.spider-document.button.view")}
               </ThemedText>
             </TouchableOpacity>
 
