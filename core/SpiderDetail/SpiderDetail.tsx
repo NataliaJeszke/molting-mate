@@ -58,8 +58,6 @@ const SpiderDetails = ({ spiderId }: Props) => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("Modal zamknięty – odśwież dane tutaj 1");
-
       const fetchData = async () => {
         const data = await getSpiderById(spiderId);
         console.log("pokaz dane", data);
@@ -137,76 +135,88 @@ const SpiderDetails = ({ spiderId }: Props) => {
       setDocumentsData(documents);
     };
 
-    Alert.alert("Wybierz źródło", "Dołącz dokument pochodzenia", [
-      {
-        text: "Zrób zdjęcie",
-        onPress: async () => {
-          const permission = await ImagePicker.requestCameraPermissionsAsync();
-          if (permission.status !== "granted") {
-            Alert.alert("Brak uprawnień", "Nie masz dostępu do kamery.");
-            return;
-          }
-
-          const result = await ImagePicker.launchCameraAsync({
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-          });
-
-          if (!result.canceled) {
-            const uri = result.assets[0].uri;
-            if (spiderData) {
-              await handleAddDocument(spiderData.id, uri);
+    Alert.alert(
+      t("spider-detail.handle-choose-document.alert.choose_source.title"),
+      t("spider-detail.handle-choose-document.alert.choose_source.info"),
+      [
+        {
+          text: t("spider-detail.handle-choose-document.alert.camera.title"),
+          onPress: async () => {
+            const permission =
+              await ImagePicker.requestCameraPermissionsAsync();
+            if (permission.status !== "granted") {
+              Alert.alert(
+                t(
+                  "spider-detail.handle-choose-document.alert.permission.denied",
+                ),
+              );
+              return;
             }
-          }
-        },
-      },
-      {
-        text: "Wybierz z galerii",
-        onPress: async () => {
-          const permission =
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
-          if (permission.status !== "granted") {
-            Alert.alert("Brak uprawnień", "Nie masz dostępu do galerii.");
-            return;
-          }
 
-          const result = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-          });
+            const result = await ImagePicker.launchCameraAsync({
+              allowsEditing: true,
+              aspect: [1, 1],
+              quality: 1,
+            });
 
-          if (!result.canceled) {
-            const uri = result.assets[0].uri;
-            if (spiderData) {
-              await handleAddDocument(spiderData.id, uri);
+            if (!result.canceled) {
+              const uri = result.assets[0].uri;
+              if (spiderData) {
+                await handleAddDocument(spiderData.id, uri);
+              }
             }
-          }
+          },
         },
-      },
-      {
-        text: "Anuluj",
-        style: "cancel",
-      },
-    ]);
+        {
+          text: t("spider-detail.handle-choose-document.alert.gallery.title"),
+          onPress: async () => {
+            const permission =
+              await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (permission.status !== "granted") {
+              Alert.alert(
+                t(
+                  "spider-detail.handle-choose-document.alert.permission.denied",
+                ),
+              );
+              return;
+            }
+
+            const result = await ImagePicker.launchImageLibraryAsync({
+              allowsEditing: true,
+              aspect: [1, 1],
+              quality: 1,
+            });
+
+            if (!result.canceled) {
+              const uri = result.assets[0].uri;
+              if (spiderData) {
+                await handleAddDocument(spiderData.id, uri);
+              }
+            }
+          },
+        },
+        {
+          text: t("spider-detail.handle-choose-document.alert.cancel"),
+          style: "cancel",
+        },
+      ],
+    );
   };
 
   const handleRemoveDocument = (docId: string) => {
     Alert.alert(
-      "Usuń dokument",
-      "Czy na pewno chcesz usunąć dokument pochodzenia?",
+      t("spider-detail.handle-remove-document.alert.title"),
+      t("spider-detail.handle-remove-document.alert.message"),
       [
         {
-          text: "Anuluj",
+          text: t("spider-detail.handle-remove-document.alert.cancel"),
           style: "cancel",
         },
         {
-          text: "Usuń",
+          text: t("spider-detail.handle-remove-document.alert.delete"),
           style: "destructive",
           onPress: async () => {
             const { success } = await deleteDocument(docId);
-            console.log("success", success);
 
             if (success && spiderData) {
               const data = await getSpiderById(spiderData.id);
@@ -215,7 +225,10 @@ const SpiderDetails = ({ spiderId }: Props) => {
               const { documents } = data;
               setDocumentsData(documents);
             } else {
-              Alert.alert("Błąd", "Nie udało się usunąć dokumentu.");
+              Alert.alert(
+                t("spider-detail.handle-choose-document.alert.error"),
+                t("spider-detail.handle-choose-document.alert.error_info"),
+              );
             }
           },
         },
