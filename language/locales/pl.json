@@ -21,88 +21,72 @@
   },
   "spider-form": {
     "title": "Dodaj pająka do kolekcji",
-    "name": "Nazwa",
+    "handle-submit": {
+      "alert": {
+        "error_species": "Nie udało się dodać nowego gatunku",
+        "error_validation": "Błąd walidacji",
+        "error_validation_sub": "Proszę uzupełnić wszystkie pola.",
+        "success": "Sukces",
+        "success_sub": "Zaktualizowano pająka o imieniu:",
+        "success_sub_add": "Dodano pająka o imieniu:"
+      }
+    },
+    "handle-choose-image": {
+      "alert": {
+        "permission": {
+          "denied": "Odmowa dostępu"
+        },
+        "choose_option": {
+          "title": "Wybierz opcję",
+          "info": "Chcesz zrobić zdjęcie czy wybrać z galerii?"
+        },
+        "camera": {
+          "title": "Zrób zdjęcie"
+        },
+        "gallery": {
+          "title": "Wybierz z galerii"
+        }
+      }
+    },
+    "handle-choose-document": {
+      "alert": {
+        "choose_source": {
+          "title": "Wybierz źródło",
+          "info": "Dołącz dokument pochodzenia"
+        },
+        "camera": {
+          "title": "Zrób zdjęcie"
+        },
+        "gallery": {
+          "title": "Wybierz z galerii"
+        },
+        "permission": {
+          "denied": "Odmowa dostępu"
+        },
+        "cancel": "Anuluj"
+      }
+    },
+    "title_form": "Uzupełnij informacje o pająku",
+    "photo": "Zdjęcie pająka",
+    "name": "Imię",
+    "name_placeholder": "Zyzio",
+    "age": "Wiek 'L'",
+    "age_placeholder": "1",
     "species": "Gatunek",
-    "age": "Wiek",
-    "weight": "Waga",
-    "feeding_date": "Data karmienia",
-    "molting_date": "Data linienia",
-    "notes": "Notatki",
+    "individual_type": "Płeć",
+    "date_last_feeding": "Data ostatniego karmienia",
+    "date_last_feeding_placeholder": "Wybierz datę",
+    "date_last_molting": "Data ostatniego linienia",
+    "date_last_molting_placeholder": "Wybierz datę",
+    "feeding_frequency": "Częstotliwość karmienia",
+    "spider_documents": "Dokument pochodzenia pająka (zdjęcie)",
+    "document_added": "Dokument dodany",
+    "document_not_added": "Wybierz dokument",
     "save": "Zapisz",
     "cancel": "Anuluj",
     "core": {
       "title": "Dodaj pająka",
       "add": "Dodaj pająka"
-    },
-    "spider-form": {
-      "title": "Dodaj pająka do kolekcji",
-      "choose_image": {
-        "alert": {
-          "permission": {
-            "denied": "Odmowa dostępu"
-          },
-          "choose_option": {
-            "title": "Wybierz opcję",
-            "info": "Chcesz zrobić zdjęcie czy wybrać z galerii?"
-          },
-          "camera": {
-            "title": "Zrób zdjęcie"
-          },
-          "gallery": {
-            "title": "Wybierz z galerii"
-          }
-        }
-      },
-      "choose_document": {
-        "alert": {
-          "choose_source": {
-            "title": "Wybierz źródło",
-            "info": "Dołącz dokument pochodzenia"
-          },
-          "camera": {
-            "title": "Zrób zdjęcie"
-          },
-          "gallery": {
-            "title": "Wybierz z galerii"
-          },
-          "permission": {
-            "denied": "Odmowa dostępu"
-          },
-          "cancel": "Anuluj"
-        }
-      },
-      "submit": {
-        "alert": {
-          "error_species": "Nie udało się dodać nowego gatunku",
-          "error_validation": "Błąd walidacji",
-          "error_validation_sub": "Uzupełnij wszystkie pola.",
-          "success": "Sukces",
-          "success_sub": "Zaktualizowano pająka o imieniu:",
-          "success_sub_add": "Dodano pająka o imieniu:"
-        }
-      },
-      "title_form": "Uzupełnij informacje o pająku",
-      "photo": "Zdjęcie pająka",
-      "name": "Imię",
-      "name_placeholder": "Zyzio",
-      "age": "Wiek 'L'",
-      "age_placeholder": "1",
-      "species": "Gatunek",
-      "individual_type": "Płeć",
-      "date_last_feeding": "Data ostatniego karmienia",
-      "date_last_feeding_placeholder": "Wybierz datę",
-      "date_last_molting": "Data ostatniego linienia",
-      "date_last_molting_placeholder": "Wybierz datę",
-      "feeding_frequency": "Częstotliwość karmienia",
-      "spider_documents": "Dokument pochodzenia pająka (zdjęcie)",
-      "document_added": "Dodano dokument",
-      "document_not_added": "Wybierz dokument",
-      "save": "Zapisz",
-      "cancel": "Anuluj",
-      "core": {
-        "title": "Dodaj pająka",
-        "add": "Dodaj pająka"
-      }
     }
   },
   "favourites": {
@@ -273,5 +257,12 @@
     "male": "Samiec",
     "female": "Samica",
     "unknown": "Niezidefiniowany"
+  },
+  "feeding-frequency": {
+    "few_times_week": "Kilka razy w tygodniu",
+    "once_week": "Raz w tygodniu",
+    "once_two_weeks": "Raz na dwa tygodnie",
+    "once_month": "Raz w miesiącu",
+    "rarely": "Rzadziej"
   }
 }

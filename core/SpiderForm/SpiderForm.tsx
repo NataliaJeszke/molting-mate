@@ -16,24 +16,8 @@ import { parse } from "date-fns";
 
 import { useUserStore } from "@/store/userStore";
 import { useSpidersStore } from "@/store/spidersStore";
-
-import { useTranslation } from "@/hooks/useTranslation";
-
-import { Colors, ThemeType } from "@/constants/Colors";
-import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
-import {
-  feedingFrequencyOptions,
-  individualTypeOptions,
-} from "./SpiderForm.constants";
-import { IndividualType } from "@/constants/IndividualType.enums";
-
-import CardComponent from "@/components/ui/CardComponent";
-import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
-import AutocompleteSpeciesInput from "@/components/ui/AutocompleteSpeciesInput";
-import { ThemedText } from "@/components/ui/ThemedText";
-
-import SpiderImage from "@/components/commons/SpiderImage/SpiderImage";
 import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
+
 import {
   addDocumentToSpider,
   addFeedingEntry,
@@ -41,9 +25,25 @@ import {
   Spider,
 } from "@/db/database";
 
+import { useTranslation } from "@/hooks/useTranslation";
+import { useIndividualTypeOptions } from "@/hooks/useIndividualTypeOptions";
+import { useFeedingFrequencyOptions } from "@/hooks/useFeedingFrequency";
+
+import { Colors, ThemeType } from "@/constants/Colors";
+import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
+import { IndividualType } from "@/constants/IndividualType.enums";
+
+import { ThemedText } from "@/components/ui/ThemedText";
+import CardComponent from "@/components/ui/CardComponent";
+import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
+import AutocompleteSpeciesInput from "@/components/ui/AutocompleteSpeciesInput";
+import SpiderImage from "@/components/commons/SpiderImage/SpiderImage";
+
 export default function SpiderForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { t } = useTranslation();
+  const individualTypeOptions = useIndividualTypeOptions();
+  const feedingOptions = useFeedingFrequencyOptions();
   const { currentTheme } = useUserStore();
   const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
   const addNewSpider = useSpidersStore((state: any) => state.addNewSpider);
@@ -53,7 +53,7 @@ export default function SpiderForm() {
   const species = useSpiderSpeciesStore((state) => state.species);
 
   const [name, setName] = useState<string>();
-  const [age, setAge] = useState<number>();
+  const [age, setAge] = useState<number | null>(null);
   const [lastFed, setLastFed] = useState<string>();
   const [feedingFrequency, setFeedingFrequency] = useState<string>();
   const [lastMolt, setLastMolt] = useState<string>();
@@ -92,7 +92,7 @@ export default function SpiderForm() {
       }
     } else {
       setName("");
-      setAge(0);
+      setAge(null);
       setSpiderSpecies(null);
       setIndividualType(undefined);
       setLastFed("");
@@ -137,8 +137,8 @@ export default function SpiderForm() {
       !lastMolt?.trim()
     ) {
       return Alert.alert(
-        t("submit.alert.error_validation"),
-        t("submit.alert.error_validation_sub"),
+        t("spider-form.handle-submit.alert.error_validation"),
+        t("spider-form.handle-submit.alert.error_validation_sub"),
       );
     }
 
@@ -161,8 +161,8 @@ export default function SpiderForm() {
     if (id) {
       updateSpider(spiderData);
       Alert.alert(
-        t("submit.alert.success"),
-        `${t("submit.alert.success_sub")} "${name}"`,
+        t("spider-form.handle-submit.alert.success"),
+        `${t("spider-form.handle-submit.alert.success_sub")} "${name}"`,
       );
     } else {
       await addNewSpider({
@@ -174,8 +174,8 @@ export default function SpiderForm() {
       await addMoltingEntry(spiderData.id, lastMolt);
       await addDocumentToSpider(spiderData.id, spiderData.documentUri);
       Alert.alert(
-        t("submit.alert.success"),
-        `${t("submit.alert.success_sub_add")} "${name}"`,
+        t("spider-form.handle-submit.alert.success"),
+        `${t("spider-form.handle-submit.alert.success_sub_add")} "${name}"`,
       );
     }
 
@@ -197,28 +197,22 @@ export default function SpiderForm() {
     const galleryPermission =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (galleryPermission.status !== "granted") {
-      Alert.alert(
-        t("spider-full-list.choose_image.alert.permission.denied"),
-        t("spider-full-list.choose_image.alert.permission.denied"),
-      );
+      Alert.alert(t("spider-form.handle-choose-image.alert.permission.denied"));
       return;
     }
 
     const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
     if (cameraPermission.status !== "granted") {
-      Alert.alert(
-        t("spider-full-list.choose_image.alert.permission.denied"),
-        t("spider-full-list.choose_image.alert.permission.denied"),
-      );
+      Alert.alert(t("spider-form.handle-choose-image.alert.permission.denied"));
       return;
     }
 
     Alert.alert(
-      t("spider-full-list.choose_image.alert.choose_option.title"),
-      t("spider-full-list.choose_image.alert.choose_option.info"),
+      t("spider-form.handle-choose-image.alert.choose_option.title"),
+      t("spider-form.handle-choose-image.alert.choose_option.info"),
       [
         {
-          text: t("spider-full-list.choose_image.alert.camera.title"),
+          text: t("spider-form.handle-choose-image.alert.camera.title"),
           onPress: async () => {
             const result = await ImagePicker.launchCameraAsync({
               allowsEditing: true,
@@ -231,7 +225,7 @@ export default function SpiderForm() {
           },
         },
         {
-          text: t("spider-full-list.choose_image.alert.gallery.title"),
+          text: t("spider-form.handle-choose-image.alert.gallery.title"),
           onPress: async () => {
             const result = await ImagePicker.launchImageLibraryAsync({
               allowsEditing: true,
@@ -249,18 +243,17 @@ export default function SpiderForm() {
 
   const handleChooseDocument = () => {
     Alert.alert(
-      t("choose_document.alert.choose_source.title"),
-      t("choose_document.alert.choose_source.info"),
+      t("spider-form.handle-choose-document.alert.choose_source.title"),
+      t("spider-form.handle-choose-document.alert.choose_source.info"),
       [
         {
-          text: t("choose_document.alert.camera.title"),
+          text: t("spider-form.handle-choose-document.alert.camera.title"),
           onPress: async () => {
             const permission =
               await ImagePicker.requestCameraPermissionsAsync();
             if (permission.status !== "granted") {
               Alert.alert(
-                t("choose_document.alert.permission.denied"),
-                t("choose_document.alert.permission.denied"),
+                t("spider-form.handle-choose-document.alert.permission.denied"),
               );
               return;
             }
@@ -276,14 +269,13 @@ export default function SpiderForm() {
           },
         },
         {
-          text: t("choose_document.alert.gallery.title"),
+          text: t("spider-form.handle-choose-document.alert.gallery.title"),
           onPress: async () => {
             const permission =
               await ImagePicker.requestMediaLibraryPermissionsAsync();
             if (permission.status !== "granted") {
               Alert.alert(
-                t("choose_document.alert.permission.denied"),
-                t("choose_document.alert.permission.denied"),
+                t("spider-form.handle-choose-document.alert.permission.denied"),
               );
               return;
             }
@@ -299,7 +291,7 @@ export default function SpiderForm() {
           },
         },
         {
-          text: t("choose_document.alert.cancel"),
+          text: t("spider-form.handle-choose-document.alert.cancel"),
           style: "cancel",
         },
       ],
@@ -342,12 +334,12 @@ export default function SpiderForm() {
         <CardComponent>
           <View style={styles(currentTheme).centered}>
             <ThemedText style={styles(currentTheme).subHeaderText}>
-              Uzupełnij informacje o pająku
+              {t("spider-form.title_form")}
             </ThemedText>
           </View>
 
           <ThemedText style={styles(currentTheme).label}>
-            Zdjęcie pająka
+            {t("spider-form.photo")}
           </ThemedText>
 
           <TouchableOpacity
@@ -358,21 +350,24 @@ export default function SpiderForm() {
             <SpiderImage size={100} imageUri={imageUri} />
           </TouchableOpacity>
 
-          <ThemedText style={styles(currentTheme).label}>Imię</ThemedText>
+          <ThemedText style={styles(currentTheme).label}>
+            {" "}
+            {t("spider-form.name")}
+          </ThemedText>
           <TextInput
             value={name}
             onChangeText={setName}
             style={styles(currentTheme).input}
-            placeholder="Zyzio"
+            placeholder={t("spider-form.name_placeholder")}
             placeholderTextColor={Colors[currentTheme].input.placeholder}
             autoCapitalize="words"
           />
 
           <ThemedText style={styles(currentTheme)["label"]}>
-            Wiek "L"
+            {t("spider-form.age")}
           </ThemedText>
           <TextInput
-            value={age?.toString() ?? "0"}
+            value={age?.toString() ?? t("spider-form.age_placeholder")}
             onChangeText={(text) => {
               const parsedAge = parseInt(text, 10);
               if (isNaN(parsedAge)) {
@@ -383,10 +378,13 @@ export default function SpiderForm() {
             }}
             keyboardType="numeric"
             style={styles(currentTheme).input}
-            placeholder="0"
+            placeholder={t("spider-form.age_placeholder")}
           />
 
-          <ThemedText style={styles(currentTheme).label}>Gatunek</ThemedText>
+          <ThemedText style={styles(currentTheme).label}>
+            {" "}
+            {t("spider-form.species")}
+          </ThemedText>
           <View style={styles(currentTheme).pickerWrapper}>
             <AutocompleteSpeciesInput
               value={spiderSpecies}
@@ -402,7 +400,10 @@ export default function SpiderForm() {
             />
           </View>
 
-          <ThemedText style={styles(currentTheme).label}>Płeć</ThemedText>
+          <ThemedText style={styles(currentTheme).label}>
+            {" "}
+            {t("spider-form.individual_type")}
+          </ThemedText>
           <View style={styles(currentTheme).pickerWrapper}>
             {individualTypeOptions.map((option) => (
               <TouchableOpacity
@@ -430,13 +431,15 @@ export default function SpiderForm() {
           </View>
 
           <ThemedText style={styles(currentTheme).label}>
-            Data ostatniego karmienia
+            {t("spider-form.date_last_feeding")}
           </ThemedText>
           <TouchableOpacity
             onPress={() => showDatePicker("lastFed")}
             style={styles(currentTheme).input}
           >
-            <ThemedText>{lastFed || "Wybierz datę"}</ThemedText>
+            <ThemedText>
+              {lastFed || t("spider-form.date_last_feeding_placeholder")}
+            </ThemedText>
           </TouchableOpacity>
 
           {isDatePickerVisible && activeDateField === "lastFed" && (
@@ -452,13 +455,15 @@ export default function SpiderForm() {
             />
           )}
           <ThemedText style={styles(currentTheme).label}>
-            Data ostatniego linienia
+            {t("spider-form.date_last_molting")}
           </ThemedText>
           <TouchableOpacity
             onPress={() => showDatePicker("lastMolt")}
             style={styles(currentTheme).input}
           >
-            <ThemedText>{lastMolt || "Wybierz datę"}</ThemedText>
+            <ThemedText>
+              {lastMolt || t("spider-form.date_last_molting_placeholder")}
+            </ThemedText>
           </TouchableOpacity>
 
           {isDatePickerVisible && activeDateField === "lastMolt" && (
@@ -475,10 +480,11 @@ export default function SpiderForm() {
           )}
 
           <ThemedText style={styles(currentTheme).label}>
-            Częstotliwość karmienia
+            {t("spider-form.feeding_frequency")}
           </ThemedText>
+
           <View style={styles(currentTheme).pickerWrapper}>
-            {feedingFrequencyOptions.map((option) => {
+            {feedingOptions.map((option) => {
               const isSelected = feedingFrequency === option.value;
               return (
                 <TouchableOpacity
@@ -502,7 +508,7 @@ export default function SpiderForm() {
           </View>
 
           <ThemedText style={styles(currentTheme).label}>
-            Dokument pochodzenia pająka (zdjęcie)
+            {t("spider-form.spider_documents")}
           </ThemedText>
 
           <TouchableOpacity
@@ -511,13 +517,15 @@ export default function SpiderForm() {
             style={styles(currentTheme).filePicker}
           >
             <ThemedText>
-              {documentUri ? "Wybrano dokument" : "Wybierz dokument"}
+              {documentUri
+                ? t("spider-form.document_added")
+                : t("spider-form.document_not_added")}
             </ThemedText>
           </TouchableOpacity>
 
           <Pressable style={styles(currentTheme).button} onPress={handleSubmit}>
             <ThemedText style={styles(currentTheme).buttonText}>
-              Zapisz pająka
+              {t("spider-form.save")}
             </ThemedText>
           </Pressable>
         </CardComponent>

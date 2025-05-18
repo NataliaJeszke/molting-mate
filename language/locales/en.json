@@ -21,7 +21,17 @@
   },
   "spider-form": {
     "title": "Add Spider to Collection",
-    "choose_image": {
+    "handle-submit": {
+      "alert": {
+        "error_species": "Failed to add new species",
+        "error_validation": "Validation error",
+        "error_validation_sub": "Please fill out all fields.",
+        "success": "Success",
+        "success_sub": "Updated spider named:",
+        "success_sub_add": "Added spider named:"
+      }
+    },
+    "handle-choose-image": {
       "alert": {
         "permission": {
           "denied": "Permission denied"
@@ -38,11 +48,11 @@
         }
       }
     },
-    "choose_document": {
+    "handle-choose-document": {
       "alert": {
         "choose_source": {
           "title": "Choose source",
-          "info": "Attach origin document"
+          "info": "Attach origin document (photo)"
         },
         "camera": {
           "title": "Take a photo"
@@ -56,16 +66,6 @@
         "cancel": "Cancel"
       }
     },
-    "submit": {
-      "alert": {
-        "error_species": "Failed to add new species",
-        "error_validation": "Validation error",
-        "error_validation_sub": "Please fill out all fields.",
-        "success": "Success",
-        "success_sub": "Updated spider named:",
-        "success_sub_add": "Added spider named:"
-      }
-    },
     "title_form": "Fill in the spider's information",
     "photo": "Spider photo",
     "name": "Name",
@@ -73,7 +73,7 @@
     "age": "Age 'L'",
     "age_placeholder": "1",
     "species": "Species",
-    "individual_type": "Sex",
+    "individual_type": "Gender",
     "date_last_feeding": "Date of last feeding",
     "date_last_feeding_placeholder": "Choose date",
     "date_last_molting": "Date of last molting",
@@ -256,5 +256,12 @@
     "male": "Male",
     "female": "Female",
     "unknown": "Undefined"
+  },
+  "feeding-frequency": {
+    "few_times_week": "Several times a week",
+    "once_week": "Once a week",
+    "once_two_weeks": "Every two weeks",
+    "once_month": "Once a month",
+    "rarely": "Rarely"
   }
 }
