@@ -17,13 +17,15 @@ import { parse } from "date-fns";
 import { useUserStore } from "@/store/userStore";
 import { useSpidersStore } from "@/store/spidersStore";
 
-import { IndividualType } from "@/models/Spider.model";
+import { useTranslation } from "@/hooks/useTranslation";
+
 import { Colors, ThemeType } from "@/constants/Colors";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import {
   feedingFrequencyOptions,
   individualTypeOptions,
 } from "./SpiderForm.constants";
+import { IndividualType } from "@/constants/IndividualType.enums";
 
 import CardComponent from "@/components/ui/CardComponent";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
@@ -38,7 +40,6 @@ import {
   addMoltingEntry,
   Spider,
 } from "@/db/database";
-import { useTranslation } from "@/hooks/useTranslation";
 
 export default function SpiderForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();

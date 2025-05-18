@@ -12,6 +12,7 @@ import {
 import { Colors, ThemeType } from "@/constants/Colors";
 import { FilterViewTypes } from "@/models/Filters.model";
 import { ThemedText } from "@/components/ui/ThemedText";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type SortModalProps = {
   visible: boolean;
@@ -34,6 +35,7 @@ export const SortModal = ({
   viewType,
   currentTheme,
 }: SortModalProps) => {
+  const { t } = useTranslation();
   useEffect(() => {
     if (viewType === "molting" && !sortType) {
       setSortType("lastMolt");
@@ -63,7 +65,7 @@ export const SortModal = ({
             <View style={styles(currentTheme).sortModal__handle} />
 
             <ThemedText style={styles(currentTheme).sortModal__title}>
-              Sortuj według
+              {t("components.commons.sort-modal.title")}
             </ThemedText>
 
             {viewType === "molting" && (
@@ -87,7 +89,7 @@ export const SortModal = ({
                         ]
                   }
                 >
-                  Ostatnie linienie
+                  {t("components.commons.sort-modal.last_molting")}
                 </ThemedText>
                 {sortType === "lastMolt" && (
                   <View style={styles(currentTheme).sortModal__checkmark}>
@@ -125,7 +127,7 @@ export const SortModal = ({
                           ]
                     }
                   >
-                    Ostatnie karmienie
+                    {t("components.commons.sort-modal.last_feeding")}
                   </ThemedText>
                   {sortType === "lastFed" && (
                     <View style={styles(currentTheme).sortModal__checkmark}>
@@ -160,7 +162,7 @@ export const SortModal = ({
                           ]
                     }
                   >
-                    Następne karmienie
+                    {t("components.commons.sort-modal.next_feeding")}
                   </ThemedText>
                   {sortType === "nextFeedingDate" && (
                     <View style={styles(currentTheme).sortModal__checkmark}>
@@ -181,7 +183,7 @@ export const SortModal = ({
               <ThemedText
                 style={styles(currentTheme).sortModal__directionLabel}
               >
-                Kierunek:
+                {t("components.commons.sort-modal.direction.title")}
               </ThemedText>
 
               <TouchableOpacity
@@ -204,7 +206,7 @@ export const SortModal = ({
                         ]
                   }
                 >
-                  ↑ Rosnąco
+                  ↑ {t("components.commons.sort-modal.direction.asc")}
                 </ThemedText>
               </TouchableOpacity>
 
@@ -228,7 +230,7 @@ export const SortModal = ({
                         ]
                   }
                 >
-                  ↓ Malejąco
+                  ↓ {t("components.commons.sort-modal.direction.desc")}
                 </ThemedText>
               </TouchableOpacity>
             </View>
@@ -241,7 +243,7 @@ export const SortModal = ({
               <ThemedText
                 style={styles(currentTheme)["sortModal__button-text--confirm"]}
               >
-                Zatwierdź
+                {t("components.commons.sort-modal.buttons.apply")}
               </ThemedText>
             </TouchableOpacity>
           </View>

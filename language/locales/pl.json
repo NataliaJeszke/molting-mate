@@ -33,6 +33,76 @@
     "core": {
       "title": "Dodaj pająka",
       "add": "Dodaj pająka"
+    },
+    "spider-form": {
+      "title": "Dodaj pająka do kolekcji",
+      "choose_image": {
+        "alert": {
+          "permission": {
+            "denied": "Odmowa dostępu"
+          },
+          "choose_option": {
+            "title": "Wybierz opcję",
+            "info": "Chcesz zrobić zdjęcie czy wybrać z galerii?"
+          },
+          "camera": {
+            "title": "Zrób zdjęcie"
+          },
+          "gallery": {
+            "title": "Wybierz z galerii"
+          }
+        }
+      },
+      "choose_document": {
+        "alert": {
+          "choose_source": {
+            "title": "Wybierz źródło",
+            "info": "Dołącz dokument pochodzenia"
+          },
+          "camera": {
+            "title": "Zrób zdjęcie"
+          },
+          "gallery": {
+            "title": "Wybierz z galerii"
+          },
+          "permission": {
+            "denied": "Odmowa dostępu"
+          },
+          "cancel": "Anuluj"
+        }
+      },
+      "submit": {
+        "alert": {
+          "error_species": "Nie udało się dodać nowego gatunku",
+          "error_validation": "Błąd walidacji",
+          "error_validation_sub": "Uzupełnij wszystkie pola.",
+          "success": "Sukces",
+          "success_sub": "Zaktualizowano pająka o imieniu:",
+          "success_sub_add": "Dodano pająka o imieniu:"
+        }
+      },
+      "title_form": "Uzupełnij informacje o pająku",
+      "photo": "Zdjęcie pająka",
+      "name": "Imię",
+      "name_placeholder": "Zyzio",
+      "age": "Wiek 'L'",
+      "age_placeholder": "1",
+      "species": "Gatunek",
+      "individual_type": "Płeć",
+      "date_last_feeding": "Data ostatniego karmienia",
+      "date_last_feeding_placeholder": "Wybierz datę",
+      "date_last_molting": "Data ostatniego linienia",
+      "date_last_molting_placeholder": "Wybierz datę",
+      "feeding_frequency": "Częstotliwość karmienia",
+      "spider_documents": "Dokument pochodzenia pająka (zdjęcie)",
+      "document_added": "Dodano dokument",
+      "document_not_added": "Wybierz dokument",
+      "save": "Zapisz",
+      "cancel": "Anuluj",
+      "core": {
+        "title": "Dodaj pająka",
+        "add": "Dodaj pająka"
+      }
     }
   },
   "favourites": {
@@ -162,22 +232,22 @@
       }
     },
     "choose_document": {
-        "alert": {
-            "choose_source": {
-                "title": "Wybierz źródło",
-                "info": "Dołącz dokument pochodzenia"
-            },
-            "camera": {
-                "title": "Zrób zdjęcie"
-            },
-            "gallery": {
-                "title": "Wybierz z galerii"
-              },
-            "permission": {
-                "denied": "Odmowa dostępu"
-            },
-            "cancel": "Anuluj"
-        }
+      "alert": {
+        "choose_source": {
+          "title": "Wybierz źródło",
+          "info": "Dołącz dokument pochodzenia"
+        },
+        "camera": {
+          "title": "Zrób zdjęcie"
+        },
+        "gallery": {
+          "title": "Wybierz z galerii"
+        },
+        "permission": {
+          "denied": "Odmowa dostępu"
+        },
+        "cancel": "Anuluj"
+      }
     },
     "submit": {
       "alert": {
@@ -196,6 +266,44 @@
         "placeholder": "Zacznij pisać aby wyświetlić podpowiedzi",
         "no_results": "Brak wyników"
       }
+    },
+    "commons": {
+      "sort-modal": {
+        "title": "Sortuj według",
+        "last_molting": "Ostatnie linienie",
+        "last_feeding": "Ostatnie karmienie",
+        "next_feeding": "Następne karmienie",
+        "direction": {
+          "title": "Kierunek",
+          "asc": "Rosnąco",
+          "desc": "Malejąco"
+        },
+        "buttons": {
+          "apply": "Zastosuj",
+          "cancel": "Anuluj"
+        }
+      },
+      "filters": {
+        "title": "Wybierz filtry",
+        "individual_type": "Płeć",
+        "species": "Gatunek",
+        "species_placeholder": "np. Chromatopelma cyaneopubescens",
+        "age": "Wiek",
+        "date": {
+          "label": "Data",
+          "from": "Data od",
+          "to": "Data do"
+        },
+        "button": {
+          "apply": "Zastosuj",
+          "reset": "Wyczyść"
+        }
+      }
     }
+  },
+  "individual-type-options": {
+    "male": "Samiec",
+    "female": "Samica",
+    "unknown": "Niezidefiniowany"
   }
 }

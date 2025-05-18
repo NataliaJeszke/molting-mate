@@ -4,7 +4,7 @@ import { ScrollView } from "react-native";
 import { SpiderDetailType } from "@/db/database";
 import { useFiltersStore } from "@/store/filtersStore";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
-import { IndividualType } from "@/models/Spider.model";
+import { IndividualType } from "@/constants/IndividualType.enums";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import SpiderSectionHeader from "@/components/commons/SpiderSectionHeader/SpiderSectionHeader";

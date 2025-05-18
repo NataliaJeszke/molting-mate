@@ -1,5 +1,6 @@
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
+import { IndividualType } from "@/constants/IndividualType.enums";
 
 export type Spider = {
   id: string;
@@ -18,5 +19,3 @@ export type Spider = {
   nextFeedingDate?: string;
   documentUris?: string[];
 };
-
-export type IndividualType = "Samiec" | "Samica" | "Niezidentyfikowany";

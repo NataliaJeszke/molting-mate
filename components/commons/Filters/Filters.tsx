@@ -16,12 +16,15 @@ import { isAfter, parseISO } from "date-fns";
 import { useFiltersStore } from "@/store/filtersStore";
 import { useUserStore } from "@/store/userStore";
 
+import { useTranslation } from "@/hooks/useTranslation";
+import { useIndividualTypeOptions } from "@/hooks/useIndividualTypeOptions";
+
+import { IndividualType } from "@/constants/IndividualType.enums";
 import { Colors, ThemeType } from "@/constants/Colors";
 import { FilterViewTypes } from "@/models/Filters.model";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
-import { IndividualType } from "@/models/Spider.model";
 import { ThemedRangeSlider } from "@/components/ui/ThemedRangeSlider";
 
 type FiltersProps = {
@@ -33,6 +36,7 @@ type FiltersProps = {
 const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   const { filters, setFilters, setRangeFilters, resetFilters } =
     useFiltersStore();
+  const individualTypeOptions = useIndividualTypeOptions();
   const current = filters[viewType];
   const { currentTheme } = useUserStore();
   const [isDateFromPickerVisible, setDateFromPickerVisible] = useState(false);
@@ -40,13 +44,9 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   const [individualTypes, setIndividualTypes] = useState<IndividualType[]>(
     current.individualType || [],
   );
+  const { t } = useTranslation();
 
   const today = new Date();
-  const individualTypeOptions: { label: string; value: IndividualType }[] = [
-    { label: "Samiec", value: "Samiec" },
-    { label: "Samica", value: "Samica" },
-    { label: "Niezidentyfikowany", value: "Niezidentyfikowany" },
-  ];
 
   const handleChange = (
     field: keyof typeof current,
@@ -154,7 +154,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
               <View style={styles(currentTheme).filters__handle} />
 
               <ThemedText style={styles(currentTheme).filters__title}>
-                Wybierz filtry
+                {t("components.commons.filters.title")}
               </ThemedText>
 
               <ThemedRangeSlider
@@ -165,7 +165,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                   typeof current.ageFrom === "number" ? current.ageFrom : 0,
                   typeof current.ageTo === "number" ? current.ageTo : 20,
                 ]}
-                label="Wiek"
+                label={t("components.commons.filters.age")}
                 onChange={([from, to]) => {
                   handleRangeChange(from, to);
                 }}
@@ -173,7 +173,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
               />
 
               <ThemedText style={styles(currentTheme).filters__label}>
-                Płeć
+                {t("components.commons.filters.individual_type")}
               </ThemedText>
 
               <View style={styles(currentTheme).filters__checkbox_group}>
@@ -212,47 +212,63 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                 })}
               </View>
 
-              <TextInput
-                placeholder="Gatunek"
-                value={current.spiderSpecies || ""}
-                onChangeText={(text) => handleChange("spiderSpecies", text)}
-                style={styles(currentTheme).filters__input}
-                placeholderTextColor={Colors[currentTheme].text + "80"}
-              />
+              <View>
+                <ThemedText style={styles(currentTheme).filters__label}>
+                  {t("components.commons.filters.species")}
+                </ThemedText>
+
+                <TextInput
+                  placeholder={t(
+                    "components.commons.filters.species_placeholder",
+                  )}
+                  value={current.spiderSpecies || ""}
+                  onChangeText={(text) => handleChange("spiderSpecies", text)}
+                  style={styles(currentTheme).filters__input}
+                  placeholderTextColor={Colors[currentTheme].text + "80"}
+                />
+              </View>
 
               {viewType !== "collection" && (
-                <View style={styles(currentTheme).filters__dates_container}>
-                  <TouchableOpacity
-                    style={styles(currentTheme).filters__date_input}
-                    onPress={showDateFromPicker}
-                    activeOpacity={0.7}
-                  >
-                    <ThemedText
-                      style={
-                        current.dateFrom
-                          ? styles(currentTheme).filters__date_text
-                          : styles(currentTheme).filters__date_placeholder
-                      }
-                    >
-                      {current.dateFrom || "Data od"}
-                    </ThemedText>
-                  </TouchableOpacity>
+                <View>
+                  <ThemedText style={styles(currentTheme).filters__label}>
+                    {t("components.commons.filters.date.label")}
+                  </ThemedText>
 
-                  <TouchableOpacity
-                    style={styles(currentTheme).filters__date_input}
-                    onPress={showDateToPicker}
-                    activeOpacity={0.7}
-                  >
-                    <ThemedText
-                      style={
-                        current.dateTo
-                          ? styles(currentTheme).filters__date_text
-                          : styles(currentTheme).filters__date_placeholder
-                      }
+                  <View style={styles(currentTheme).filters__dates_container}>
+                    <TouchableOpacity
+                      style={styles(currentTheme).filters__date_input}
+                      onPress={showDateFromPicker}
+                      activeOpacity={0.7}
                     >
-                      {current.dateTo || "Data do"}
-                    </ThemedText>
-                  </TouchableOpacity>
+                      <ThemedText
+                        style={
+                          current.dateFrom
+                            ? styles(currentTheme).filters__date_text
+                            : styles(currentTheme).filters__date_placeholder
+                        }
+                      >
+                        {current.dateFrom ||
+                          t("components.commons.filters.date.from")}
+                      </ThemedText>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles(currentTheme).filters__date_input}
+                      onPress={showDateToPicker}
+                      activeOpacity={0.7}
+                    >
+                      <ThemedText
+                        style={
+                          current.dateTo
+                            ? styles(currentTheme).filters__date_text
+                            : styles(currentTheme).filters__date_placeholder
+                        }
+                      >
+                        {current.dateTo ||
+                          t("components.commons.filters.date.to")}
+                      </ThemedText>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               )}
 
@@ -267,7 +283,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                       styles(currentTheme)["filters__button-text--confirm"]
                     }
                   >
-                    Zatwierdź
+                    {t("components.commons.filters.button.apply")}
                   </ThemedText>
                 </TouchableOpacity>
 
@@ -279,7 +295,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                   <ThemedText
                     style={styles(currentTheme)["filters__button-text--reset"]}
                   >
-                    Wyczyść
+                    {t("components.commons.filters.button.reset")}
                   </ThemedText>
                 </TouchableOpacity>
               </View>

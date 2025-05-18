@@ -21,13 +21,67 @@
   },
   "spider-form": {
     "title": "Add Spider to Collection",
+    "choose_image": {
+      "alert": {
+        "permission": {
+          "denied": "Permission denied"
+        },
+        "choose_option": {
+          "title": "Choose option",
+          "info": "Do you want to take a photo or choose from the gallery?"
+        },
+        "camera": {
+          "title": "Take a photo"
+        },
+        "gallery": {
+          "title": "Choose from gallery"
+        }
+      }
+    },
+    "choose_document": {
+      "alert": {
+        "choose_source": {
+          "title": "Choose source",
+          "info": "Attach origin document"
+        },
+        "camera": {
+          "title": "Take a photo"
+        },
+        "gallery": {
+          "title": "Choose from gallery"
+        },
+        "permission": {
+          "denied": "Permission denied"
+        },
+        "cancel": "Cancel"
+      }
+    },
+    "submit": {
+      "alert": {
+        "error_species": "Failed to add new species",
+        "error_validation": "Validation error",
+        "error_validation_sub": "Please fill out all fields.",
+        "success": "Success",
+        "success_sub": "Updated spider named:",
+        "success_sub_add": "Added spider named:"
+      }
+    },
+    "title_form": "Fill in the spider's information",
+    "photo": "Spider photo",
     "name": "Name",
+    "name_placeholder": "Zyzio",
+    "age": "Age 'L'",
+    "age_placeholder": "1",
     "species": "Species",
-    "age": "Age",
-    "weight": "Weight",
-    "feeding_date": "Feeding date",
-    "molting_date": "Molting date",
-    "notes": "Notes",
+    "individual_type": "Sex",
+    "date_last_feeding": "Date of last feeding",
+    "date_last_feeding_placeholder": "Choose date",
+    "date_last_molting": "Date of last molting",
+    "date_last_molting_placeholder": "Choose date",
+    "feeding_frequency": "Feeding frequency",
+    "spider_documents": "Spider's origin document (photo)",
+    "document_added": "Document added",
+    "document_not_added": "Choose document",
     "save": "Save",
     "cancel": "Cancel",
     "core": {
@@ -143,51 +197,11 @@
     "info": "Molting list of your spiders"
   },
   "spider-full-list": {
-    "choose_image": {
-      "alert": {
-        "permission": {
-          "denied": "Permission denied"
-        },
-        "choose_option": {
-          "title": "Choose option",
-          "info": "Do you want to take a photo or choose from the gallery?"
-        },
-        "camera": {
-          "title": "Take a photo"
-        },
-        "gallery": {
-          "title": "Choose from gallery"
-        }
-      }
-    },
-    "choose_document": {
-      "alert": {
-        "choose_source": {
-          "title": "Choose source",
-          "info": "Attach origin document"
-        },
-        "camera": {
-          "title": "Take a photo"
-        },
-        "gallery": {
-          "title": "Choose from gallery"
-        },
-        "permission": {
-          "denied": "Permission denied"
-        },
-        "cancel": "Cancel"
-      }
-    },
-    "submit": {
-      "alert": {
-        "error_species": "Failed to add new species",
-        "error_validation": "Validation error",
-        "error_validation_sub": "Please fill out all fields.",
-        "success": "Success",
-        "success_sub": "Updated spider named:",
-        "success_sub_add": "Added spider named:"
-      }
-    }
+    "title": "Spider list",
+    "info": "List of all spiders in your collection.",
+    "add": "Add spider",
+    "no_favourites": "No favourite spiders.",
+    "back": "Back"
   },
   "components": {
     "ui": {
@@ -195,6 +209,44 @@
         "placeholder": "Start typing to see suggestions",
         "no_results": "No results found"
       }
+    },
+    "commons": {
+      "sort-modal": {
+        "title": "Sort by",
+        "last_molting": "Last molting",
+        "last_feeding": "Last feeding",
+        "next_feeding": "Next feeding",
+        "direction": {
+          "title": "Sort direction",
+          "asc": "Ascending",
+          "desc": "Descending"
+        },
+        "buttons": {
+          "apply": "Apply",
+          "reset": "Reset"
+        }
+      },
+      "filters": {
+        "title": "Select filters",
+        "individual_type": "Gender",
+        "species": "Species",
+        "species_placeholder": "e.g. Chromatopelma cyaneopubescens",
+        "age": "Age",
+        "date": {
+          "label": "Date",
+          "from": "Date from",
+          "to": "Date to"
+        },
+        "button": {
+          "apply": "Apply",
+          "reset": "Clear"
+        }
+      }
     }
+  },
+  "individual-type-options": {
+    "male": "Male",
+    "female": "Female",
+    "unknown": "Undefined"
   }
 }
