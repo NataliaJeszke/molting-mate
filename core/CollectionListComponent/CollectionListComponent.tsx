@@ -4,7 +4,6 @@ import { ScrollView } from "react-native";
 import { SpiderDetailType } from "@/db/database";
 import { useFiltersStore } from "@/store/filtersStore";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
-import { IndividualType } from "@/constants/IndividualType.enums";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import SpiderSectionHeader from "@/components/commons/SpiderSectionHeader/SpiderSectionHeader";
@@ -16,6 +15,8 @@ const CollectionListComponent = () => {
     (state: any) => state.spiders,
   ) as SpiderDetailType[];
   const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
+  const sortType = useSpidersStore((state: any) => state.sortType);
+  const sortOrder = useSpidersStore((state: any) => state.sortOrder);
 
   const filters = useFiltersStore((state) => state.filters.collection);
   const { t } = useTranslation();
@@ -28,24 +29,36 @@ const CollectionListComponent = () => {
   }, []);
 
   const filteredSpiders = useMemo(() => {
-    return spiders
-      .filter((spider) => {
-        const matchspiderSpecies = filters.spiderSpecies
-          ? spider.spiderSpecies?.includes(filters.spiderSpecies)
-          : true;
-        const matchAge =
-          (filters.ageFrom === undefined || spider.age >= filters.ageFrom) &&
-          (filters.ageTo === undefined || spider.age <= filters.ageTo);
-        const matchGender =
-          !filters.individualType?.length ||
-          (filters.individualType || []).includes(
-            spider.individualType! as IndividualType,
-          );
+    const filtered = spiders.filter((spider) => {
+      const matchSpiderSpecies = filters.spiderSpecies
+        ? spider.spiderSpecies?.includes(filters.spiderSpecies)
+        : true;
+      const matchAge =
+        (filters.ageFrom === undefined || spider.age >= filters.ageFrom) &&
+        (filters.ageTo === undefined || spider.age <= filters.ageTo);
+      const matchGender =
+        !filters.individualType?.length ||
+        filters.individualType.includes(spider.individualType);
 
-        return matchspiderSpecies && matchAge && matchGender;
-      })
-      .map((spider) => ({ ...spider }));
-  }, [spiders, filters]);
+      return matchSpiderSpecies && matchAge && matchGender;
+    });
+
+    if (sortType) {
+      filtered.sort((a, b) => {
+        const aValue = a[sortType as keyof SpiderDetailType];
+        const bValue = b[sortType as keyof SpiderDetailType];
+
+        if (!aValue || !bValue) return 0;
+
+        const aDate = new Date(aValue).getTime();
+        const bDate = new Date(bValue).getTime();
+
+        return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
+      });
+    }
+
+    return filtered;
+  }, [spiders, filters, sortType, sortOrder]);
 
   return (
     <>
