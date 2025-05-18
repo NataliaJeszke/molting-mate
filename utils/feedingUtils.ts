@@ -2,6 +2,7 @@ import { addDays, format, parse } from "date-fns";
 
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
+import { Colors, ThemeType } from "@/constants/Colors";
 
 export const getFeedingStatus = (
   lastFed: string,
@@ -62,4 +63,20 @@ export const getNextFeedingDate = (
   const nextFeedingDate = addDays(lastFedDate, daysToAdd);
 
   return format(nextFeedingDate, "yyyy-MM-dd");
+};
+
+export const getFeedingStatusColor = (
+  status: FeedingStatus | null,
+  currentTheme: ThemeType,
+): string => {
+  switch (status) {
+    case FeedingStatus.HUNGRY:
+      return Colors[currentTheme].feedingStatus.hungry;
+    case FeedingStatus.FEED_TODAY:
+      return Colors[currentTheme].feedingStatus.feedToday;
+    case FeedingStatus.NOT_HUNGRY:
+      return Colors[currentTheme].feedingStatus.notHungry;
+    default:
+      return Colors[currentTheme].feedingStatus.default;
+  }
 };

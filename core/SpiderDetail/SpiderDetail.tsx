@@ -7,8 +7,11 @@ import * as ImagePicker from "expo-image-picker";
 import { useUserStore } from "@/store/userStore";
 import { useSpidersStore } from "@/store/spidersStore";
 import { Colors, ThemeType } from "@/constants/Colors";
-import { FeedingStatus } from "@/constants/FeedingStatus.enums";
-import { getNextFeedingDate, getFeedingStatus } from "@/utils/feedingUtils";
+import {
+  getNextFeedingDate,
+  getFeedingStatus,
+  getFeedingStatusColor,
+} from "@/utils/feedingUtils";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
@@ -19,8 +22,8 @@ import { router, useFocusEffect } from "expo-router";
 import { SpiderDetailType } from "@/db/database";
 import { useFeedingStatusLabel } from "@/hooks/useFeedingStatusLabel";
 import { useTranslation } from "@/hooks/useTranslation";
-import { IndividualType } from "@/constants/IndividualType.enums";
 import { useIndividualTypeLabel } from "@/hooks/useIndividualTypeTranslation";
+import { IndividualType } from "@/constants/IndividualType.enums";
 
 interface Props {
   spiderId: string | string[] | undefined;
@@ -81,19 +84,6 @@ const SpiderDetails = ({ spiderId }: Props) => {
     ? getFeedingStatus(spiderData.lastFed, spiderData.feedingFrequency)
     : null;
 
-  const getFeedingStatusColor = (status: FeedingStatus | null) => {
-    switch (status) {
-      case FeedingStatus.HUNGRY:
-        return Colors[currentTheme].feedingStatus.hungry;
-      case FeedingStatus.FEED_TODAY:
-        return Colors[currentTheme].feedingStatus.feedToday;
-      case FeedingStatus.NOT_HUNGRY:
-        return Colors[currentTheme].feedingStatus.notHungry;
-      default:
-        return Colors[currentTheme].feedingStatus.default;
-    }
-  };
-
   const getIndividualTypeIcon = (type: string | undefined) => {
     switch (type) {
       case IndividualType.Male:
@@ -122,10 +112,6 @@ const SpiderDetails = ({ spiderId }: Props) => {
         );
     }
   };
-
-  // const getIndividualTypeLabel = (type: string | undefined) => {
-  //   return type || "Niezidentyfikowany";
-  // };
 
   const isImageDocument = (uri: string | undefined) => {
     if (!uri) return false;
@@ -380,7 +366,12 @@ const SpiderDetails = ({ spiderId }: Props) => {
               <View
                 style={[
                   styles(currentTheme).feedingCard__statusBadge,
-                  { backgroundColor: getFeedingStatusColor(feedingStatus) },
+                  {
+                    backgroundColor: getFeedingStatusColor(
+                      feedingStatus,
+                      currentTheme,
+                    ),
+                  },
                 ]}
               >
                 <ThemedText
