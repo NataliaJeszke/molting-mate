@@ -17,6 +17,7 @@ import SpiderDocument from "@/components/commons/SpiderDocument/SpiderDocument";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 import { router, useFocusEffect } from "expo-router";
 import { SpiderDetailType } from "@/db/database";
+import { useFeedingStatusLabel } from "@/hooks/useFeedingStatusLabel";
 
 interface Props {
   spiderId: string | string[] | undefined;
@@ -32,6 +33,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
   const deleteDocument = useSpidersStore(
     (state: any) => state.deleteSpiderDocument,
   );
+  const getFeedingStatusLabel = useFeedingStatusLabel();
   const [showFeedingHistory, setShowFeedingHistory] = useState(false);
   const [showMoltingHistory, setShowMoltingHistory] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
@@ -72,18 +74,18 @@ const SpiderDetails = ({ spiderId }: Props) => {
     ? getFeedingStatus(spiderData.lastFed, spiderData.feedingFrequency)
     : null;
 
-  const getFeedingStatusLabel = (status: FeedingStatus | null) => {
-    switch (status) {
-      case FeedingStatus.HUNGRY:
-        return "Tak";
-      case FeedingStatus.FEED_TODAY:
-        return "Tak (karmienie dzisiaj)";
-      case FeedingStatus.NOT_HUNGRY:
-        return "Nie";
-      default:
-        return "Brak danych";
-    }
-  };
+  // const getFeedingStatusLabel = (status: FeedingStatus | null) => {
+  //   switch (status) {
+  //     case FeedingStatus.HUNGRY:
+  //       return "Tak";
+  //     case FeedingStatus.FEED_TODAY:
+  //       return "Tak (karmienie dzisiaj)";
+  //     case FeedingStatus.NOT_HUNGRY:
+  //       return "Nie";
+  //     default:
+  //       return "Brak danych";
+  //   }
+  // };
 
   const getFeedingStatusColor = (status: FeedingStatus | null) => {
     switch (status) {

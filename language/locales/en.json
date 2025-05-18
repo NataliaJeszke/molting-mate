@@ -17,7 +17,69 @@
   "spider-detail": {
     "spider_not_found": "Spider not found.",
     "title": "Spider",
-    "back": "Back"
+    "back": "Back",
+    "feeding_status": {
+      "hungry": "Yes",
+      "feed_today": "Yes, feed today",
+      "not_hungry": "No",
+      "unknown": "No information"
+    },
+    "individual_type_status": {
+      "unknown": "No data"
+    },
+    "handle-choose-document": {
+      "alert": {
+        "choose_source": {
+          "title": "Choose source",
+          "info": "Attach origin document"
+        },
+        "camera": {
+          "title": "Take a photo"
+        },
+        "gallery": {
+          "title": "Choose from gallery"
+        },
+        "permission": {
+          "denied": "Access denied"
+        },
+        "cancel": "Cancel"
+      }
+    },
+    "handle-remove-document": {
+      "alert": {
+        "title": "Delete document",
+        "message": "Are you sure you want to delete the origin document?",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "error": "Error!",
+        "error_info": "Failed to delete the document"
+      }
+    },
+    "basic_info": {
+      "title": "Basic Information",
+      "individual_type": "Gender:",
+      "age": "Age:",
+      "l": "L"
+    },
+    "feeding_info": {
+      "title": "Feeding Information",
+      "last_feeding": "Last feeding:",
+      "next_feeding": "Next feeding:",
+      "hungry": "Hungry?"
+    },
+    "molting_info": {
+      "title": "Molting Information",
+      "last_molting": "Last molting:",
+      "add_molting": "Add molting"
+    },
+    "feeding_history": {
+      "title": "Feeding History",
+      "empty": "No feeding history"
+    },
+    "molting_history": {
+      "title": "Molting History",
+      "empty": "No molting history"
+    }
   },
   "spider-form": {
     "title": "Add Spider to Collection",

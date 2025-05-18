@@ -17,7 +17,69 @@
   "spider-detail": {
     "spider_not_found": "Nie znaleziono pająka.",
     "title": "Pająk",
-    "back": "Wstecz"
+    "back": "Wstecz",
+    "feeding_status": {
+      "hungry": "Tak",
+      "feed_today": "Tak, nakarm dzisiaj",
+      "not_hungry": "Nie",
+      "unknown": "Brak informacji"
+    },
+    "individual_type_status": {
+      "unknown": "Niezidefiniowany"
+    },
+    "handle-choose-document": {
+      "alert": {
+        "choose_source": {
+          "title": "Wybierz źródło",
+          "info": "Dołącz dokument pochodzenia"
+        },
+        "camera": {
+          "title": "Zrób zdjęcie"
+        },
+        "gallery": {
+          "title": "Wybierz z galerii"
+        },
+        "permission": {
+          "denied": "Odmowa dostępu"
+        },
+        "cancel": "Anuluj"
+      }
+    },
+    "handle-remove-document": {
+      "alert": {
+        "title": "Usuń dokument",
+        "message": "Czy na pewno chcesz usunąć dokument pochodzenia?",
+        "cancel": "Anuluj",
+        "delete": "Usuń",
+        "error": "Błąd!",
+        "error_info": "Nie udało się usunąć dokumentu"
+      }
+    },
+    "basic_info": {
+      "title": "Podstawowe informacje",
+      "individual_type": "Płeć:",
+      "age": "Wiek:",
+      "l": "L"
+    },
+    "feeding_info": {
+      "title": "Informacje o karmieniu",
+      "last_feeding": "Ostatnie karmienie:",
+      "next_feeding": "Następne karmienie:",
+      "hungry": "Głodny?"
+    },
+    "molting_info": {
+      "title": "Informacje o linieniu",
+      "last_molting": "Ostatnie linienie:",
+      "add_molting": "Dodaj linienie"
+    },
+    "feeding_history":{
+      "title": "Historia karmienia",
+      "empty": "Brak historii karmienia"
+    },
+    "molting_history":{
+      "title": "Historia linienia",
+      "empty": "Brak historii linienia"
+    }
   },
   "spider-form": {
     "title": "Dodaj pająka do kolekcji",
