@@ -237,7 +237,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
                 <ThemedText
                   style={styles(currentTheme).buttonContainer__cancelButtonText}
                 >
-                  {t("components.commons.modal-update.button.cancel")}:
+                  {t("components.commons.modal-update.button.cancel")}
                 </ThemedText>
               </TouchableOpacity>
               <TouchableOpacity
