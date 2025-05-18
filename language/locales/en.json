@@ -249,6 +249,15 @@
           "apply": "Apply",
           "reset": "Clear"
         }
+      },
+      "modal-alert": {
+        "delete": {
+          "title": "Delete spider",
+          "message": "Are you sure you want to delete {{spiderName}} spider?",
+          "info": "This action cannot be undone. All data related to this spider will be deleted.",
+          "cancel": "Cancel",
+          "delete": "Delete"
+        }
       }
     }
   },

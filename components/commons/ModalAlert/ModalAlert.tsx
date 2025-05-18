@@ -15,6 +15,7 @@ import { Colors, ThemeType } from "@/constants/Colors";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 import { Spider } from "@/db/database";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type ModalAlertProps = {
   isVisible: boolean;
@@ -26,6 +27,7 @@ const ModalAlert = ({ isVisible, onClose }: ModalAlertProps) => {
   const spiders = useSpidersStore((state: any) => state.spiders as Spider[]);
   const deleteSpider = useSpidersStore((state: any) => state.deleteSpider);
   const { currentTheme } = useUserStore();
+  const { t } = useTranslation();
 
   const handleConfirm = async () => {
     if (id) {
@@ -55,14 +57,15 @@ const ModalAlert = ({ isVisible, onClose }: ModalAlertProps) => {
           />
           <View style={styles(currentTheme).modalView}>
             <ThemedText type="title" style={styles(currentTheme).modalTitle}>
-              Usuwanie pająka
+              {t("components.commons.modal-alert.delete.title")}
             </ThemedText>
             <ThemedText type="subtitle" style={styles(currentTheme).modalText}>
-              Czy na pewno chcesz usunąć {spiderName} z bazy danych?
+              {t("components.commons.modal-alert.delete.message", {
+                spiderName,
+              })}
             </ThemedText>
             <ThemedText style={styles(currentTheme).modalText}>
-              Ta operacja jest nieodwracalna. Wszystkie dane dotyczące tego
-              pająka zostaną trwale usunięte.
+              {t("components.commons.modal-alert.delete.info")}
             </ThemedText>
             <View style={styles(currentTheme).buttonContainer}>
               <TouchableOpacity
@@ -73,7 +76,7 @@ const ModalAlert = ({ isVisible, onClose }: ModalAlertProps) => {
                 ]}
               >
                 <ThemedText style={styles(currentTheme).buttonText}>
-                  Anuluj
+                  {t("components.commons.modal-alert.delete.cancel")}
                 </ThemedText>
               </TouchableOpacity>
               <TouchableOpacity
@@ -84,7 +87,7 @@ const ModalAlert = ({ isVisible, onClose }: ModalAlertProps) => {
                 ]}
               >
                 <ThemedText style={styles(currentTheme).buttonText}>
-                  OK
+                  {t("components.commons.modal-alert.delete.delete")}
                 </ThemedText>
               </TouchableOpacity>
             </View>

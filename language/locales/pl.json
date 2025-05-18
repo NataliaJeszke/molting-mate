@@ -250,6 +250,15 @@
           "apply": "Zastosuj",
           "reset": "Wyczyść"
         }
+      },
+      "modal-alert": {
+        "delete": {
+          "title": "Usuń pająka",
+          "message": "Czy na pewno chcesz usunąć pająka {{spiderName}}?",
+          "info": "Tej operacji nie można cofnąć. Wszystkie dane związane z tym pająkiem zostaną usunięte.",
+          "cancel": "Anuluj",
+          "delete": "Usuń"
+        }
       }
     }
   },
