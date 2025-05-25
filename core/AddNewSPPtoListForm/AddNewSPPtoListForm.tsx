@@ -273,12 +273,6 @@ export default function SpiderSpeciesManager() {
               </ThemedText>
             }
           />
-
-          <Button
-            title={t("add-new-spp.core.back")}
-            onPress={() => router.back()}
-            color="#2196F3"
-          />
         </View>
       </View>
 
