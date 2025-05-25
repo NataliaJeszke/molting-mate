@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { useUserStore } from "@/store/userStore";
+import { clearLoginSession, useUserStore } from "@/store/userStore";
 import { Theme } from "@/constants/Theme.enums";
 import { ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
@@ -14,11 +14,26 @@ import WrapperComponent from "@/components/ui/WrapperComponent";
 import CardComponent from "@/components/ui/CardComponent";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "@/hooks/useTranslation";
+import { router } from "expo-router";
 
 export default function ProfileScreen() {
   const { currentTheme, toggleTheme } = useUserStore();
   const { t } = useTranslation();
   const toggleHasOnboarded = useUserStore((store) => store.toggleHasOnboarded);
+  const logOut = async () => {
+    try {
+      await clearLoginSession();
+
+      const logOut = useUserStore.getState().logOut;
+      logOut();
+
+      console.log("✅ User logged out successfully");
+
+      router.replace("/login");
+    } catch (error) {
+      console.error("❌ Logout error:", error);
+    }
+  };
   const defaultTheme = Theme.DARK;
 
   return (
@@ -156,6 +171,16 @@ export default function ProfileScreen() {
           >
             <ThemedText style={styles(currentTheme).onboardingButtonText}>
               Powrót do ekranu powitalnego
+            </ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles(currentTheme).onboardingButton}
+            onPress={logOut}
+          >
+            <ThemedText style={styles(currentTheme).onboardingButtonText}>
+              {/* {t("profile.logout") || "Wyloguj się"} */}
+              "Wyloguj się"
             </ThemedText>
           </TouchableOpacity>
         </CardComponent>

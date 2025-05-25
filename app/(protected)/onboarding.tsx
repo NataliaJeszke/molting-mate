@@ -17,7 +17,7 @@ export default function OnboardingScreen() {
   return (
     <View style={styles.container}>
       <LottieView
-        source={require("../assets/images/animations/spider-animation2.json")}
+        source={require("../../assets/images/animations/spider-animation2.json")}
         autoPlay
         loop
         style={styles.lottie}

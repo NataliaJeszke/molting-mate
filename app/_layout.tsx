@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Platform, View, useColorScheme } from "react-native";
 import {
   DarkTheme,
@@ -9,28 +9,28 @@ import "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
 
-import { useUserStore } from "@/store/userStore";
-
-import { Colors } from "@/constants/Colors";
+import { loadUserStore, useUserStore } from "@/store/userStore";
 
 import StatusBar from "@/components/ui/StatusBar";
+
+import * as SplashScreen from "expo-splash-screen";
+import { isLoggedIn } from "@/lib/authService";
 import { initDatabase } from "@/db/database";
-import { useTranslation } from "@/hooks/useTranslation";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const { currentTheme, userSelectedTheme, setTheme } = useUserStore();
+  const { currentTheme, userSelectedTheme, setTheme, logIn } = useUserStore();
   const systemTheme = useColorScheme();
-  const { t } = useTranslation();
+  const Container = Platform.OS === "android" ? SafeAreaView : View;
 
-  const [loaded] = useFonts({
+  const [fontsLoaded, fontsError] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  const Container = Platform.OS === "android" ? SafeAreaView : View;
+  const [appReady, setAppReady] = useState(false);
+  const [initializationComplete, setInitializationComplete] = useState(false);
 
   useEffect(() => {
     if (!userSelectedTheme && systemTheme) {
@@ -39,16 +39,56 @@ export default function RootLayout() {
   }, [userSelectedTheme, systemTheme, setTheme]);
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    const prepareApp = async () => {
+      try {
+        console.log("🚀 Rozpoczynam inicjalizację aplikacji...");
+
+        await loadUserStore();
+        console.log("✅ Store użytkownika załadowany");
+
+        const userLoggedIn = await isLoggedIn();
+
+        if (userLoggedIn) {
+          console.log("👤 Użytkownik zalogowany, inicjalizuję bazę danych...");
+          logIn();
+
+          await initDatabase();
+          console.log("✅ Baza danych zainicjalizowana");
+        } else {
+          console.log(
+            "ℹ️ Użytkownik nie jest zalogowany, pomijam inicjalizację bazy",
+          );
+        }
+
+        setInitializationComplete(true);
+        console.log("✅ Inicjalizacja aplikacji zakończona");
+      } catch (error) {
+        console.error("❌ Błąd podczas inicjalizacji aplikacji:", error);
+        setInitializationComplete(true);
+      }
+    };
+
+    prepareApp();
+  }, [logIn]);
 
   useEffect(() => {
-    initDatabase().catch(console.error);
-  }, []);
+    const hideSplashScreen = async () => {
+      if ((fontsLoaded || fontsError) && initializationComplete) {
+        try {
+          await SplashScreen.hideAsync();
+          setAppReady(true);
+          console.log("✅ Splash screen ukryty, aplikacja gotowa");
+        } catch (error) {
+          console.error("❌ Błąd podczas ukrywania splash screen:", error);
+          setAppReady(true);
+        }
+      }
+    };
 
-  if (!loaded) {
+    hideSplashScreen();
+  }, [fontsLoaded, fontsError, initializationComplete]);
+
+  if (!appReady) {
     return null;
   }
 
@@ -63,74 +103,20 @@ export default function RootLayout() {
       }}
     >
       <ThemeProvider value={currentTheme === "dark" ? DarkTheme : DefaultTheme}>
+        <StatusBar currentTheme={currentTheme} systemTheme={systemTheme} />
         <Stack>
           <Stack.Screen
-            name="(tabs)"
-            options={{ headerShown: false, animation: "fade" }}
-          />
+            name="(protected)"
+            options={{ headerShown: false, animation: "none" }}
+          ></Stack.Screen>
           <Stack.Screen
-            name="onboarding"
+            name="login"
             options={{
               headerShown: false,
-              animation: "fade",
-              presentation: "modal",
+              animation: "none",
             }}
-          />
-          <Stack.Screen
-            name="spiderForm"
-            options={{
-              presentation: "modal",
-              title: t("spider-form.title"),
-            }}
-          />
-          <Stack.Screen
-            name="favourites"
-            options={{
-              title: t("favourites.title"),
-              headerBackTitle: t("favourites.back"),
-              headerTintColor: Colors[currentTheme].tint,
-            }}
-          />
-          <Stack.Screen
-            name="searched"
-            options={({ route }) => {
-              const { query } = (route.params as { query?: string }) || {};
-              return {
-                title: query
-                  ? `${t("searched.titlePrefix")} ${query}`
-                  : t("searched.titleDefault"),
-                headerBackTitle: t("searched.back"),
-                headerTintColor: Colors[currentTheme].tint,
-              };
-            }}
-          />
-          <Stack.Screen
-            name="spider/[id]"
-            options={{
-              title: t("spider-detail.title"),
-              headerBackTitle: t("spider-detail.back"),
-              headerTintColor: Colors[currentTheme].tint,
-            }}
-          />
-          <Stack.Screen
-            name="manageModal"
-            options={{
-              presentation: "transparentModal",
-              title: t("manage-modal.title"),
-              headerShown: false,
-              contentStyle: { backgroundColor: "transparent" },
-            }}
-          />
-          <Stack.Screen
-            name="addNewSPPtoList"
-            options={{
-              presentation: "modal",
-              title: t("add-new-spp.title"),
-            }}
-          />
-          <Stack.Screen name="+not-found" />
+          ></Stack.Screen>
         </Stack>
-        <StatusBar currentTheme={currentTheme} systemTheme={systemTheme} />
       </ThemeProvider>
     </Container>
   );

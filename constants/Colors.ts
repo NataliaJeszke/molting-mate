@@ -16,6 +16,8 @@ export const Colors = {
     icon: "#687076",
     tabIconDefault: "#687076",
     tabIconSelected: tintColorLight,
+    shadow: "rgba(46, 26, 71, 0.1)",
+    inputBorder: "#e9ecef",
     card: {
       backgroundColor: "#ffffff",
       borderColor: "#a855f7",
@@ -72,6 +74,7 @@ export const Colors = {
       placeholder: "#6e6e6e",
       backgroundColor: "#ffffff",
       borderColor: "#C0C0C0",
+      inputFocused: tintColorLight,
     },
     datepicker: {
       button: {
@@ -128,6 +131,8 @@ export const Colors = {
     icon: "#9BA1A6",
     tabIconDefault: "#9BA1A6",
     tabIconSelected: tintColorDark,
+    shadow: "rgba(201, 167, 245, 0.2)",
+    inputBorder: "#2a2a2a",
     card: {
       backgroundColor: "#1f1f1f",
       borderColor: "#6a4c9c",
@@ -183,6 +188,7 @@ export const Colors = {
       placeholder: "#c0c0c0",
       backgroundColor: "#1f1f1f",
       borderColor: "#6a4c9c",
+      inputFocused: tintColorDark,
     },
     datepicker: {
       button: {

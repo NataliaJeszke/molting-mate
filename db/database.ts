@@ -1,7 +1,7 @@
 import * as SQLite from "expo-sqlite";
 import { seedSpiderSpecies } from "./seedSpecies";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
-import { IndividualType } from "@/models/Spider.model";
+import { IndividualType } from "@/constants/IndividualType.enums";
 
 export interface Spider {
   id: string;
@@ -42,8 +42,16 @@ export interface SpiderSpecies {
 }
 
 let db: SQLite.SQLiteDatabase;
+let dbInitialized = false;
 
 export const initDatabase = async () => {
+  if (dbInitialized) {
+    console.log("[📦 DB] Baza danych już była zainicjalizowana.");
+    return;
+  }
+
+  console.log("[📦 DB] Rozpoczynam inicjalizację bazy danych...");
+
   db = await SQLite.openDatabaseAsync("spiders.db");
 
   await db.execAsync(`
@@ -93,6 +101,9 @@ export const initDatabase = async () => {
     );
   `);
   await seedSpiderSpecies(db);
+
+  dbInitialized = true;
+  console.log("[✅ DB] Baza danych została pomyślnie zainicjalizowana.");
 };
 
 export const getAllSpiders = async (): Promise<Spider[]> => {
