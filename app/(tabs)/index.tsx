@@ -54,15 +54,20 @@ export default function HomeScreen() {
   }, []);
 
   const toggleFab = () => {
-    const toValue = isFabOpen ? 0 : 1;
+    setIsFabOpen((prev) => {
+      const newValue = !prev;
 
-    Animated.spring(animation, {
-      toValue,
-      friction: 5,
-      useNativeDriver: true,
-    }).start();
+      const toValue = newValue ? 1 : 0;
 
-    setIsFabOpen(!isFabOpen);
+      Animated.spring(animation, {
+        toValue,
+        friction: 5,
+        useNativeDriver: true,
+      }).start();
+
+      console.log("Nowa wartość isFabOpen:", newValue);
+      return newValue;
+    });
   };
 
   return (
@@ -91,6 +96,7 @@ export default function HomeScreen() {
 
       <View style={styles(currentTheme).fabContainer}>
         <Animated.View
+          pointerEvents={isFabOpen ? "auto" : "none"}
           style={[styles(currentTheme).fabItem, getAddSpeciesStyle(animation)]}
         >
           <TouchableOpacity
@@ -283,6 +289,6 @@ const styles = (theme: ThemeType) =>
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
-      zIndex: 11,
+      zIndex: 999,
     },
   });
