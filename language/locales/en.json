@@ -190,7 +190,7 @@
           "success": "Success",
           "success_message": "Species {{customInput}} has been deleted from the list.",
           "error": "Cant delete species",
-          "error_message": "Species cannot be deleted from the list. Number of spiders: {{result.count}} .",
+          "error_message": "Species cannot be deleted from the list. Number of spiders: {{result}} .",
           "error_alert": "Error while deleting species"
         },
         "save_edit": {

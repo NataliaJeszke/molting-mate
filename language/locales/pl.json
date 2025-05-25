@@ -190,7 +190,7 @@
           "success": "Sukces",
           "success_message": "Gatunek {{customInput}} został usunięty z listy.",
           "error": "Nie można usunąć gatunku",
-          "error_message": "Nie można usunąć gatunku z listy. Liczba pająków: {{result.count}}.",
+          "error_message": "Nie można usunąć gatunku z listy. Liczba pająków: {{result}}.",
           "error_alert": "Błąd podczas usuwania gatunku"
         },
         "save_edit": {

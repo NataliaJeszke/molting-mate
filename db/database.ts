@@ -1,7 +1,7 @@
 import * as SQLite from "expo-sqlite";
 import { seedSpiderSpecies } from "./seedSpecies";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
-import { IndividualType } from "@/models/Spider.model";
+import { IndividualType } from "@/constants/IndividualType.enums";
 
 export interface Spider {
   id: string;

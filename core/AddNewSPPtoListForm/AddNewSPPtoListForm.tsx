@@ -117,7 +117,9 @@ export default function SpiderSpeciesManager() {
               } else {
                 Alert.alert(
                   t("add-new-spp.core.alert.delete.error"),
-                  t("add-new-spp.core.alert.delete.error_message", { result }),
+                  t("add-new-spp.core.alert.delete.error_message", {
+                    result: result.count,
+                  }),
                   [{ text: "OK" }],
                 );
               }
