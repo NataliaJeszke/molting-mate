@@ -9,7 +9,7 @@ import {
   Modal,
   TextInput,
 } from "react-native";
-import { useRouter } from "expo-router";
+
 import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
 import AutocompleteSpeciesInput from "@/components/ui/AutocompleteSpeciesInput";
 import { useUserStore } from "@/store/userStore";
@@ -31,7 +31,6 @@ export default function SpiderSpeciesManager() {
   >(null);
   const [customInput, setCustomInput] = useState("");
   const [showAddButton, setShowAddButton] = useState(false);
-  const router = useRouter();
 
   const [editingSpecies, setEditingSpecies] = useState<{
     id: number;

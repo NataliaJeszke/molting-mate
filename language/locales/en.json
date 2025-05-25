@@ -360,5 +360,19 @@
     "once_two_weeks": "Every two weeks",
     "once_month": "Once a month",
     "rarely": "Rarely"
+  },
+  "notifications": {
+    "feeding": {
+      "title": "Spider feeding",
+      "body": "In {{count}} {{count === 1 ? 'day' : 'days'}} feed {{name}}",
+      "action": "View details",
+      "day": "day",
+      "days": "days"
+    },
+    "molting": {
+      "title": "Molting time",
+      "body": "The spider {{spiderName}} has molted.",
+      "action": "View details"
+    }
   }
 }

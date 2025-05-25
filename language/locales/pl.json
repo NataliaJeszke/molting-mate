@@ -74,11 +74,11 @@
       "last_molting": "Ostatnie linienie:",
       "add_molting": "Dodaj linienie"
     },
-    "feeding_history":{
+    "feeding_history": {
       "title": "Historia karmienia",
       "empty": "Brak historii karmienia"
     },
-    "molting_history":{
+    "molting_history": {
       "title": "Historia linienia",
       "empty": "Brak historii linienia"
     }
@@ -361,5 +361,19 @@
     "once_two_weeks": "Raz na dwa tygodnie",
     "once_month": "Raz w miesiącu",
     "rarely": "Rzadziej"
+  },
+  "notifications": {
+    "feeding": {
+      "title": "Karmienie pająka",
+      "body": "Za {{count}} {{count === 1 ? 'dzień' : 'dni'}} nakarm {{name}}",
+      "action": "Zobacz szczegóły",
+      "day": "dzień",
+      "days": "dni"
+    },
+    "molting": {
+      "title": "Czas na linienie",
+      "body": "Pająk {{spiderName}} liniał.",
+      "action": "Zobacz szczegóły"
+    }
   }
 }
