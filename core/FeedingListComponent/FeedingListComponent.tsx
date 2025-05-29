@@ -90,9 +90,7 @@ const FeedingListComponent = () => {
         info={t("feeding.core.info")}
         viewType={viewType}
       />
-      <ScrollView>
-        <SpiderFullList data={processedSpiders} viewType={viewType} />
-      </ScrollView>
+      <SpiderFullList data={processedSpiders} viewType={viewType} />
     </>
   );
 };

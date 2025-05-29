@@ -50,9 +50,7 @@ const MoltingListComponent = () => {
         info={t("molting-list.info")}
         viewType={viewType}
       />
-      <ScrollView>
-        <SpiderFullList data={processedSpiders} viewType={viewType} />
-      </ScrollView>
+      <SpiderFullList data={processedSpiders} viewType={viewType} />
     </>
   );
 };

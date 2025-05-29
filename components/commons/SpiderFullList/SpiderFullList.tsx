@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 
 import { router } from "expo-router";
 import { AntDesign, Feather } from "@expo/vector-icons";
@@ -15,6 +21,7 @@ import { Spider, SpiderDetailType } from "@/db/database";
 import { ExtendedSpider } from "@/core/FeedingListComponent/FeedingListComponent";
 import { useSpidersStore } from "@/store/spidersStore";
 import { useTranslation } from "@/hooks/useTranslation";
+import { SpiderListItem } from "../SpiderListItem/SpiderListItem";
 
 type SpiderListProps = {
   data: SpiderDetailType[] | ExtendedSpider[];
@@ -111,7 +118,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
   return (
     <CardComponent>
       <View>
-        {data.map((spider, index) => (
+        {/* {data.map((spider, index) => (
           <View
             key={spider.id}
             style={[
@@ -320,7 +327,25 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
               </View>
             </View>
           </View>
-        ))}
+        ))} */}
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item, index }) => (
+            <SpiderListItem
+              spider={item}
+              isLast={index === data.length - 1}
+              viewType={viewType}
+              currentTheme={currentTheme}
+              t={t}
+              toggleFavourite={toggleFavourite}
+            />
+          )}
+          contentContainerStyle={{ paddingBottom: 150 }}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+        />
       </View>
     </CardComponent>
   );

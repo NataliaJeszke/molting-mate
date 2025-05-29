@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { ScrollView } from "react-native";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import WrapperComponent from "@/components/ui/WrapperComponent";
@@ -26,9 +25,7 @@ export default function Favourites() {
 
   return (
     <WrapperComponent>
-      <ScrollView>
-        <SpiderFullList data={favouriteSpiders} />
-      </ScrollView>
+      <SpiderFullList data={favouriteSpiders} />
     </WrapperComponent>
   );
 }

@@ -70,9 +70,7 @@ const CollectionListComponent = () => {
         info={t("collection.core.info")}
         viewType={viewType}
       />
-      <ScrollView>
-        <SpiderFullList data={filteredSpiders} viewType={viewType} />
-      </ScrollView>
+      <SpiderFullList data={filteredSpiders} viewType={viewType} />
     </>
   );
 };
