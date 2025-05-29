@@ -50,8 +50,10 @@ const CollectionListComponent = () => {
 
         if (!aValue || !bValue) return 0;
 
-        const aDate = new Date(aValue).getTime();
-        const bDate = new Date(bValue).getTime();
+        const aDate =
+          typeof aValue === "string" ? new Date(aValue).getTime() : 0;
+        const bDate =
+          typeof bValue === "string" ? new Date(bValue).getTime() : 0;
 
         return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
       });

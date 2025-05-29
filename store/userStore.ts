@@ -13,6 +13,8 @@ type UserState = {
   setTheme: (theme: ThemeType) => void;
   toggleTheme: () => void;
   toggleHasOnboarded: () => void;
+  notificationsEnabled: boolean;
+  toggleNotifications: () => void;
 };
 export const useUserStore = create<UserState>((set) => ({
   hasFinishedOnboarding: false,
@@ -39,6 +41,10 @@ export const useUserStore = create<UserState>((set) => ({
       currentTheme: theme,
       userSelectedTheme: true,
     })),
+
+  notificationsEnabled: true,
+  toggleNotifications: () =>
+    set((state) => ({ notificationsEnabled: !state.notificationsEnabled })),
 }));
 
 const loadUserStore = async () => {
@@ -61,6 +67,7 @@ const loadUserStore = async () => {
         currentTheme: "light",
         userSelectedTheme: false,
         language: defaultLang,
+        notificationsEnabled: true,
       });
       console.log("🆕 Initialized store with system language:", defaultLang);
     }
