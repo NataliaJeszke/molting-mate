@@ -365,15 +365,21 @@
   "notifications": {
     "feeding": {
       "title": "Karmienie pająka",
-      "body": "Za {{count}} {{count === 1 ? 'dzień' : 'dni'}} nakarm {{name}}",
-      "action": "Zobacz szczegóły",
-      "day": "dzień",
-      "days": "dni"
+      "bodyGroup": "Ilość pająków do nakarmienia: {{count}} za {{days}}.",
+      "day": "1 dzień",
+      "days": "{{count}} dni",
+      "action": "Zobacz szczegóły"
+
     },
     "molting": {
       "title": "Czas na linienie",
       "body": "Pająk {{spiderName}} liniał.",
       "action": "Zobacz szczegóły"
+    },
+    "toast": {
+      "on": "Powiadomienia zostały włączone",
+      "off": "Powiadomienia zostały wyłączone",
+      "ok": "OK"
     }
   }
 }

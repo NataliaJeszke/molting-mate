@@ -364,15 +364,20 @@
   "notifications": {
     "feeding": {
       "title": "Spider feeding",
-      "body": "In {{count}} {{count === 1 ? 'day' : 'days'}} feed {{name}}",
-      "action": "View details",
-      "day": "day",
-      "days": "days"
+      "bodyGroup": "You have spiders: {{count}} to feed in {{days}}.",
+      "day": "1 day",
+      "days": "{{count}} days",
+      "action": "View details"
     },
     "molting": {
       "title": "Molting time",
       "body": "The spider {{spiderName}} has molted.",
       "action": "View details"
+    },
+    "toast": {
+      "on": "Notifications have been enabled",
+      "off": "Notifications have been disabled",
+      "ok": "OK"
     }
   }
 }

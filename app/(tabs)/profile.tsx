@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
   Switch,
-  TouchableOpacity,
   ScrollView,
+  Modal,
+  Pressable,
 } from "react-native";
 import { useUserStore } from "@/store/userStore";
 import { Theme } from "@/constants/Theme.enums";
-import { ThemeType } from "@/constants/Colors";
+import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
 import WrapperComponent from "@/components/ui/WrapperComponent";
 import CardComponent from "@/components/ui/CardComponent";
@@ -18,8 +19,28 @@ import { useTranslation } from "@/hooks/useTranslation";
 export default function ProfileScreen() {
   const { currentTheme, toggleTheme } = useUserStore();
   const { t } = useTranslation();
-  const toggleHasOnboarded = useUserStore((store) => store.toggleHasOnboarded);
+  //const toggleHasOnboarded = useUserStore((store) => store.toggleHasOnboarded);
   const defaultTheme = Theme.DARK;
+
+  const notificationsEnabled = useUserStore(
+    (store) => store.notificationsEnabled,
+  );
+  const toggleNotifications = useUserStore(
+    (store) => store.toggleNotifications,
+  );
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+
+  const handleToggleNotifications = () => {
+    toggleNotifications();
+    setNotificationMessage(
+      !notificationsEnabled
+        ? t("notifications.toast.on")
+        : t("notifications.toast.off"),
+    );
+    setModalVisible(true);
+  };
 
   return (
     <WrapperComponent>
@@ -89,14 +110,14 @@ export default function ProfileScreen() {
               </ThemedText>
             </View>
             <Switch
-              value={true}
-              onValueChange={() => {}}
+              value={notificationsEnabled}
+              onValueChange={handleToggleNotifications}
               trackColor={{
                 false: "#767577",
                 true: currentTheme === "dark" ? "#6a4c9c" : "#a855f7",
               }}
               thumbColor={
-                true
+                notificationsEnabled
                   ? currentTheme === "dark"
                     ? "#c9a7f5"
                     : "#2e1a47"
@@ -104,6 +125,29 @@ export default function ProfileScreen() {
               }
             />
           </View>
+
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles(currentTheme).centeredView}>
+              <View style={styles(currentTheme).modalView}>
+                <ThemedText style={styles(currentTheme).modalText}>
+                  {notificationMessage}
+                </ThemedText>
+                <Pressable
+                  style={styles(currentTheme).button}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <ThemedText style={styles(currentTheme).buttonText}>
+                    {t("notifications.toast.ok")}
+                  </ThemedText>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>
 
           {/* Language Selection */}
           {/* <View style={styles(currentTheme).settingRow}>
@@ -186,7 +230,7 @@ export default function ProfileScreen() {
           </View> */}
 
           {/* Account Settings */}
-          <ThemedText
+          {/* <ThemedText
             type="subtitle"
             style={[styles(currentTheme).sectionTitle, { marginTop: 20 }]}
           >
@@ -227,17 +271,17 @@ export default function ProfileScreen() {
               size={22}
               color={currentTheme === "dark" ? "#9BA1A6" : "#687076"}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           {/* Back to Onboarding Button */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles(currentTheme).onboardingButton}
             onPress={toggleHasOnboarded}
           >
             <ThemedText style={styles(currentTheme).onboardingButtonText}>
               Powrót do ekranu powitalnego
             </ThemedText>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </CardComponent>
 
         {/* App Info */}
@@ -411,5 +455,38 @@ const styles = (theme: ThemeType) =>
     appVersion: {
       fontSize: 14,
       color: theme === "dark" ? "#9BA1A6" : "#687076",
+    },
+
+    centeredView: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "rgba(0,0,0,0.4)",
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: Colors[theme].card.backgroundColor,
+      borderRadius: 20,
+      padding: 25,
+      alignItems: "center",
+      shadowColor: "#000",
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    modalText: {
+      fontSize: 16,
+      marginBottom: 15,
+      textAlign: "center",
+    },
+    button: {
+      borderRadius: 10,
+      paddingVertical: 8,
+      paddingHorizontal: 20,
+      backgroundColor: Colors[theme].tint,
+    },
+    buttonText: {
+      color: "#fff",
+      fontWeight: "bold",
     },
   });
