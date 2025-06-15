@@ -63,6 +63,7 @@ export default function HomeScreen() {
     fetchSpiders();
     fetchSpecies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log("Pająki w stanie:", spiders);
   }, []);
 
   const toggleFab = () => {
