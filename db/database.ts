@@ -557,3 +557,13 @@ export const countSpiders = async () => {
     console.log("Liczba pająków w bazie: 0");
   }
 };
+
+export const getSpeciesIdByName = async (
+  name: string,
+): Promise<number | null> => {
+  const result = await db.getFirstAsync<{ id: number }>(
+    `SELECT id FROM spider_species WHERE name = ?`,
+    [name],
+  );
+  return result?.id ?? null;
+};

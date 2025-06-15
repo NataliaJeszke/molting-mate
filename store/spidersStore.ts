@@ -6,6 +6,7 @@ import {
   deleteDocument,
   deleteSpider,
   getAllSpiders,
+  getSpeciesIdByName,
   getSpiderById,
   Spider,
   updateSpider,
@@ -58,6 +59,14 @@ export const useSpidersStore = create((set, get) => ({
   },
 
   updateSpider: async (spider: any) => {
+    if (typeof spider.spiderSpecies === "string") {
+      const speciesId = await getSpeciesIdByName(spider.spiderSpecies);
+      if (!speciesId) {
+        throw new Error(`Nie znaleziono gatunku: ${spider.spiderSpecies}`);
+      }
+      spider.spiderSpecies = speciesId;
+    }
+
     await updateSpider(spider);
     await (get() as SpidersState).fetchSpiders();
   },

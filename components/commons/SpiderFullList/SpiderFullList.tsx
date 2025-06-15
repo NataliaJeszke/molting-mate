@@ -46,6 +46,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
       status: spider.status ?? "",
     };
 
+    console.log("Updating spider:", spider, "Favourite status:", !isFavourite);
     try {
       await updateSpider(updatedSpider);
 
