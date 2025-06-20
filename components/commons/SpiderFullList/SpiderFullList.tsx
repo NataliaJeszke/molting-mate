@@ -32,10 +32,6 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
     setSpiders(data);
   }, [data]);
 
-  useEffect(() => {
-    console.log("VIEW TYPE", viewType);
-  }, [viewType]);
-
   const toggleFavourite = async (spiderId: string, isFavourite: boolean) => {
     const spider = spiders.find((s) => s.id === spiderId);
     if (!spider) return;
@@ -46,7 +42,6 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
       status: spider.status ?? "",
     };
 
-    console.log("Updating spider:", spider, "Favourite status:", !isFavourite);
     try {
       await updateSpider(updatedSpider);
 

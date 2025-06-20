@@ -32,7 +32,7 @@ export const ThemedRangeSlider = ({
   const [from, setFrom] = useState(initialValues[0]);
   const [to, setTo] = useState(initialValues[1]);
   const [lastMovedThumb, setLastMovedThumb] = useState<"from" | "to" | null>(
-    null
+    null,
   );
 
   const prevInitialValues = useRef(initialValues);
@@ -42,9 +42,6 @@ export const ThemedRangeSlider = ({
     const [oldFrom, oldTo] = prevInitialValues.current;
 
     if (newFrom !== oldFrom || newTo !== oldTo) {
-      console.log(
-        `InitialValues changed: [${oldFrom}, ${oldTo}] -> [${newFrom}, ${newTo}]`
-      );
       setFrom(newFrom);
       setTo(newTo);
       prevInitialValues.current = initialValues;
@@ -65,7 +62,7 @@ export const ThemedRangeSlider = ({
     onPanResponderMove: (_, gesture) => {
       const newPos = Math.min(
         allowSameValue ? positionTo : positionTo - stepPixels,
-        Math.max(0, positionFrom + gesture.dx)
+        Math.max(0, positionFrom + gesture.dx),
       );
       const value = Math.round((newPos / SLIDER_WIDTH) * (max - min) + min);
       if (value >= min && value <= (allowSameValue ? to : to - step)) {
@@ -73,12 +70,10 @@ export const ThemedRangeSlider = ({
       }
     },
     onPanResponderRelease: () => {
-      console.log("Calling onChange after from thumb release:", from, to);
       onChange([from, to]);
     },
   });
 
-  // Handle thumb movement - right thumb
   const panTo = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: () => {
@@ -87,7 +82,7 @@ export const ThemedRangeSlider = ({
     onPanResponderMove: (_, gesture) => {
       const newPos = Math.max(
         allowSameValue ? positionFrom : positionFrom + stepPixels,
-        Math.min(SLIDER_WIDTH, positionTo + gesture.dx)
+        Math.min(SLIDER_WIDTH, positionTo + gesture.dx),
       );
       const value = Math.round((newPos / SLIDER_WIDTH) * (max - min) + min);
       if (value <= max && value >= (allowSameValue ? from : from + step)) {
@@ -95,7 +90,6 @@ export const ThemedRangeSlider = ({
       }
     },
     onPanResponderRelease: () => {
-      console.log("Calling onChange after to thumb release:", from, to);
       onChange([from, to]);
     },
   });

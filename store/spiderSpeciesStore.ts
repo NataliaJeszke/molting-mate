@@ -52,9 +52,6 @@ export const useSpiderSpeciesStore = create<SpiderSpeciesStore>((set) => ({
       value: s.id,
     }));
     set({ species: updatedSpecies, speciesOptions: updatedOptions });
-    console.log("Species added to DB:", name);
-    console.log("Updated species:", updatedSpecies);
-    console.log("Updated options:", updatedOptions);
     return insertedId;
   },
 
@@ -70,7 +67,6 @@ export const useSpiderSpeciesStore = create<SpiderSpeciesStore>((set) => ({
         value: s.id,
       }));
       set({ species: updatedSpecies, speciesOptions: updatedOptions });
-      console.log("Species deleted from DB:", id);
     } else {
       console.warn(
         `Nie można usunąć gatunku ID ${id} — przypisane pająki: ${result.count}`,

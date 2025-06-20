@@ -63,7 +63,6 @@ export default function HomeScreen() {
     fetchSpiders();
     fetchSpecies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    console.log("Pająki w stanie:", spiders);
   }, []);
 
   const toggleFab = () => {
@@ -77,8 +76,6 @@ export default function HomeScreen() {
         friction: 5,
         useNativeDriver: true,
       }).start();
-
-      console.log("Nowa wartość isFabOpen:", newValue);
       return newValue;
     });
   };
@@ -88,7 +85,6 @@ export default function HomeScreen() {
       <CardComponent customStyle={styles(currentTheme)["dashboard__top-bar"]}>
         <TouchableOpacity
           onPress={() => {
-            console.log("Ulubione pająki");
             router.push("/favourites");
           }}
         >

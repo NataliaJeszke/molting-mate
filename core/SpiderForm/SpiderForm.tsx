@@ -49,8 +49,6 @@ export default function SpiderForm() {
   const addNewSpider = useSpidersStore((state: any) => state.addNewSpider);
   const updateSpider = useSpidersStore((state: any) => state.updateSpider);
   const { addSpeciesToDb } = useSpiderSpeciesStore();
-  const speciesOptions = useSpiderSpeciesStore((state) => state.speciesOptions);
-  const species = useSpiderSpeciesStore((state) => state.species);
 
   const [name, setName] = useState<string>();
   const [age, setAge] = useState<number | null>(null);
@@ -71,15 +69,8 @@ export default function SpiderForm() {
   const newSpeciesLabelRef = useRef<string | null>(null);
 
   useEffect(() => {
-    console.log("Fetched species:", species);
-    console.log("Species options:", speciesOptions);
-  }, []);
-
-  useEffect(() => {
     if (id) {
       const spiderToEdit = spiders.find((s) => s.id === id);
-      console.log("Spider to edit:", spiderToEdit?.spiderSpecies);
-      console.log("pająk do edycji", spiderToEdit);
       if (spiderToEdit) {
         setName(spiderToEdit.name);
         setAge(spiderToEdit.age);
@@ -103,18 +94,6 @@ export default function SpiderForm() {
   }, [id, spiders]);
 
   const handleSubmit = async () => {
-    console.log("Submitting spider data...");
-    console.log(
-      name,
-      age,
-      spiderSpecies,
-      individualType,
-      lastFed,
-      feedingFrequency,
-      lastMolt,
-      imageUri,
-    );
-
     let speciesId = spiderSpecies;
 
     if (newSpeciesLabelRef.current && !spiderSpecies) {
@@ -389,7 +368,6 @@ export default function SpiderForm() {
             <AutocompleteSpeciesInput
               value={spiderSpecies}
               onSelect={(value) => {
-                console.log("Selected species:", value);
                 setSpiderSpecies(value);
                 newSpeciesLabelRef.current = null;
               }}

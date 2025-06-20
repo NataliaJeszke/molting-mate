@@ -146,7 +146,6 @@ export default function SpiderSpeciesManager() {
     setEditingSpecies({ id: species.value, name: species.label });
     setNewSpeciesName(species.label);
     setIsEditModalVisible(true);
-    console.log("Edit species:", species);
   };
 
   const handleSaveEdit = async () => {

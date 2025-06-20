@@ -90,7 +90,6 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   };
 
   const handleRangeChange = (from: number, to: number) => {
-    console.log("Range slider changed to", from, to);
     setRangeFilters(viewType, from, to);
   };
 

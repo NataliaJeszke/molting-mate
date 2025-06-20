@@ -16,7 +16,6 @@ export function useFeedingNotifications(spiders: Spider[]) {
   useEffect(() => {
     const setupNotifications = async () => {
       if (!notificationsEnabled) {
-        console.log("🔕 Powiadomienia wyłączone przez użytkownika.");
         return;
       }
 

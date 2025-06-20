@@ -60,7 +60,6 @@ const loadUserStore = async () => {
       parsedData.language = defaultLang;
 
       useUserStore.setState(parsedData);
-      console.log("🌍 Loaded store, overwritten language:", defaultLang);
     } else {
       useUserStore.setState({
         hasFinishedOnboarding: false,
@@ -69,7 +68,6 @@ const loadUserStore = async () => {
         language: defaultLang,
         notificationsEnabled: true,
       });
-      console.log("🆕 Initialized store with system language:", defaultLang);
     }
   } catch (error) {
     console.error("❌ Error loading user store:", error);

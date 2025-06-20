@@ -67,7 +67,6 @@ const SpiderSectionHeader = ({
             <TouchableOpacity
               style={{ marginHorizontal: 6 }}
               onPress={() => {
-                console.log("Ulubione pająki");
                 router.push("/favourites");
               }}
             >

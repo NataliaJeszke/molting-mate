@@ -30,25 +30,24 @@ interface Props {
 }
 
 const SpiderDetails = ({ spiderId }: Props) => {
-  console.log("spiderId", spiderId);
   const { currentTheme } = useUserStore();
   const { t } = useTranslation();
 
   const getSpiderById = useSpidersStore((state: any) => state.getSpiderById);
   const addDocumentToSpider = useSpidersStore(
-    (state: any) => state.addDocumentToSpider
+    (state: any) => state.addDocumentToSpider,
   );
   const deleteDocument = useSpidersStore(
-    (state: any) => state.deleteSpiderDocument
+    (state: any) => state.deleteSpiderDocument,
   );
   const [showFeedingHistory, setShowFeedingHistory] = useState(false);
   const [showMoltingHistory, setShowMoltingHistory] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
   const [feedingHistoryData, setFeedingHistoryData] = useState<any[] | null>(
-    null
+    null,
   );
   const [moltingHistoryData, setMoltingHistoryData] = useState<any[] | null>(
-    null
+    null,
   );
   const [documentsData, setDocumentsData] = useState<any[] | null>(null);
   const [spiderData, setSpiderData] = useState<SpiderDetailType | null>(null);
@@ -60,7 +59,6 @@ const SpiderDetails = ({ spiderId }: Props) => {
     useCallback(() => {
       const fetchData = async () => {
         const data = await getSpiderById(spiderId);
-        console.log("pokaz dane", data);
         if (!data) return;
         setSpiderData(data);
         setDocumentsData(data.documents);
@@ -71,7 +69,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
       fetchData();
 
       return;
-    }, [])
+    }, []),
   );
 
   const nextFeedingDate = spiderData
@@ -147,8 +145,8 @@ const SpiderDetails = ({ spiderId }: Props) => {
             if (permission.status !== "granted") {
               Alert.alert(
                 t(
-                  "spider-detail.handle-choose-document.alert.permission.denied"
-                )
+                  "spider-detail.handle-choose-document.alert.permission.denied",
+                ),
               );
               return;
             }
@@ -175,8 +173,8 @@ const SpiderDetails = ({ spiderId }: Props) => {
             if (permission.status !== "granted") {
               Alert.alert(
                 t(
-                  "spider-detail.handle-choose-document.alert.permission.denied"
-                )
+                  "spider-detail.handle-choose-document.alert.permission.denied",
+                ),
               );
               return;
             }
@@ -199,7 +197,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
           text: t("spider-detail.handle-choose-document.alert.cancel"),
           style: "cancel",
         },
-      ]
+      ],
     );
   };
 
@@ -227,12 +225,12 @@ const SpiderDetails = ({ spiderId }: Props) => {
             } else {
               Alert.alert(
                 t("spider-detail.handle-choose-document.alert.error"),
-                t("spider-detail.handle-choose-document.alert.error_info")
+                t("spider-detail.handle-choose-document.alert.error_info"),
               );
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -383,7 +381,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
                   {
                     backgroundColor: getFeedingStatusColor(
                       feedingStatus,
-                      currentTheme
+                      currentTheme,
                     ),
                   },
                 ]}

@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo } from "react";
-import { ScrollView } from "react-native";
+import React, { useMemo } from "react";
 
 import { SpiderDetailType } from "@/db/database";
 import { useFiltersStore } from "@/store/filtersStore";
@@ -14,19 +13,13 @@ const CollectionListComponent = () => {
   const spiders = useSpidersStore(
     (state: any) => state.spiders,
   ) as SpiderDetailType[];
-  const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
+  //const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
   const sortType = useSpidersStore((state: any) => state.sortType);
   const sortOrder = useSpidersStore((state: any) => state.sortOrder);
 
   const filters = useFiltersStore((state) => state.filters.collection);
   const { t } = useTranslation();
   const viewType = ViewTypes.VIEW_COLLECTION;
-
-  useEffect(() => {
-    fetchSpiders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    console.log("CollectionListComponent: fetchSpiders", spiders);
-  }, []);
 
   const filteredSpiders = useMemo(() => {
     const filtered = spiders.filter((spider) => {
