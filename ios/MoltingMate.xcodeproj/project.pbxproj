@@ -7,26 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		04C6E2CF14F2361A5BE20D9B /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2C2295209259B9881852D2 /* ExpoModulesProvider.swift */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		231253526D3E10337681D3A6 /* libPods-MoltingMate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0F925293243D70BD5D90E6 /* libPods-MoltingMate.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		6814E3411ABE5A990675C8AE /* libPods-MoltingMate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 106D2066D60F75678367C502 /* libPods-MoltingMate.a */; };
-		6BDA8243B4F9DB483F2BC455 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = CBE003F6DA0D9036470F218B /* PrivacyInfo.xcprivacy */; };
+		B0330E9A2F84B29C79CC1DCA /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 7FB556EA570B40AF61C197DD /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		C15E200C89DBC06477871075 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719081859162BCFC749032A1 /* ExpoModulesProvider.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		106D2066D60F75678367C502 /* libPods-MoltingMate.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MoltingMate.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* MoltingMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoltingMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MoltingMate/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MoltingMate/Info.plist; sourceTree = "<group>"; };
-		5B45A7B99723EED00DB23403 /* Pods-MoltingMate.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoltingMate.release.xcconfig"; path = "Target Support Files/Pods-MoltingMate/Pods-MoltingMate.release.xcconfig"; sourceTree = "<group>"; };
-		7E2C2295209259B9881852D2 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-MoltingMate/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		6F2271BCE8B9FFF8ADF4014A /* Pods-MoltingMate.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoltingMate.debug.xcconfig"; path = "Target Support Files/Pods-MoltingMate/Pods-MoltingMate.debug.xcconfig"; sourceTree = "<group>"; };
+		719081859162BCFC749032A1 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-MoltingMate/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		7FB556EA570B40AF61C197DD /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = MoltingMate/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		85C041508759C0743BDC529A /* Pods-MoltingMate.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoltingMate.release.xcconfig"; path = "Target Support Files/Pods-MoltingMate/Pods-MoltingMate.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = MoltingMate/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		C1B0EE2A4B4523EEB2F3BA1F /* Pods-MoltingMate.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoltingMate.debug.xcconfig"; path = "Target Support Files/Pods-MoltingMate/Pods-MoltingMate.debug.xcconfig"; sourceTree = "<group>"; };
-		CBE003F6DA0D9036470F218B /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = MoltingMate/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		BC0F925293243D70BD5D90E6 /* libPods-MoltingMate.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MoltingMate.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = MoltingMate/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* MoltingMate-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "MoltingMate-Bridging-Header.h"; path = "MoltingMate/MoltingMate-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -37,13 +37,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6814E3411ABE5A990675C8AE /* libPods-MoltingMate.a in Frameworks */,
+				231253526D3E10337681D3A6 /* libPods-MoltingMate.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0D1EA58D83D50E09F04BE224 /* MoltingMate */ = {
+			isa = PBXGroup;
+			children = (
+				719081859162BCFC749032A1 /* ExpoModulesProvider.swift */,
+			);
+			name = MoltingMate;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* MoltingMate */ = {
 			isa = PBXGroup;
 			children = (
@@ -53,26 +61,36 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				CBE003F6DA0D9036470F218B /* PrivacyInfo.xcprivacy */,
+				7FB556EA570B40AF61C197DD /* PrivacyInfo.xcprivacy */,
 			);
 			name = MoltingMate;
+			sourceTree = "<group>";
+		};
+		27F8592665185490A4DBA78D /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				0D1EA58D83D50E09F04BE224 /* MoltingMate */,
+			);
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				106D2066D60F75678367C502 /* libPods-MoltingMate.a */,
+				BC0F925293243D70BD5D90E6 /* libPods-MoltingMate.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		34B8BB253655506813A0BCE3 /* MoltingMate */ = {
+		36638F2FF8773D0C07AE2AFF /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				7E2C2295209259B9881852D2 /* ExpoModulesProvider.swift */,
+				6F2271BCE8B9FFF8ADF4014A /* Pods-MoltingMate.debug.xcconfig */,
+				85C041508759C0743BDC529A /* Pods-MoltingMate.release.xcconfig */,
 			);
-			name = MoltingMate;
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -89,8 +107,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				967FD15CE43A351DFDFF2738 /* Pods */,
-				99ED865F767E7FCCA7A68AB4 /* ExpoModulesProviders */,
+				36638F2FF8773D0C07AE2AFF /* Pods */,
+				27F8592665185490A4DBA78D /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -103,24 +121,6 @@
 				13B07F961A680F5B00A75B9A /* MoltingMate.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		967FD15CE43A351DFDFF2738 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				C1B0EE2A4B4523EEB2F3BA1F /* Pods-MoltingMate.debug.xcconfig */,
-				5B45A7B99723EED00DB23403 /* Pods-MoltingMate.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		99ED865F767E7FCCA7A68AB4 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				34B8BB253655506813A0BCE3 /* MoltingMate */,
-			);
-			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "MoltingMate" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				D8A629213336A911F60E3E74 /* [Expo] Configure project */,
+				6B79F92C11E6959A82A684C4 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				7F38595892C7422E6AD20894 /* [CP] Embed Pods Frameworks */,
+				3A33BCA6091C94BF20FCC740 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				6BDA8243B4F9DB483F2BC455 /* PrivacyInfo.xcprivacy in Resources */,
+				B0330E9A2F84B29C79CC1DCA /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,7 +240,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7F38595892C7422E6AD20894 /* [CP] Embed Pods Frameworks */ = {
+		3A33BCA6091C94BF20FCC740 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -257,6 +257,25 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MoltingMate/Pods-MoltingMate-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		6B79F92C11E6959A82A684C4 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-MoltingMate/expo-configure-project.sh\"\n";
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -312,25 +331,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MoltingMate/Pods-MoltingMate-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D8A629213336A911F60E3E74 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-MoltingMate/expo-configure-project.sh\"\n";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -339,7 +339,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				04C6E2CF14F2361A5BE20D9B /* ExpoModulesProvider.swift in Sources */,
+				C15E200C89DBC06477871075 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,7 +348,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C1B0EE2A4B4523EEB2F3BA1F /* Pods-MoltingMate.debug.xcconfig */;
+			baseConfigurationReference = 6F2271BCE8B9FFF8ADF4014A /* Pods-MoltingMate.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -373,7 +373,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nataliafrontendorg.moltingmate;
-				PRODUCT_NAME = "MoltingMate";
+				PRODUCT_NAME = MoltingMate;
 				SWIFT_OBJC_BRIDGING_HEADER = "MoltingMate/MoltingMate-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -384,7 +384,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B45A7B99723EED00DB23403 /* Pods-MoltingMate.release.xcconfig */;
+			baseConfigurationReference = 85C041508759C0743BDC529A /* Pods-MoltingMate.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -404,7 +404,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nataliafrontendorg.moltingmate;
-				PRODUCT_NAME = "MoltingMate";
+				PRODUCT_NAME = MoltingMate;
 				SWIFT_OBJC_BRIDGING_HEADER = "MoltingMate/MoltingMate-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

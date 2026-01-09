@@ -12,6 +12,9 @@ export function useFeedingNotifications(spiders: Spider[]) {
   const notificationsEnabled = useUserStore(
     (store) => store.notificationsEnabled,
   );
+  const setNotificationsEnabled = useUserStore(
+    (store) => store.setNotificationsEnabled,
+  );
 
   useEffect(() => {
     const setupNotifications = async () => {
@@ -21,6 +24,7 @@ export function useFeedingNotifications(spiders: Spider[]) {
 
       const { status } = await Notifications.requestPermissionsAsync();
       if (status !== "granted") {
+        setNotificationsEnabled(false);
         console.warn("Brak pozwolenia na powiadomienia");
         return;
       }

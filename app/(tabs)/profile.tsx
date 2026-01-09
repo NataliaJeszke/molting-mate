@@ -15,25 +15,25 @@ import WrapperComponent from "@/components/ui/WrapperComponent";
 import CardComponent from "@/components/ui/CardComponent";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "@/hooks/useTranslation";
+import * as Notifications from "expo-notifications";
 
 export default function ProfileScreen() {
   const { currentTheme, toggleTheme } = useUserStore();
   const { t } = useTranslation();
-  //const toggleHasOnboarded = useUserStore((store) => store.toggleHasOnboarded);
   const defaultTheme = Theme.DARK;
 
   const notificationsEnabled = useUserStore(
-    (store) => store.notificationsEnabled,
+    (state) => state.notificationsEnabled,
   );
-  const toggleNotifications = useUserStore(
-    (store) => store.toggleNotifications,
+  const setNotificationsEnabled = useUserStore(
+    (state) => state.setNotificationsEnabled,
   );
 
   const [modalVisible, setModalVisible] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
 
   const handleToggleNotifications = () => {
-    toggleNotifications();
+    setNotificationsEnabled(!notificationsEnabled);
     setNotificationMessage(
       !notificationsEnabled
         ? t("notifications.toast.on")
@@ -148,140 +148,6 @@ export default function ProfileScreen() {
               </View>
             </View>
           </Modal>
-
-          {/* Language Selection */}
-          {/* <View style={styles(currentTheme).settingRow}>
-            <View style={styles(currentTheme).settingLabelContainer}>
-              <Ionicons
-                name="language-outline"
-                size={22}
-                color={currentTheme === "dark" ? "#c9a7f5" : "#2e1a47"}
-              />
-              <ThemedText style={styles(currentTheme).settingLabel}>
-                Język
-              </ThemedText>
-            </View>
-          </View> */}
-
-          {/* <View style={styles(currentTheme).languageSelector}>
-            <TouchableOpacity
-              style={[
-                styles(currentTheme).languageOption,
-                language === Language.PL &&
-                  styles(currentTheme).languageOptionSelected,
-              ]}
-              onPress={() => setLanguage(Language.PL)}
-            >
-              <View style={styles(currentTheme).languageFlag}>
-                <ThemedText style={styles(currentTheme).flagEmoji}>
-                  🇵🇱
-                </ThemedText>
-              </View>
-              <ThemedText
-                style={[
-                  styles(currentTheme).languageText,
-                  language === Language.PL &&
-                    styles(currentTheme).languageTextSelected,
-                ]}
-              >
-                Polski
-              </ThemedText>
-              {language === Language.PL && (
-                <Ionicons
-                  name="checkmark-circle"
-                  size={20}
-                  color={currentTheme === "dark" ? "#c9a7f5" : "#2e1a47"}
-                  style={styles(currentTheme).checkIcon}
-                />
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles(currentTheme).languageOption,
-                language === Language.EN &&
-                  styles(currentTheme).languageOptionSelected,
-              ]}
-              onPress={() => setLanguage(Language.EN)}
-            >
-              <View style={styles(currentTheme).languageFlag}>
-                <ThemedText style={styles(currentTheme).flagEmoji}>
-                  🇬🇧
-                </ThemedText>
-              </View>
-              <ThemedText
-                style={[
-                  styles(currentTheme).languageText,
-                  language === Language.EN &&
-                    styles(currentTheme).languageTextSelected,
-                ]}
-              >
-                English
-              </ThemedText>
-              {language === Language.EN && (
-                <Ionicons
-                  name="checkmark-circle"
-                  size={20}
-                  color={currentTheme === "dark" ? "#c9a7f5" : "#2e1a47"}
-                  style={styles(currentTheme).checkIcon}
-                />
-              )}
-            </TouchableOpacity>
-          </View> */}
-
-          {/* Account Settings */}
-          {/* <ThemedText
-            type="subtitle"
-            style={[styles(currentTheme).sectionTitle, { marginTop: 20 }]}
-          >
-            {t("profile.account.title")}
-          </ThemedText>
-
-          <TouchableOpacity style={styles(currentTheme).settingRow}>
-            <View style={styles(currentTheme).settingLabelContainer}>
-              <Ionicons
-                name="person-outline"
-                size={22}
-                color={currentTheme === "dark" ? "#c9a7f5" : "#2e1a47"}
-              />
-              <ThemedText style={styles(currentTheme).settingLabel}>
-                {t("profile.account.edit_profile")}
-              </ThemedText>
-            </View>
-            <Ionicons
-              name="chevron-forward"
-              size={22}
-              color={currentTheme === "dark" ? "#9BA1A6" : "#687076"}
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles(currentTheme).settingRow}>
-            <View style={styles(currentTheme).settingLabelContainer}>
-              <Ionicons
-                name="key-outline"
-                size={22}
-                color={currentTheme === "dark" ? "#c9a7f5" : "#2e1a47"}
-              />
-              <ThemedText style={styles(currentTheme).settingLabel}>
-                {t("profile.account.change_password")}
-              </ThemedText>
-            </View>
-            <Ionicons
-              name="chevron-forward"
-              size={22}
-              color={currentTheme === "dark" ? "#9BA1A6" : "#687076"}
-            />
-          </TouchableOpacity> */}
-
-          {/* Back to Onboarding Button */}
-          {/* <TouchableOpacity
-            style={styles(currentTheme).onboardingButton}
-            onPress={toggleHasOnboarded}
-          >
-            <ThemedText style={styles(currentTheme).onboardingButtonText}>
-              Powrót do ekranu powitalnego
-            </ThemedText>
-          </TouchableOpacity> */}
         </CardComponent>
 
         {/* App Info */}
