@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
-import { Feather, AntDesign } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { ThemedText } from "@/components/ui/ThemedText";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
@@ -19,7 +19,7 @@ type Props = {
   toggleFavourite: (id: string, isFav: boolean) => void;
 };
 
-export const SpiderListItem = ({
+const SpiderListItemComponent = ({
   spider,
   isLast,
   viewType,
@@ -28,6 +28,8 @@ export const SpiderListItem = ({
 }: Props) => {
   const router = useRouter();
   const { currentTheme } = useUserStore();
+
+  const componentStyles = useMemo(() => styles(currentTheme), [currentTheme]);
 
   const renderStatusIcon = (spider: Spider | ExtendedSpider) => {
     if (spider.status === FeedingStatus.HUNGRY) {
@@ -45,7 +47,7 @@ export const SpiderListItem = ({
           }}
         >
           <Feather
-            style={styles(currentTheme)["spider-list__status-icon"]}
+            style={componentStyles["spider-list__status-icon"]}
             size={18}
             name="alert-triangle"
             color={Colors[currentTheme].warning.text}
@@ -68,7 +70,7 @@ export const SpiderListItem = ({
           }}
         >
           <Feather
-            style={styles(currentTheme)["spider-list__status-icon"]}
+            style={componentStyles["spider-list__status-icon"]}
             size={18}
             name="alert-octagon"
             color={Colors[currentTheme].info.text}
@@ -83,11 +85,11 @@ export const SpiderListItem = ({
     <View
       key={spider.id}
       style={[
-        styles(currentTheme)["spider-list__item"],
-        !isLast && styles(currentTheme)["spider-list__separator"],
+        componentStyles["spider-list__item"],
+        !isLast && componentStyles["spider-list__separator"],
       ]}
     >
-      <View style={styles(currentTheme)["spider-list__item-content"]}>
+      <View style={componentStyles["spider-list__item-content"]}>
         <TouchableOpacity onPress={() => router.push(`/spider/${spider.id}`)}>
           <Image
             source={
@@ -95,47 +97,42 @@ export const SpiderListItem = ({
                 ? { uri: spider.imageUri }
                 : require("@/assets/images/spider.png")
             }
-            style={styles(currentTheme)["spider-list__image"]}
+            style={componentStyles["spider-list__image"]}
+            resizeMode="cover"
           />
         </TouchableOpacity>
 
-        <View style={styles(currentTheme)["spider-list__info-container"]}>
-          <ThemedText style={styles(currentTheme)["spider-list__info-name"]}>
+        <View style={componentStyles["spider-list__info-container"]}>
+          <ThemedText style={componentStyles["spider-list__info-name"]}>
             {spider.name}
           </ThemedText>
 
           {(viewType === ViewTypes.VIEW_COLLECTION ||
             viewType === ViewTypes.VIEW_FEEDING) && (
-            <View style={styles(currentTheme)["spider-list__info-group"]}>
-              <View style={styles(currentTheme)["spider-list__info-row"]}>
-                <ThemedText
-                  style={styles(currentTheme)["spider-list__info-label"]}
-                >
+            <View style={componentStyles["spider-list__info-group"]}>
+              <View style={componentStyles["spider-list__info-row"]}>
+                <ThemedText style={componentStyles["spider-list__info-label"]}>
                   {t("spider-full-list.last_feeding")}:
                 </ThemedText>
                 {spider.status === FeedingStatus.HUNGRY &&
                   renderStatusIcon(spider)}
               </View>
-              <ThemedText
-                style={styles(currentTheme)["spider-list__info-date"]}
-              >
+              <ThemedText style={componentStyles["spider-list__info-date"]}>
                 {spider.lastFed}
               </ThemedText>
 
               {viewType === ViewTypes.VIEW_FEEDING && (
                 <>
-                  <View style={styles(currentTheme)["spider-list__info-row"]}>
+                  <View style={componentStyles["spider-list__info-row"]}>
                     <ThemedText
-                      style={styles(currentTheme)["spider-list__info-label"]}
+                      style={componentStyles["spider-list__info-label"]}
                     >
                       {t("spider-full-list.next_feeding")}:
                     </ThemedText>
                     {spider.status === FeedingStatus.FEED_TODAY &&
                       renderStatusIcon(spider)}
                   </View>
-                  <ThemedText
-                    style={styles(currentTheme)["spider-list__info-date"]}
-                  >
+                  <ThemedText style={componentStyles["spider-list__info-date"]}>
                     {spider.nextFeedingDate}
                   </ThemedText>
                 </>
@@ -155,7 +152,7 @@ export const SpiderListItem = ({
                         },
                       })
                     }
-                    style={styles(currentTheme)["spider-list__edit-button"]}
+                    style={componentStyles["spider-list__edit-button"]}
                   >
                     <Feather
                       size={18}
@@ -163,7 +160,7 @@ export const SpiderListItem = ({
                       color={Colors[currentTheme].info.text}
                     />
                     <ThemedText
-                      style={styles(currentTheme)["spider-list__edit-text"]}
+                      style={componentStyles["spider-list__edit-text"]}
                     >
                       {t("spider-full-list.edit_feeding")}
                     </ThemedText>
@@ -174,15 +171,11 @@ export const SpiderListItem = ({
 
           {(viewType === ViewTypes.VIEW_COLLECTION ||
             viewType === ViewTypes.VIEW_MOLTING) && (
-            <View style={styles(currentTheme)["spider-list__info-group"]}>
-              <ThemedText
-                style={styles(currentTheme)["spider-list__info-label"]}
-              >
+            <View style={componentStyles["spider-list__info-group"]}>
+              <ThemedText style={componentStyles["spider-list__info-label"]}>
                 {t("spider-full-list.last_molting")}:
               </ThemedText>
-              <ThemedText
-                style={styles(currentTheme)["spider-list__info-date"]}
-              >
+              <ThemedText style={componentStyles["spider-list__info-date"]}>
                 {spider.lastMolt}
               </ThemedText>
 
@@ -198,16 +191,14 @@ export const SpiderListItem = ({
                       },
                     })
                   }
-                  style={styles(currentTheme)["spider-list__edit-button"]}
+                  style={componentStyles["spider-list__edit-button"]}
                 >
                   <Feather
                     size={18}
                     name="edit-3"
                     color={Colors[currentTheme].info.text}
                   />
-                  <ThemedText
-                    style={styles(currentTheme)["spider-list__edit-text"]}
-                  >
+                  <ThemedText style={componentStyles["spider-list__edit-text"]}>
                     {t("spider-full-list.edit_molting")}
                   </ThemedText>
                 </TouchableOpacity>
@@ -216,21 +207,21 @@ export const SpiderListItem = ({
           )}
         </View>
 
-        <View style={styles(currentTheme)["spider-list__actions-container"]}>
+        <View style={componentStyles["spider-list__actions-container"]}>
           <TouchableOpacity
-            style={styles(currentTheme)["spider-list__action-button"]}
+            style={componentStyles["spider-list__action-button"]}
             onPress={() => toggleFavourite(spider.id, spider.isFavourite)}
           >
-            <AntDesign
+            <Ionicons
               size={22}
-              name={spider.isFavourite ? "heart" : "hearto"}
+              name={spider.isFavourite ? "heart" : "heart-outline"}
               color={Colors[currentTheme].tint}
             />
           </TouchableOpacity>
 
           {viewType === ViewTypes.VIEW_COLLECTION && (
             <TouchableOpacity
-              style={styles(currentTheme)["spider-list__action-button"]}
+              style={componentStyles["spider-list__action-button"]}
               onPress={() =>
                 router.push({
                   pathname: "/spiderForm",
@@ -251,7 +242,7 @@ export const SpiderListItem = ({
           )}
 
           <TouchableOpacity
-            style={styles(currentTheme)["spider-list__action-button"]}
+            style={componentStyles["spider-list__action-button"]}
             onPress={() =>
               router.push({
                 pathname: "/manageModal",
@@ -262,9 +253,9 @@ export const SpiderListItem = ({
               })
             }
           >
-            <AntDesign
+            <Ionicons
               size={22}
-              name="delete"
+              name="trash-outline"
               color={Colors[currentTheme].tint}
             />
           </TouchableOpacity>
@@ -273,6 +264,22 @@ export const SpiderListItem = ({
     </View>
   );
 };
+
+export const SpiderListItem = React.memo(
+  SpiderListItemComponent,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.spider.id === nextProps.spider.id &&
+      prevProps.spider.isFavourite === nextProps.spider.isFavourite &&
+      prevProps.spider.lastFed === nextProps.spider.lastFed &&
+      prevProps.spider.lastMolt === nextProps.spider.lastMolt &&
+      prevProps.spider.status === nextProps.spider.status &&
+      prevProps.spider.nextFeedingDate === nextProps.spider.nextFeedingDate &&
+      prevProps.isLast === nextProps.isLast &&
+      prevProps.viewType === nextProps.viewType
+    );
+  },
+);
 
 /* eslint-disable react-native/no-unused-styles */
 const styles = (theme: ThemeType) =>

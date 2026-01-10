@@ -65,6 +65,18 @@ export const getNextFeedingDate = (
   return format(nextFeedingDate, "yyyy-MM-dd");
 };
 
+export const getSpidersToFeedToday = (
+  spiders: Array<{ lastFed: string; feedingFrequency: string }>,
+): number => {
+  return spiders.filter((spider) => {
+    const status = getFeedingStatus(
+      spider.lastFed,
+      spider.feedingFrequency as FeedingFrequency,
+    );
+    return status === FeedingStatus.FEED_TODAY;
+  }).length;
+};
+
 export const getFeedingStatusColor = (
   status: FeedingStatus | null,
   currentTheme: ThemeType,

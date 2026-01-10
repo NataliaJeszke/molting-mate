@@ -7,7 +7,6 @@ import {
 } from "react-native";
 
 import { useRouter } from "expo-router";
-import * as Notifications from "expo-notifications";
 
 import Feather from "@expo/vector-icons/build/Feather";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -49,15 +48,6 @@ export default function HomeScreen() {
   );
   const { t } = useTranslation();
   useFeedingNotifications(spiders);
-
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowBanner: true,
-      shouldShowList: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-    }),
-  });
 
   useEffect(() => {
     fetchSpiders();

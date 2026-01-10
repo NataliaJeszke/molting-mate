@@ -309,6 +309,7 @@ export default function SpiderForm() {
       <ScrollView
         contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <CardComponent>
           <View style={styles(currentTheme).centered}>
@@ -334,12 +335,15 @@ export default function SpiderForm() {
             {t("spider-form.name")}
           </ThemedText>
           <TextInput
-            value={name}
-            onChangeText={setName}
+            defaultValue={name}
+            onChangeText={(text) => {
+              console.log("Name changed:", text);
+              setName(text);
+            }}
             style={styles(currentTheme).input}
             placeholder={t("spider-form.name_placeholder")}
             placeholderTextColor={Colors[currentTheme].input.placeholder}
-            autoCapitalize="words"
+            autoCapitalize="none"
           />
 
           <ThemedText style={styles(currentTheme)["label"]}>

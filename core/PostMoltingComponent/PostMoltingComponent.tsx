@@ -10,7 +10,6 @@ interface PostMoltingListComponentProps {
   spiders: Spider[];
 }
 
-//This component is to change when there is data from AI about molting predictions
 const PostMoltingListComponent = ({
   spiders,
 }: PostMoltingListComponentProps) => {
@@ -25,6 +24,7 @@ const PostMoltingListComponent = ({
         const dateB = parse(b.lastMolt, "yyyy-MM-dd", new Date()).getTime();
         return dateB - dateA;
       })
+      .slice(0, 20)
       .map((spider) => ({
         id: spider.id,
         name: spider.name,

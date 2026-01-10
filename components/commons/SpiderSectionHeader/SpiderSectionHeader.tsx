@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { MaterialIcons, AntDesign } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 
 import { useUserStore } from "@/store/userStore";
 import { Colors, ThemeType } from "@/constants/Colors";
@@ -70,8 +70,8 @@ const SpiderSectionHeader = ({
                 router.push("/favourites");
               }}
             >
-              <AntDesign
-                name="hearto"
+              <Ionicons
+                name="heart-outline"
                 size={20}
                 color={Colors[currentTheme].tint}
               />

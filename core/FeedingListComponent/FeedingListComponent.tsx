@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from "react";
-import { ScrollView } from "react-native";
 
 import { SpiderDetailType } from "@/db/database";
 import { useFiltersStore } from "@/store/filtersStore";
@@ -47,40 +46,50 @@ const FeedingListComponent = () => {
     datePropertyKey: "lastFed",
   });
 
+  const parseDateMemo = useMemo(() => {
+    const cache = new Map<string, Date | null>();
+    return (dateString: string): Date | null => {
+      if (!cache.has(dateString)) {
+        cache.set(dateString, parseDate(dateString));
+      }
+      return cache.get(dateString)!;
+    };
+  }, []);
+
   const processedSpiders: ExtendedSpider[] = useMemo(() => {
-    return [...filteredSpiders]
-      .map((spider) => {
-        const nextFeedingDate = getNextFeedingDate(
-          spider.lastFed,
-          spider.feedingFrequency as FeedingFrequency,
-        );
+    const enriched = filteredSpiders.map((spider) => {
+      const nextFeedingDate = getNextFeedingDate(
+        spider.lastFed,
+        spider.feedingFrequency as FeedingFrequency,
+      );
 
-        const status = getFeedingStatus(
-          spider.lastFed,
-          spider.feedingFrequency as FeedingFrequency,
-        );
+      const status = getFeedingStatus(
+        spider.lastFed,
+        spider.feedingFrequency as FeedingFrequency,
+      );
 
-        return {
-          ...spider,
-          status,
-          nextFeedingDate,
-        };
-      })
-      .sort((a, b) => {
-        let aValue: number = 0;
-        let bValue: number = 0;
+      return {
+        ...spider,
+        status,
+        nextFeedingDate,
+      };
+    });
 
-        if (sortType === "lastFed") {
-          aValue = parseDate(a.lastFed)?.getTime() || 0;
-          bValue = parseDate(b.lastFed)?.getTime() || 0;
-        } else if (sortType === "nextFeedingDate") {
-          aValue = parseDate(a.nextFeedingDate)?.getTime() || 0;
-          bValue = parseDate(b.nextFeedingDate)?.getTime() || 0;
-        }
+    return enriched.sort((a, b) => {
+      let aValue: number = 0;
+      let bValue: number = 0;
 
-        return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
-      });
-  }, [filteredSpiders, sortType, sortOrder]);
+      if (sortType === "lastFed") {
+        aValue = parseDateMemo(a.lastFed)?.getTime() || 0;
+        bValue = parseDateMemo(b.lastFed)?.getTime() || 0;
+      } else if (sortType === "nextFeedingDate") {
+        aValue = parseDateMemo(a.nextFeedingDate)?.getTime() || 0;
+        bValue = parseDateMemo(b.nextFeedingDate)?.getTime() || 0;
+      }
+
+      return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+    });
+  }, [filteredSpiders, sortType, sortOrder, parseDateMemo]);
 
   return (
     <>

@@ -10,7 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.nataliafrontendorg.moltingmate"
+      "bundleIdentifier": "com.nataliafrontendorg.moltingmate",
+      "infoPlist": {
+        "UIBackgroundModes": ["fetch", "processing"]
+      }
     },
     "android": {
       "adaptiveIcon": {

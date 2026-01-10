@@ -24,6 +24,7 @@ const PostFeedingListComponent = ({
         );
         return feedingStatus === FeedingStatus.HUNGRY;
       })
+      .slice(0, 20)
       .map((spider) => ({
         id: spider.id,
         name: spider.name,

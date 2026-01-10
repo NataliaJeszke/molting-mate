@@ -362,8 +362,16 @@
     "rarely": "Rarely"
   },
   "notifications": {
+    "permission": {
+      "title": "Notifications",
+      "message": "Would you like to receive notifications about spider feeding and molting?",
+      "allow": "Allow",
+      "deny": "Not now"
+    },
     "feeding": {
       "title": "Spider feeding",
+      "todaySingular": "Feed your spider today",
+      "todayPlural": "You have spiders to feed today",
       "bodyGroup": "You have spiders: {{count}} to feed in {{days}}.",
       "day": "1 day",
       "days": "{{count}} days",

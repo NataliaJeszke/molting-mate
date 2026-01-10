@@ -260,6 +260,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
                 : require("@/assets/images/spider.png")
             }
             style={styles(currentTheme).imageCard__image}
+            resizeMode="contain"
           />
           <ThemedText style={styles(currentTheme).imageCard__name}>
             {spiderData?.name}
@@ -533,8 +534,6 @@ const styles = (theme: ThemeType) =>
       fontSize: 24,
       fontWeight: "bold",
     },
-
-    // Block: basicInfoCard - nowa karta z informacjami o płci
     basicInfoCard: {
       padding: 0,
       overflow: "hidden",
@@ -585,8 +584,6 @@ const styles = (theme: ThemeType) =>
       flex: 1,
       textAlign: "right",
     },
-
-    // Block: feedingCard - dedicated card for feeding info
     feedingCard: {
       padding: 0,
       overflow: "hidden",
@@ -655,8 +652,6 @@ const styles = (theme: ThemeType) =>
       fontWeight: "600",
       color: Colors[theme].text,
     },
-
-    // Block: moltingCard - dedicated card for molting info
     moltingCard: {
       padding: 0,
       overflow: "hidden",
@@ -722,8 +717,6 @@ const styles = (theme: ThemeType) =>
       fontSize: 13,
       fontWeight: "600",
     },
-
-    // Block: historyCard - existing styles kept
     historyCard: {
       padding: 0,
       overflow: "hidden",
@@ -775,8 +768,6 @@ const styles = (theme: ThemeType) =>
       color: Colors[theme].text,
       fontStyle: "italic",
     },
-
-    // Block: documentCard - existing styles kept
     documentCard: {
       backgroundColor: Colors[theme].card.backgroundColor,
       borderRadius: 16,
@@ -844,7 +835,6 @@ const styles = (theme: ThemeType) =>
       marginBottom: 16,
       paddingHorizontal: 8,
     },
-    // Enhanced view button styling
     documentCard__viewButton: {
       flexDirection: "row",
       alignItems: "center",
@@ -908,8 +898,6 @@ const styles = (theme: ThemeType) =>
       color: Colors[theme].text || "#8E8E93",
       fontSize: 14,
     },
-
-    // Block: modal - existing styles kept
     modal: {
       flex: 1,
       backgroundColor: Colors[theme].card.backgroundColor,

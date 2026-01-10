@@ -363,13 +363,20 @@
     "rarely": "Rzadziej"
   },
   "notifications": {
+    "permission": {
+      "title": "Powiadomienia",
+      "message": "Czy chcesz otrzymywać powiadomienia o karmieniu i linieniu pająków?",
+      "allow": "Zezwól",
+      "deny": "Nie teraz"
+    },
     "feeding": {
       "title": "Karmienie pająka",
+      "todaySingular": "Dzisiaj nakarm pająka",
+      "todayPlural": "Dzisiaj masz do nakarmienia pająki",
       "bodyGroup": "Ilość pająków do nakarmienia: {{count}} za {{days}}.",
       "day": "1 dzień",
       "days": "{{count}} dni",
       "action": "Zobacz szczegóły"
-
     },
     "molting": {
       "title": "Czas na linienie",

@@ -53,7 +53,6 @@ export const ThemedRangeSlider = ({
 
   const stepPixels = SLIDER_WIDTH / ((max - min) / step);
 
-  // Handle thumb movement - left thumb
   const panFrom = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: () => {

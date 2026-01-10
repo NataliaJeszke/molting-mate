@@ -58,7 +58,8 @@ const UpcomingFeedingListComponent = ({
 
         return null;
       })
-      .filter(Boolean) as SpiderListItem[];
+      .filter(Boolean)
+      .slice(0, 20) as SpiderListItem[];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spiders]);
 

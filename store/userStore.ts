@@ -14,8 +14,10 @@ type UserState = {
   toggleTheme: () => void;
   toggleHasOnboarded: () => void;
   notificationsEnabled: boolean;
+  hasAskedForNotifications: boolean;
   toggleNotifications: () => void;
   setNotificationsEnabled: (enabled: boolean) => void;
+  setHasAskedForNotifications: (asked: boolean) => void;
 };
 
 export const useUserStore = create<UserState>((set) => ({
@@ -45,9 +47,11 @@ export const useUserStore = create<UserState>((set) => ({
     })),
 
   notificationsEnabled: false,
+  hasAskedForNotifications: false,
   setNotificationsEnabled: (enabled: boolean) =>
     set(() => ({ notificationsEnabled: enabled })),
-
+  setHasAskedForNotifications: (asked: boolean) =>
+    set(() => ({ hasAskedForNotifications: asked })),
   toggleNotifications: () =>
     set((state) => ({ notificationsEnabled: !state.notificationsEnabled })),
 }));
@@ -72,6 +76,7 @@ const loadUserStore = async () => {
         userSelectedTheme: false,
         language: defaultLang,
         notificationsEnabled: false,
+        hasAskedForNotifications: false,
       });
     }
   } catch (error) {

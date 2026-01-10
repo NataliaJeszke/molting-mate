@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -18,6 +18,7 @@ import { useUserStore } from "@/store/userStore";
 
 import { useTranslation } from "@/hooks/useTranslation";
 import { useIndividualTypeOptions } from "@/hooks/useIndividualTypeOptions";
+import { useDebounce } from "@/hooks/useDebounce";
 
 import { IndividualType } from "@/constants/IndividualType.enums";
 import { Colors, ThemeType } from "@/constants/Colors";
@@ -46,7 +47,18 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   );
   const { t } = useTranslation();
 
+  const [speciesInput, setSpeciesInput] = useState(current.spiderSpecies || "");
+
+  const debouncedSpecies = useDebounce(speciesInput, 300);
+
   const today = new Date();
+
+  useEffect(() => {
+    if (debouncedSpecies !== current.spiderSpecies) {
+      handleChange("spiderSpecies", debouncedSpecies);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSpecies]);
 
   const handleChange = (
     field: keyof typeof current,
@@ -61,6 +73,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   const handleReset = () => {
     resetFilters(viewType);
     setIndividualTypes([]);
+    setSpeciesInput("");
   };
 
   const showDateFromPicker = () => {
@@ -220,8 +233,8 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                   placeholder={t(
                     "components.commons.filters.species_placeholder",
                   )}
-                  value={current.spiderSpecies || ""}
-                  onChangeText={(text) => handleChange("spiderSpecies", text)}
+                  value={speciesInput}
+                  onChangeText={setSpeciesInput}
                   style={styles(currentTheme).filters__input}
                   placeholderTextColor={Colors[currentTheme].text + "80"}
                 />

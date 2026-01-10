@@ -20,43 +20,61 @@ export function useSpiderFilter<T extends SpiderDetailType>({
   statusLabel = "status",
 }: UseSpiderFilterParams<T>) {
   const filteredSpiders = useMemo(() => {
-    return spiders
-      .filter((spider) => !!spider[datePropertyKey])
-      .filter((spider) => {
-        const matchAge =
-          (filters.ageFrom === undefined || spider.age >= filters.ageFrom) &&
-          (filters.ageTo === undefined || spider.age <= filters.ageTo);
-        const matchGender =
-          !filters.individualType?.length ||
-          (filters.individualType || []).includes(
+    const hasActiveFilters =
+      filters.isActive ||
+      (filters.ageFrom !== undefined && filters.ageFrom !== 0) ||
+      (filters.ageTo !== undefined && filters.ageTo !== 20) ||
+      (filters.individualType && filters.individualType.length > 0) ||
+      filters.spiderSpecies ||
+      filters.dateFrom ||
+      filters.dateTo;
+
+    if (!hasActiveFilters) {
+      return spiders;
+    }
+
+    const parsedDateFrom = filters.dateFrom
+      ? parseDate(filters.dateFrom)
+      : null;
+    const parsedDateTo = filters.dateTo ? parseDate(filters.dateTo) : null;
+
+    return spiders.filter((spider) => {
+      if (!spider[datePropertyKey]) return false;
+
+      if (filters.ageFrom !== undefined && spider.age < filters.ageFrom)
+        return false;
+      if (filters.ageTo !== undefined && spider.age > filters.ageTo)
+        return false;
+
+      if (filters.individualType && filters.individualType.length > 0) {
+        if (
+          !filters.individualType.includes(
             spider.individualType! as IndividualType,
-          );
-        const matchSpecies = filters.spiderSpecies
-          ? spider.spiderSpecies?.includes(filters.spiderSpecies)
-          : true;
+          )
+        ) {
+          return false;
+        }
+      }
 
-        const parsedDateFrom = filters.dateFrom
-          ? parseDate(filters.dateFrom)
-          : null;
-        const parsedDateTo = filters.dateTo ? parseDate(filters.dateTo) : null;
+      if (
+        filters.spiderSpecies &&
+        !spider.spiderSpecies
+          ?.toLowerCase()
+          .includes(filters.spiderSpecies.toLowerCase())
+      ) {
+        return false;
+      }
 
+      if (parsedDateFrom || parsedDateTo) {
         const spiderDate = parseDate(spider[datePropertyKey] as string);
+        if (spiderDate === null) return false;
 
-        const matchDateFrom = parsedDateFrom
-          ? spiderDate !== null && spiderDate >= parsedDateFrom
-          : true;
-        const matchDateTo = parsedDateTo
-          ? spiderDate !== null && spiderDate <= parsedDateTo
-          : true;
+        if (parsedDateFrom && spiderDate < parsedDateFrom) return false;
+        if (parsedDateTo && spiderDate > parsedDateTo) return false;
+      }
 
-        return (
-          matchAge &&
-          matchGender &&
-          matchSpecies &&
-          matchDateFrom &&
-          matchDateTo
-        );
-      });
+      return true;
+    });
   }, [spiders, filters, datePropertyKey]);
 
   return filteredSpiders;

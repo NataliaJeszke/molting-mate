@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { View, ScrollView, Image, StyleSheet, Dimensions } from "react-native";
+import { View, ScrollView, Image, StyleSheet, useWindowDimensions } from "react-native";
 
 import { useUserStore } from "@/store/userStore";
 
@@ -19,9 +19,8 @@ const defaultSpiderImages = [
   require("@/assets/images/spider-gallery-3.jpg"),
 ];
 
-const { width } = Dimensions.get("window");
-
 const SpiderGallery = ({ spiders }: SpiderGalleryProps) => {
+  const { width } = useWindowDimensions();
   const scrollRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { currentTheme } = useUserStore();
@@ -64,7 +63,7 @@ const SpiderGallery = ({ spiders }: SpiderGalleryProps) => {
           {imagesToShow.map((image, index) => (
             <View
               key={index}
-              style={styles(currentTheme)["gallery__image-container"]}
+              style={[styles(currentTheme)["gallery__image-container"], { width }]}
             >
               <Image
                 source={image}
@@ -99,7 +98,6 @@ const styles = (theme: ThemeType) =>
       marginBottom: 16,
     },
     "gallery__image-container": {
-      width: width,
       height: 200,
       overflow: "hidden",
     },

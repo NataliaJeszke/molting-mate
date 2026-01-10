@@ -19,3 +19,5 @@ export type Spider = {
   nextFeedingDate?: string;
   documentUris?: string[];
 };
+
+export { IndividualType };
