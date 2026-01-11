@@ -89,6 +89,8 @@ export default function RootLayout() {
             options={{
               presentation: "card",
               title: t("spider-form.title"),
+              headerBackTitle: t("spider-detail.back"),
+              headerTintColor: Colors[currentTheme].tint,
             }}
           />
           <Stack.Screen

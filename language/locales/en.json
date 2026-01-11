@@ -251,8 +251,9 @@
   },
   "upcoming-feeding-list": {
     "title": "Upcoming Feeding",
-    "info": "List of spiders to be fed in 1–3 days",
+    "info": "List of spiders to be fed today and in the next few days",
     "status": "IN {{i}} {{days}}",
+    "statusToday": "TODAY",
     "day": "day",
     "days": "days"
   },

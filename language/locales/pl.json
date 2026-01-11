@@ -252,8 +252,9 @@
   },
   "upcoming-feeding-list": {
     "title": "Zbliżające się karmienie",
-    "info": "Lista pająków do nakarmienia za 1–3 dni",
+    "info": "Lista pająków do nakarmienia dziś i w najbliższych dniach",
     "status": "ZA {{i}} {{days}}",
+    "statusToday": "DZISIAJ",
     "day": "dzień",
     "days": "dni"
   },

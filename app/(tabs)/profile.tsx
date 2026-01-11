@@ -13,7 +13,7 @@ import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
 import WrapperComponent from "@/components/ui/WrapperComponent";
 import CardComponent from "@/components/ui/CardComponent";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTranslation } from "@/hooks/useTranslation";
 import * as Notifications from "expo-notifications";
 
@@ -49,9 +49,7 @@ export default function ProfileScreen() {
         <View style={styles(currentTheme).profileHeader}>
           <View style={styles(currentTheme).avatarContainer}>
             <View style={styles(currentTheme).avatar}>
-              <ThemedText style={styles(currentTheme).avatarInitial}>
-                U
-              </ThemedText>
+              <MaterialCommunityIcons name="spider" size={50} color="#fff" />
             </View>
           </View>
           <ThemedText type="title" style={styles(currentTheme).username}>

@@ -8,13 +8,12 @@ import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import { Colors, ThemeType } from "@/constants/Colors";
 import { Spider } from "@/models/Spider.model";
 import { ExtendedSpider } from "@/core/FeedingListComponent/FeedingListComponent";
-import { useUserStore } from "@/store/userStore";
 
 type Props = {
   spider: any;
   isLast: boolean;
   viewType?: ViewTypes;
-  currentTheme: string;
+  currentTheme: ThemeType;
   t: (key: string) => string;
   toggleFavourite: (id: string, isFav: boolean) => void;
 };
@@ -23,13 +22,16 @@ const SpiderListItemComponent = ({
   spider,
   isLast,
   viewType,
+  currentTheme,
   t,
   toggleFavourite,
 }: Props) => {
   const router = useRouter();
-  const { currentTheme } = useUserStore();
 
-  const componentStyles = useMemo(() => styles(currentTheme), [currentTheme]);
+  const componentStyles = useMemo(
+    () => styles(currentTheme),
+    [currentTheme],
+  );
 
   const renderStatusIcon = (spider: Spider | ExtendedSpider) => {
     if (spider.status === FeedingStatus.HUNGRY) {
@@ -276,7 +278,8 @@ export const SpiderListItem = React.memo(
       prevProps.spider.status === nextProps.spider.status &&
       prevProps.spider.nextFeedingDate === nextProps.spider.nextFeedingDate &&
       prevProps.isLast === nextProps.isLast &&
-      prevProps.viewType === nextProps.viewType
+      prevProps.viewType === nextProps.viewType &&
+      prevProps.currentTheme === nextProps.currentTheme
     );
   },
 );

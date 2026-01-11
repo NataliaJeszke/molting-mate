@@ -565,7 +565,7 @@ const styles = (theme: ThemeType) =>
       alignItems: "center",
     },
     selectedRadioButton: {
-      backgroundColor: "#4CAF50",
+      backgroundColor: Colors[theme].tint,
     },
 
     selectedText: {

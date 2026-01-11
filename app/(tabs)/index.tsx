@@ -102,7 +102,7 @@ export default function HomeScreen() {
             style={[
               styles(currentTheme).fabItemButton,
               {
-                backgroundColor: Colors[currentTheme].tint || "#4CAF50",
+                backgroundColor: Colors[currentTheme].tint,
               },
             ]}
             onPress={() => {

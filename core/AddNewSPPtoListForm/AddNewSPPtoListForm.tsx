@@ -329,7 +329,7 @@ const styles = (theme: ThemeType) =>
       marginBottom: 10,
     },
     "species-manager__add-button": {
-      backgroundColor: "#4CAF50",
+      backgroundColor: Colors[theme].tint,
       padding: 12,
       borderRadius: 4,
       alignItems: "center",

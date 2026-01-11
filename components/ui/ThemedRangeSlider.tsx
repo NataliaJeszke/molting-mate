@@ -189,7 +189,7 @@ const styles = (theme: ThemeType) =>
     },
     "range-slider__track--active": {
       height: ACTIVE_TRACK_HEIGHT,
-      backgroundColor: Colors[theme].input.borderColor || "#4caf50",
+      backgroundColor: Colors[theme].tint,
       position: "absolute",
       borderRadius: ACTIVE_TRACK_HEIGHT / 1,
       top: (THUMB_SIZE - ACTIVE_TRACK_HEIGHT) / 2,
