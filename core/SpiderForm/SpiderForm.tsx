@@ -48,7 +48,7 @@ export default function SpiderForm() {
   const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
   const addNewSpider = useSpidersStore((state: any) => state.addNewSpider);
   const updateSpider = useSpidersStore((state: any) => state.updateSpider);
-  const { addSpeciesToDb } = useSpiderSpeciesStore();
+  const { addSpeciesToDb, speciesOptions } = useSpiderSpeciesStore();
 
   const [name, setName] = useState<string>();
   const [age, setAge] = useState<number | null>(null);
@@ -74,7 +74,11 @@ export default function SpiderForm() {
       if (spiderToEdit) {
         setName(spiderToEdit.name);
         setAge(spiderToEdit.age);
-        setSpiderSpecies(Number(spiderToEdit.spiderSpecies));
+        // Find species ID by name from speciesOptions
+        const speciesMatch = speciesOptions.find(
+          (s) => s.label === spiderToEdit.spiderSpecies,
+        );
+        setSpiderSpecies(speciesMatch ? speciesMatch.value : null);
         setIndividualType(spiderToEdit.individualType as IndividualType);
         setLastFed(spiderToEdit.lastFed);
         setFeedingFrequency(spiderToEdit.feedingFrequency);
@@ -91,7 +95,7 @@ export default function SpiderForm() {
       setLastMolt("");
       setImageUri(undefined);
     }
-  }, [id, spiders]);
+  }, [id, spiders, speciesOptions]);
 
   const handleSubmit = async () => {
     let speciesId = spiderSpecies;
@@ -163,13 +167,15 @@ export default function SpiderForm() {
 
   const clearForm = () => {
     setName("");
-    setAge(0);
+    setAge(null);
     setSpiderSpecies(null);
     setIndividualType(undefined);
     setLastFed("");
     setFeedingFrequency("");
     setLastMolt("");
     setImageUri(undefined);
+    setDocumentUri(undefined);
+    newSpeciesLabelRef.current = null;
   };
 
   const handleChooseImage = async () => {
@@ -350,18 +356,21 @@ export default function SpiderForm() {
             {t("spider-form.age")}
           </ThemedText>
           <TextInput
-            value={age?.toString() ?? t("spider-form.age_placeholder")}
+            value={age !== null ? age.toString() : ""}
             onChangeText={(text) => {
-              const parsedAge = parseInt(text, 10);
-              if (isNaN(parsedAge)) {
-                setAge(0);
+              if (text === "") {
+                setAge(null);
               } else {
-                setAge(parsedAge);
+                const parsedAge = parseInt(text, 10);
+                if (!isNaN(parsedAge)) {
+                  setAge(parsedAge);
+                }
               }
             }}
             keyboardType="numeric"
             style={styles(currentTheme).input}
             placeholder={t("spider-form.age_placeholder")}
+            placeholderTextColor={Colors[currentTheme].input.placeholder}
           />
 
           <ThemedText style={styles(currentTheme).label}>

@@ -341,7 +341,7 @@
       },
       "spider-document": {
         "title": "Documentation",
-        "no_document": "No document. Click plus to add.",
+        "no_document": "Spider has no added documents.",
         "info": "Only images are supported as documents",
         "button": {
           "view": "Preview",

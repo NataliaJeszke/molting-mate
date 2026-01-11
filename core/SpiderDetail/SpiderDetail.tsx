@@ -3,6 +3,7 @@ import { View, Image, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import { router, useFocusEffect } from "expo-router";
 
 import { useUserStore } from "@/store/userStore";
 import { useSpidersStore } from "@/store/spidersStore";
@@ -17,13 +18,15 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import HistoryInformation from "@/components/commons/HistoryInformation/HistoryInformation";
 import SpiderDocument from "@/components/commons/SpiderDocument/SpiderDocument";
+
 import { ViewTypes } from "@/constants/ViewTypes.enums";
-import { router, useFocusEffect } from "expo-router";
+import { IndividualType } from "@/constants/IndividualType.enums";
+
 import { SpiderDetailType } from "@/db/database";
+
 import { useFeedingStatusLabel } from "@/hooks/useFeedingStatusLabel";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useIndividualTypeLabel } from "@/hooks/useIndividualTypeTranslation";
-import { IndividualType } from "@/constants/IndividualType.enums";
 
 interface Props {
   spiderId: string | string[] | undefined;

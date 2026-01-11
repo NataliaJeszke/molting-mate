@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
+import { useFocusEffect } from "expo-router";
 
 import { SpiderDetailType } from "@/db/database";
 import { useFiltersStore } from "@/store/filtersStore";
@@ -17,10 +18,11 @@ const CollectionListComponent = () => {
   const sortType = useSpidersStore((state: any) => state.sortType);
   const sortOrder = useSpidersStore((state: any) => state.sortOrder);
 
-  useEffect(() => {
-    fetchSpiders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchSpiders();
+    }, [fetchSpiders]),
+  );
 
   const filters = useFiltersStore((state) => state.filters.collection);
   const { t } = useTranslation();

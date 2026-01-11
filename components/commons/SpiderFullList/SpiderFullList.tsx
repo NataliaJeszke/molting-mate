@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import { View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 
@@ -24,18 +24,13 @@ type SpiderListProps = {
 };
 
 const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
-  const [spiders, setSpiders] = useState<SpiderItem[]>(data);
   const { currentTheme } = useUserStore();
   const updateSpider = useSpidersStore((state: any) => state.updateSpider);
   const { t } = useTranslation();
 
-  useEffect(() => {
-    setSpiders(data);
-  }, [data]);
-
   const toggleFavourite = useCallback(
     async (spiderId: string, isFavourite: boolean) => {
-      const spider = spiders.find((s) => s.id === spiderId);
+      const spider = data.find((s) => s.id === spiderId);
       if (!spider) return;
 
       const updatedSpider = {
@@ -46,15 +41,11 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
 
       try {
         await updateSpider(updatedSpider);
-
-        setSpiders((prev) =>
-          prev.map((s) => (s.id === spiderId ? updatedSpider : s)),
-        );
       } catch (error) {
         console.error("Error:", error);
       }
     },
-    [spiders, updateSpider],
+    [data, updateSpider],
   );
 
   const renderItem = useCallback(

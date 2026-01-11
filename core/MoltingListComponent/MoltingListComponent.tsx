@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
+import { useFocusEffect } from "expo-router";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import SpiderSectionHeader from "../../components/commons/SpiderSectionHeader/SpiderSectionHeader";
@@ -19,10 +20,11 @@ const MoltingListComponent = () => {
   const { t } = useTranslation();
   const viewType = ViewTypes.VIEW_MOLTING;
 
-  useEffect(() => {
-    fetchSpiders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchSpiders();
+    }, [fetchSpiders]),
+  );
 
   const filteredSpiders = useSpiderFilter({
     spiders,

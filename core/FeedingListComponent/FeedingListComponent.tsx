@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
+import { useFocusEffect } from "expo-router";
 
 import { SpiderDetailType } from "@/db/database";
 import { useFiltersStore } from "@/store/filtersStore";
@@ -35,10 +36,11 @@ const FeedingListComponent = () => {
   const filters = useFiltersStore((state) => state.filters.feeding);
   const viewType = ViewTypes.VIEW_FEEDING;
 
-  useEffect(() => {
-    fetchSpiders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchSpiders();
+    }, [fetchSpiders]),
+  );
 
   const filteredSpiders = useSpiderFilter({
     spiders,
