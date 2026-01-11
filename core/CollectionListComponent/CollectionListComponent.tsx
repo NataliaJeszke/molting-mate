@@ -7,17 +7,20 @@ import { ViewTypes } from "@/constants/ViewTypes.enums";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import SpiderSectionHeader from "@/components/commons/SpiderSectionHeader/SpiderSectionHeader";
-import { useSpidersStore } from "@/store/spidersStore";
+import {
+  useSpidersStore,
+  useSpiders,
+  useSortConfig,
+} from "@/store/spidersStore";
 import { useTranslation } from "@/hooks/useTranslation";
 
 const CollectionListComponent = () => {
-  const spiders = useSpidersStore(
-    (state: any) => state.spiders,
-  ) as SpiderDetailType[];
-  const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
-  const sortType = useSpidersStore((state: any) => state.sortType);
-  const sortOrder = useSpidersStore((state: any) => state.sortOrder);
+  // Use the custom hook that reacts to store changes
+  const spiders = useSpiders();
+  const fetchSpiders = useSpidersStore((state) => state.fetchSpiders);
+  const { sortType, sortOrder } = useSortConfig();
 
+  // Fetch on initial focus
   useFocusEffect(
     useCallback(() => {
       fetchSpiders();
@@ -28,9 +31,11 @@ const CollectionListComponent = () => {
   const { t } = useTranslation();
   const viewType = ViewTypes.VIEW_COLLECTION;
 
+  // Memoized date parser
   const parseDateMemo = useMemo(() => {
     const cache = new Map<string, number>();
     return (dateString: string): number => {
+      if (!dateString) return 0;
       if (!cache.has(dateString)) {
         const date = new Date(dateString);
         cache.set(dateString, date.getTime());
@@ -39,6 +44,7 @@ const CollectionListComponent = () => {
     };
   }, []);
 
+  // Memoized filtered and sorted spiders
   const filteredSpiders = useMemo(() => {
     const hasActiveFilters =
       filters.isActive ||
@@ -47,61 +53,48 @@ const CollectionListComponent = () => {
       (filters.individualType && filters.individualType.length > 0) ||
       filters.spiderSpecies;
 
+    let result: SpiderDetailType[];
+
     if (!hasActiveFilters) {
-      const allSpiders = [...spiders];
+      result = [...spiders];
+    } else {
+      result = spiders.filter((spider) => {
+        if (
+          filters.ageFrom !== undefined &&
+          filters.ageFrom !== 0 &&
+          spider.age < filters.ageFrom
+        )
+          return false;
+        if (
+          filters.ageTo !== undefined &&
+          filters.ageTo !== 20 &&
+          spider.age > filters.ageTo
+        )
+          return false;
 
-      if (sortType) {
-        allSpiders.sort((a, b) => {
-          const aValue = a[sortType as keyof SpiderDetailType];
-          const bValue = b[sortType as keyof SpiderDetailType];
+        if (
+          filters.individualType?.length &&
+          !filters.individualType.includes(spider.individualType)
+        ) {
+          return false;
+        }
 
-          if (!aValue || !bValue) return 0;
+        if (
+          filters.spiderSpecies &&
+          !spider.spiderSpecies
+            ?.toLowerCase()
+            .includes(filters.spiderSpecies.toLowerCase())
+        ) {
+          return false;
+        }
 
-          const aDate = typeof aValue === "string" ? parseDateMemo(aValue) : 0;
-          const bDate = typeof bValue === "string" ? parseDateMemo(bValue) : 0;
-
-          return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
-        });
-      }
-
-      return allSpiders;
+        return true;
+      });
     }
 
-    const filtered = spiders.filter((spider) => {
-      if (
-        filters.ageFrom !== undefined &&
-        filters.ageFrom !== 0 &&
-        spider.age < filters.ageFrom
-      )
-        return false;
-      if (
-        filters.ageTo !== undefined &&
-        filters.ageTo !== 20 &&
-        spider.age > filters.ageTo
-      )
-        return false;
-
-      if (
-        filters.individualType?.length &&
-        !filters.individualType.includes(spider.individualType)
-      ) {
-        return false;
-      }
-
-      if (
-        filters.spiderSpecies &&
-        !spider.spiderSpecies
-          ?.toLowerCase()
-          .includes(filters.spiderSpecies.toLowerCase())
-      ) {
-        return false;
-      }
-
-      return true;
-    });
-
+    // Apply sorting
     if (sortType) {
-      filtered.sort((a, b) => {
+      result.sort((a, b) => {
         const aValue = a[sortType as keyof SpiderDetailType];
         const bValue = b[sortType as keyof SpiderDetailType];
 
@@ -114,7 +107,7 @@ const CollectionListComponent = () => {
       });
     }
 
-    return filtered;
+    return result;
   }, [spiders, filters, sortType, sortOrder, parseDateMemo]);
 
   return (

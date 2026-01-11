@@ -6,11 +6,11 @@ import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { SpiderListItem } from "@/models/SpiderList.model";
 
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
-import { Spider } from "@/db/database";
+import { SpiderDetailType } from "@/db/database";
 import { useTranslation } from "@/hooks/useTranslation";
 
 interface UpcomingFeedingListComponentProps {
-  spiders: Spider[];
+  spiders: SpiderDetailType[];
 }
 
 const UpcomingFeedingListComponent = ({

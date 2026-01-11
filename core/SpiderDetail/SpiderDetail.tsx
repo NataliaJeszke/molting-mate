@@ -1,12 +1,12 @@
-import { useCallback, useState } from "react";
+import { useState, useEffect } from "react";
 import { View, Image, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 
 import { useUserStore } from "@/store/userStore";
-import { useSpidersStore } from "@/store/spidersStore";
+import { useSpidersStore, useSpider } from "@/store/spidersStore";
 import { Colors, ThemeType } from "@/constants/Colors";
 import {
   getNextFeedingDate,
@@ -22,8 +22,6 @@ import SpiderDocument from "@/components/commons/SpiderDocument/SpiderDocument";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 import { IndividualType } from "@/constants/IndividualType.enums";
 
-import { SpiderDetailType } from "@/db/database";
-
 import { useFeedingStatusLabel } from "@/hooks/useFeedingStatusLabel";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useIndividualTypeLabel } from "@/hooks/useIndividualTypeTranslation";
@@ -36,6 +34,9 @@ const SpiderDetails = ({ spiderId }: Props) => {
   const { currentTheme } = useUserStore();
   const { t } = useTranslation();
 
+  const spiderIdString = Array.isArray(spiderId) ? spiderId[0] : spiderId || "";
+  const spiderData = useSpider(spiderIdString);
+
   const getSpiderById = useSpidersStore((state: any) => state.getSpiderById);
   const addDocumentToSpider = useSpidersStore(
     (state: any) => state.addDocumentToSpider,
@@ -46,34 +47,19 @@ const SpiderDetails = ({ spiderId }: Props) => {
   const [showFeedingHistory, setShowFeedingHistory] = useState(false);
   const [showMoltingHistory, setShowMoltingHistory] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
-  const [feedingHistoryData, setFeedingHistoryData] = useState<any[] | null>(
-    null,
-  );
-  const [moltingHistoryData, setMoltingHistoryData] = useState<any[] | null>(
-    null,
-  );
-  const [documentsData, setDocumentsData] = useState<any[] | null>(null);
-  const [spiderData, setSpiderData] = useState<SpiderDetailType | null>(null);
 
   const getFeedingStatusLabel = useFeedingStatusLabel();
   const getIndividualTypeLabel = useIndividualTypeLabel();
 
-  useFocusEffect(
-    useCallback(() => {
-      const fetchData = async () => {
-        const data = await getSpiderById(spiderId);
-        if (!data) return;
-        setSpiderData(data);
-        setDocumentsData(data.documents);
-        setFeedingHistoryData(data.feedingHistory);
-        setMoltingHistoryData(data.moltingHistory);
-      };
+  const feedingHistoryData = spiderData?.feedingHistory ?? null;
+  const moltingHistoryData = spiderData?.moltingHistory ?? null;
+  const documentsData = spiderData?.documents ?? null;
 
-      fetchData();
-
-      return;
-    }, []),
-  );
+  useEffect(() => {
+    if (!spiderData && spiderIdString) {
+      getSpiderById(spiderIdString);
+    }
+  }, [spiderIdString, spiderData, getSpiderById]);
 
   const nextFeedingDate = spiderData
     ? getNextFeedingDate(spiderData.lastFed, spiderData.feedingFrequency)
@@ -125,15 +111,8 @@ const SpiderDetails = ({ spiderId }: Props) => {
   };
 
   const handleChooseDocument = () => {
-    const handleAddDocument = async (spiderId: string, uri: string) => {
-      const success = await addDocumentToSpider(spiderId, uri);
-      if (!success) return;
-
-      const data = await getSpiderById(spiderId);
-      if (!data) return;
-
-      const { documents } = data;
-      setDocumentsData(documents);
+    const handleAddDocument = async (id: string, uri: string) => {
+      await addDocumentToSpider(id, uri);
     };
 
     Alert.alert(
@@ -219,13 +198,9 @@ const SpiderDetails = ({ spiderId }: Props) => {
           onPress: async () => {
             const { success } = await deleteDocument(docId);
 
-            if (success && spiderData) {
-              const data = await getSpiderById(spiderData.id);
-              if (!data) return;
-
-              const { documents } = data;
-              setDocumentsData(documents);
-            } else {
+            if (success && spiderIdString) {
+              await getSpiderById(spiderIdString);
+            } else if (!success) {
               Alert.alert(
                 t("spider-detail.handle-choose-document.alert.error"),
                 t("spider-detail.handle-choose-document.alert.error_info"),

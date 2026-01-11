@@ -272,6 +272,9 @@ export const SpiderListItem = React.memo(
   (prevProps, nextProps) => {
     return (
       prevProps.spider.id === nextProps.spider.id &&
+      prevProps.spider.name === nextProps.spider.name &&
+      prevProps.spider.imageUri === nextProps.spider.imageUri &&
+      prevProps.spider.spiderSpecies === nextProps.spider.spiderSpecies &&
       prevProps.spider.isFavourite === nextProps.spider.isFavourite &&
       prevProps.spider.lastFed === nextProps.spider.lastFed &&
       prevProps.spider.lastMolt === nextProps.spider.lastMolt &&

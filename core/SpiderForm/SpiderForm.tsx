@@ -45,10 +45,16 @@ export default function SpiderForm() {
   const individualTypeOptions = useIndividualTypeOptions();
   const feedingOptions = useFeedingFrequencyOptions();
   const { currentTheme } = useUserStore();
-  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
-  const addNewSpider = useSpidersStore((state: any) => state.addNewSpider);
-  const updateSpider = useSpidersStore((state: any) => state.updateSpider);
+
+  // Use normalized store - access byId for efficient lookups
+  const spiderById = useSpidersStore((state) => state.byId);
+  const allIds = useSpidersStore((state) => state.allIds);
+  const addNewSpider = useSpidersStore((state) => state.addNewSpider);
+  const updateSpider = useSpidersStore((state) => state.updateSpider);
   const { addSpeciesToDb, speciesOptions } = useSpiderSpeciesStore();
+
+  // Derive spiders array for compatibility
+  const spiders = allIds.map((spiderId) => spiderById[spiderId]).filter(Boolean);
 
   const [name, setName] = useState<string>();
   const [age, setAge] = useState<number | null>(null);
@@ -142,17 +148,19 @@ export default function SpiderForm() {
     };
 
     if (id) {
-      updateSpider(spiderData);
+      // Cast to any to allow spiderSpecies as number (ID) - store handles conversion
+      updateSpider(spiderData as any);
       Alert.alert(
         t("spider-form.handle-submit.alert.success"),
         `${t("spider-form.handle-submit.alert.success_sub")} "${name}"`,
       );
     } else {
+      // Cast to any to allow spiderSpecies as number (ID) - store handles conversion
       await addNewSpider({
         ...spiderData,
         status: "",
         nextFeedingDate: "",
-      });
+      } as any);
       await addFeedingEntry(spiderData.id, lastFed);
       await addMoltingEntry(spiderData.id, lastMolt);
       await addDocumentToSpider(spiderData.id, spiderData.documentUri);

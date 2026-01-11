@@ -1,6 +1,5 @@
-import { Spider } from "@/db/database";
-
-export const getRandomUserImages = (spiders: Spider[]) => {
+// Accept any object with imageUri field
+export const getRandomUserImages = (spiders: Array<{ imageUri?: string | null }>) => {
   const userImages = spiders
     .map((spider) => spider.imageUri)
     .filter((uri): uri is string => !!uri);

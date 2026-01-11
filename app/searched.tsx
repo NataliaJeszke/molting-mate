@@ -2,13 +2,13 @@ import { useMemo } from "react";
 import { ScrollView } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 
-import { useSpidersStore } from "@/store/spidersStore";
+import { useSpiders } from "@/store/spidersStore";
 
 import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import WrapperComponent from "@/components/ui/WrapperComponent";
 
 export default function Filtered() {
-  const spiders = useSpidersStore((state: any) => state.spiders);
+  const spiders = useSpiders();
   const { query } = useLocalSearchParams();
 
   const filteredSpiders = useMemo(

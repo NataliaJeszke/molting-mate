@@ -2,12 +2,12 @@ import React, { useMemo } from "react";
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
 import { getFeedingStatus } from "../../utils/feedingUtils";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
-import { Spider } from "@/db/database";
+import { SpiderDetailType } from "@/db/database";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { useTranslation } from "@/hooks/useTranslation";
 
 interface PostFeedingListComponentProps {
-  spiders: Spider[];
+  spiders: SpiderDetailType[];
 }
 
 const PostFeedingListComponent = ({

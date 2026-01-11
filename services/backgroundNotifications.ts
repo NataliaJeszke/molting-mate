@@ -2,12 +2,15 @@ import * as BackgroundFetch from "expo-background-fetch";
 import * as TaskManager from "expo-task-manager";
 import * as Notifications from "expo-notifications";
 import * as SQLite from "expo-sqlite";
+
+import { parse } from "date-fns";
+
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
-import { parse } from "date-fns";
 
 const BACKGROUND_FETCH_TASK = "background-feeding-notification";
 const NOTIFICATION_ID = "daily-feeding-reminder";
+const NOTIFICATION_HOUR = 12;
 
 const getFeedingStatus = (
   lastFed: string,
@@ -40,6 +43,8 @@ const getFeedingStatus = (
 };
 
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+  console.log("🔄 Daily background task running at:", new Date().toISOString());
+
   try {
     const db = await SQLite.openDatabaseAsync("spiders.db");
 
@@ -48,69 +53,67 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
       feedingFrequency: string;
     }>(`SELECT lastFed, feedingFrequency FROM spiders`);
 
-    const spidersToFeed = spiders.filter((spider) => {
+    const spidersToFeedToday = spiders.filter((spider) => {
       const status = getFeedingStatus(
         spider.lastFed,
         spider.feedingFrequency as FeedingFrequency,
       );
-      return status === FeedingStatus.FEED_TODAY;
+      return (
+        status === FeedingStatus.FEED_TODAY || status === FeedingStatus.HUNGRY
+      );
     }).length;
 
-    if (spidersToFeed === 0) {
-      await Notifications.cancelScheduledNotificationAsync(NOTIFICATION_ID);
+    await Notifications.cancelScheduledNotificationAsync(NOTIFICATION_ID);
+
+    if (spidersToFeedToday === 0) {
+      console.log("✅ No spiders to feed today");
       return BackgroundFetch.BackgroundFetchResult.NoData;
     }
 
-    const currentHour = new Date().getHours();
-    if (currentHour < 11 || currentHour > 13) {
-      const now = new Date();
-      const triggerDate = new Date();
-      triggerDate.setHours(12, 0, 0, 0);
+    const now = new Date();
+    const triggerDate = new Date();
+    triggerDate.setHours(NOTIFICATION_HOUR, 0, 0, 0);
 
-      if (now.getHours() >= 12) {
-        triggerDate.setDate(triggerDate.getDate() + 1);
-      }
+    const secondsUntilNoon = Math.floor(
+      (triggerDate.getTime() - now.getTime()) / 1000,
+    );
 
-      const secondsUntilTrigger = Math.floor(
-        (triggerDate.getTime() - now.getTime()) / 1000,
+    if (secondsUntilNoon > 0) {
+      await Notifications.scheduleNotificationAsync({
+        identifier: NOTIFICATION_ID,
+        content: {
+          title: "🕷️ Czas na karmienie!",
+          body:
+            spidersToFeedToday === 1
+              ? "Masz 1 pająka do nakarmienia dzisiaj"
+              : `Masz ${spidersToFeedToday} pająków do nakarmienia dzisiaj`,
+          sound: "default",
+          badge: spidersToFeedToday,
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+          seconds: secondsUntilNoon,
+        },
+      });
+
+      console.log(
+        `📅 Notification scheduled for 12:00 (in ${Math.floor(secondsUntilNoon / 60)} minutes)`,
       );
-
-      if (secondsUntilTrigger > 0) {
-        await Notifications.cancelScheduledNotificationAsync(NOTIFICATION_ID);
-        await Notifications.scheduleNotificationAsync({
-          identifier: NOTIFICATION_ID,
-          content: {
-            title: "🕷️ Karmienie pająka",
-            body:
-              spidersToFeed === 1
-                ? "Dzisiaj nakarm pająka"
-                : "Dzisiaj masz do nakarmienia pająki",
-            sound: "default",
-            badge: spidersToFeed,
-          },
-          trigger: {
-            type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-            seconds: secondsUntilTrigger,
-          },
-        });
-      }
-
-      return BackgroundFetch.BackgroundFetchResult.NewData;
+    } else {
+      await Notifications.scheduleNotificationAsync({
+        identifier: NOTIFICATION_ID,
+        content: {
+          title: "🕷️ Czas na karmienie!",
+          body:
+            spidersToFeedToday === 1
+              ? "Masz 1 pająka do nakarmienia dzisiaj"
+              : `Masz ${spidersToFeedToday} pająków do nakarmienia dzisiaj`,
+          sound: "default",
+          badge: spidersToFeedToday,
+        },
+        trigger: null,
+      });
     }
-
-    await Notifications.scheduleNotificationAsync({
-      identifier: NOTIFICATION_ID,
-      content: {
-        title: "🕷️ Karmienie pająka",
-        body:
-          spidersToFeed === 1
-            ? "Dzisiaj nakarm pająka"
-            : "Dzisiaj masz do nakarmienia pająki",
-        sound: "default",
-        badge: spidersToFeed,
-      },
-      trigger: null,
-    });
 
     return BackgroundFetch.BackgroundFetchResult.NewData;
   } catch (error) {
@@ -119,7 +122,7 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
   }
 });
 
-export async function registerBackgroundFetchAsync() {
+export async function registerBackgroundFetchAsync(): Promise<boolean> {
   try {
     const status = await BackgroundFetch.getStatusAsync();
 
@@ -127,7 +130,6 @@ export async function registerBackgroundFetchAsync() {
       status === BackgroundFetch.BackgroundFetchStatus.Restricted ||
       status === BackgroundFetch.BackgroundFetchStatus.Denied
     ) {
-      console.log("⚠️ Background fetch is restricted or denied");
       return false;
     }
 
@@ -137,10 +139,13 @@ export async function registerBackgroundFetchAsync() {
 
     if (!isRegistered) {
       await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-        minimumInterval: 60 * 60,
+        minimumInterval: 24 * 60 * 60,
         stopOnTerminate: false,
         startOnBoot: true,
       });
+      console.log("✅ Background task registered (runs once daily)");
+    } else {
+      console.log("ℹ️ Background task already registered");
     }
 
     return true;
@@ -150,7 +155,7 @@ export async function registerBackgroundFetchAsync() {
   }
 }
 
-export async function unregisterBackgroundFetchAsync() {
+export async function unregisterBackgroundFetchAsync(): Promise<void> {
   try {
     const isRegistered = await TaskManager.isTaskRegisteredAsync(
       BACKGROUND_FETCH_TASK,
@@ -158,8 +163,36 @@ export async function unregisterBackgroundFetchAsync() {
 
     if (isRegistered) {
       await BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
+      console.log("✅ Background task unregistered");
     }
+
+    await Notifications.cancelScheduledNotificationAsync(NOTIFICATION_ID);
   } catch (error) {
     console.error("❌ Error unregistering background task:", error);
+  }
+}
+
+export async function checkFeedingNotificationsNow(): Promise<void> {
+  try {
+    const db = await SQLite.openDatabaseAsync("spiders.db");
+
+    const spiders = await db.getAllAsync<{
+      lastFed: string;
+      feedingFrequency: string;
+    }>(`SELECT lastFed, feedingFrequency FROM spiders`);
+
+    const spidersToFeedToday = spiders.filter((spider) => {
+      const status = getFeedingStatus(
+        spider.lastFed,
+        spider.feedingFrequency as FeedingFrequency,
+      );
+      return (
+        status === FeedingStatus.FEED_TODAY || status === FeedingStatus.HUNGRY
+      );
+    }).length;
+
+    await Notifications.setBadgeCountAsync(spidersToFeedToday);
+  } catch (error) {
+    console.error("❌ Error checking notifications:", error);
   }
 }

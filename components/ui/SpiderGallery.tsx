@@ -7,10 +7,10 @@ import { getRandomUserImages } from "@/utils/getRandomUserImages";
 import { Colors, ThemeType } from "@/constants/Colors";
 
 import CardComponent from "@/components/ui/CardComponent";
-import { Spider } from "@/db/database";
+import { SpiderDetailType } from "@/db/database";
 
 interface SpiderGalleryProps {
-  spiders: Spider[];
+  spiders: SpiderDetailType[];
 }
 
 const defaultSpiderImages = [

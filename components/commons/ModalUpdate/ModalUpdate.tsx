@@ -13,14 +13,13 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { useLocalSearchParams } from "expo-router";
 import { BlurView } from "expo-blur";
 
-import { useSpidersStore } from "@/store/spidersStore";
+import { useSpidersStore, useSpider } from "@/store/spidersStore";
 import { useUserStore } from "@/store/userStore";
 
 import { Colors, ThemeType } from "@/constants/Colors";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
-import { Spider } from "@/db/database";
 import { useTranslation } from "@/hooks/useTranslation";
 
 type ModalUpdateProps = {
@@ -32,20 +31,22 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   const { id, type } = useLocalSearchParams();
   const { t } = useTranslation();
   const { currentTheme } = useUserStore();
-  const updateSpider = useSpidersStore((state: any) => state.updateSpider);
-  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
+  const updateSpider = useSpidersStore((state) => state.updateSpider);
+
+  // Get spider ID as string
+  const spiderId = Array.isArray(id) ? id[0] : id || "";
+  // Use reactive hook for current spider
+  const currentSpider = useSpider(spiderId);
+
   const [date, setDate] = useState("");
   const [age, setAge] = useState(0);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
   useEffect(() => {
-    if (id && type === "molting") {
-      const currentSpider = spiders.find((spider) => spider.id === id);
-      if (currentSpider?.age) {
-        setAge(currentSpider.age);
-      }
+    if (id && type === "molting" && currentSpider?.age) {
+      setAge(currentSpider.age);
     }
-  }, [id, type, spiders]);
+  }, [id, type, currentSpider]);
 
   const getTodayDate = () => {
     const today = new Date();
@@ -58,32 +59,22 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   const handleSubmit = async () => {
     let finalDate = date.trim() || getTodayDate();
 
-    if (finalDate && id && type) {
-      const currentSpider = spiders.find((spider) => spider.id === id);
-
-      if (currentSpider) {
+    if (finalDate && spiderId && type && currentSpider) {
+      try {
         if (type === "feeding") {
-          const updatedSpider = {
-            ...currentSpider,
+          await updateSpider({
+            id: spiderId,
             lastFed: finalDate,
-          };
-          try {
-            await updateSpider(updatedSpider);
-          } catch (error) {
-            console.error("Error during saving to database:", error);
-          }
+          });
         } else if (type === "molting") {
-          const updatedSpider = {
-            ...currentSpider,
+          await updateSpider({
+            id: spiderId,
             lastMolt: finalDate,
             age: age,
-          };
-          try {
-            await updateSpider(updatedSpider);
-          } catch (error) {
-            console.error("Error during saving to database:", error);
-          }
+          });
         }
+      } catch (error) {
+        console.error("Error during saving to database:", error);
       }
       onClose();
     }

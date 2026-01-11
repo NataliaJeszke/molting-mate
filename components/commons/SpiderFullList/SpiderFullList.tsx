@@ -25,27 +25,22 @@ type SpiderListProps = {
 
 const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
   const { currentTheme } = useUserStore();
-  const updateSpider = useSpidersStore((state: any) => state.updateSpider);
+  const updateSpider = useSpidersStore((state) => state.updateSpider);
   const { t } = useTranslation();
 
   const toggleFavourite = useCallback(
     async (spiderId: string, isFavourite: boolean) => {
-      const spider = data.find((s) => s.id === spiderId);
-      if (!spider) return;
-
-      const updatedSpider = {
-        ...spider,
-        isFavourite: !isFavourite,
-        status: spider.status ?? "",
-      };
-
       try {
-        await updateSpider(updatedSpider);
+        // Update only the isFavourite field
+        await updateSpider({
+          id: spiderId,
+          isFavourite: !isFavourite,
+        });
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error toggling favourite:", error);
       }
     },
-    [data, updateSpider],
+    [updateSpider],
   );
 
   const renderItem = useCallback(
@@ -62,15 +57,18 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
     [data.length, viewType, currentTheme, t, toggleFavourite],
   );
 
+  const keyExtractor = useCallback((item: SpiderItem) => item.id, []);
+
   return (
     <CardComponent customStyle={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
         <FlashList<SpiderItem>
           data={data}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={keyExtractor}
           renderItem={renderItem}
           drawDistance={500}
           contentContainerStyle={{ paddingBottom: 150 }}
+          extraData={data}
         />
       </View>
     </CardComponent>

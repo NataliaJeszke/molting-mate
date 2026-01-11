@@ -30,8 +30,7 @@ import {
   getAddSpiderStyle,
 } from "@/utils/animations.constants";
 
-import { Spider } from "@/db/database";
-import { useSpidersStore } from "@/store/spidersStore";
+import { useSpidersStore, useSpiders } from "@/store/spidersStore";
 import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useFeedingNotifications } from "@/hooks/useFeedingNotifications";
@@ -41,8 +40,10 @@ export default function HomeScreen() {
   const { currentTheme } = useUserStore();
   const [isFabOpen, setIsFabOpen] = useState(false);
   const [animation] = useState(new Animated.Value(0));
-  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
-  const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
+
+  // Use the reactive hook for spiders
+  const spiders = useSpiders();
+  const fetchSpiders = useSpidersStore((state) => state.fetchSpiders);
   const fetchSpecies = useSpiderSpeciesStore(
     (state: any) => state.fetchSpecies,
   );

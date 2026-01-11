@@ -16,7 +16,11 @@ import SpiderFullList from "@/components/commons/SpiderFullList/SpiderFullList";
 import SpiderSectionHeader from "@/components/commons/SpiderSectionHeader/SpiderSectionHeader";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
-import { useSpidersStore } from "@/store/spidersStore";
+import {
+  useSpidersStore,
+  useSpiders,
+  useSortConfig,
+} from "@/store/spidersStore";
 import { useTranslation } from "@/hooks/useTranslation";
 
 export type ExtendedSpider = Omit<SpiderDetailType, "status"> & {
@@ -26,16 +30,16 @@ export type ExtendedSpider = Omit<SpiderDetailType, "status"> & {
 
 const FeedingListComponent = () => {
   const { t } = useTranslation();
-  const spiders = useSpidersStore(
-    (state: any) => state.spiders,
-  ) as SpiderDetailType[];
-  const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
-  const sortType = useSpidersStore((state: any) => state.sortType);
-  const sortOrder = useSpidersStore((state: any) => state.sortOrder);
+
+  // Use the custom hook that reacts to store changes
+  const spiders = useSpiders();
+  const fetchSpiders = useSpidersStore((state) => state.fetchSpiders);
+  const { sortType, sortOrder } = useSortConfig();
 
   const filters = useFiltersStore((state) => state.filters.feeding);
   const viewType = ViewTypes.VIEW_FEEDING;
 
+  // Fetch on focus
   useFocusEffect(
     useCallback(() => {
       fetchSpiders();
@@ -48,9 +52,11 @@ const FeedingListComponent = () => {
     datePropertyKey: "lastFed",
   });
 
+  // Memoized date parser
   const parseDateMemo = useMemo(() => {
     const cache = new Map<string, Date | null>();
     return (dateString: string): Date | null => {
+      if (!dateString) return null;
       if (!cache.has(dateString)) {
         cache.set(dateString, parseDate(dateString));
       }
@@ -58,6 +64,7 @@ const FeedingListComponent = () => {
     };
   }, []);
 
+  // Memoized processed spiders with feeding status
   const processedSpiders: ExtendedSpider[] = useMemo(() => {
     const enriched = filteredSpiders.map((spider) => {
       const nextFeedingDate = getNextFeedingDate(

@@ -6,20 +6,23 @@ import SpiderSectionHeader from "../../components/commons/SpiderSectionHeader/Sp
 import { useFiltersStore } from "@/store/filtersStore";
 import { parseDate } from "@/utils/dateUtils";
 import { useSpiderFilter } from "@/hooks/useSpiderFilter";
-import { SpiderDetailType } from "@/db/database";
-import { useSpidersStore } from "@/store/spidersStore";
+import {
+  useSpidersStore,
+  useSpiders,
+  useSortConfig,
+} from "@/store/spidersStore";
 import { useTranslation } from "@/hooks/useTranslation";
 
 const MoltingListComponent = () => {
-  const spiders = useSpidersStore(
-    (state: any) => state.spiders,
-  ) as SpiderDetailType[];
-  const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
+  // Use the custom hook that reacts to store changes
+  const spiders = useSpiders();
+  const fetchSpiders = useSpidersStore((state) => state.fetchSpiders);
   const filters = useFiltersStore((state) => state.filters.molting);
-  const sortOrder = useSpidersStore((state: any) => state.sortOrder);
+  const { sortOrder } = useSortConfig();
   const { t } = useTranslation();
   const viewType = ViewTypes.VIEW_MOLTING;
 
+  // Fetch on focus
   useFocusEffect(
     useCallback(() => {
       fetchSpiders();
@@ -32,9 +35,11 @@ const MoltingListComponent = () => {
     datePropertyKey: "lastMolt",
   });
 
+  // Memoized date parser
   const parseDateMemo = useMemo(() => {
     const cache = new Map<string, Date | null>();
     return (dateString: string): Date | null => {
+      if (!dateString) return null;
       if (!cache.has(dateString)) {
         cache.set(dateString, parseDate(dateString));
       }
@@ -42,6 +47,7 @@ const MoltingListComponent = () => {
     };
   }, []);
 
+  // Memoized processed spiders
   const processedSpiders = useMemo(() => {
     const enriched = filteredSpiders.map((spider) => ({
       ...spider,
@@ -54,6 +60,7 @@ const MoltingListComponent = () => {
       return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
     });
   }, [filteredSpiders, sortOrder, parseDateMemo]);
+
   return (
     <>
       <SpiderSectionHeader
