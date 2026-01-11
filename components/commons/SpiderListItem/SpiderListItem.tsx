@@ -2,12 +2,15 @@ import React, { useMemo } from "react";
 import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { ThemedText } from "@/components/ui/ThemedText";
+
+import { ExtendedSpider } from "@/core/FeedingListComponent/FeedingListComponent";
+
+import { Spider } from "@/models/Spider.model";
 import { ViewTypes } from "@/constants/ViewTypes.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import { Colors, ThemeType } from "@/constants/Colors";
-import { Spider } from "@/models/Spider.model";
-import { ExtendedSpider } from "@/core/FeedingListComponent/FeedingListComponent";
+
+import { ThemedText } from "@/components/ui/ThemedText";
 
 type Props = {
   spider: any;
@@ -28,10 +31,7 @@ const SpiderListItemComponent = ({
 }: Props) => {
   const router = useRouter();
 
-  const componentStyles = useMemo(
-    () => styles(currentTheme),
-    [currentTheme],
-  );
+  const componentStyles = useMemo(() => styles(currentTheme), [currentTheme]);
 
   const renderStatusIcon = (spider: Spider | ExtendedSpider) => {
     if (spider.status === FeedingStatus.HUNGRY) {

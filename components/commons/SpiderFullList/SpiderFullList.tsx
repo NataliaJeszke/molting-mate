@@ -16,15 +16,15 @@ import { useTranslation } from "@/hooks/useTranslation";
 import CardComponent from "@/components/ui/CardComponent";
 import { SpiderListItem } from "../SpiderListItem/SpiderListItem";
 
+type SpiderItem = SpiderDetailType | ExtendedSpider;
+
 type SpiderListProps = {
-  data: SpiderDetailType[] | ExtendedSpider[];
+  data: SpiderItem[];
   viewType?: ViewTypes;
 };
 
 const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
-  const [spiders, setSpiders] = useState<ExtendedSpider[] | SpiderDetailType[]>(
-    data,
-  );
+  const [spiders, setSpiders] = useState<SpiderItem[]>(data);
   const { currentTheme } = useUserStore();
   const updateSpider = useSpidersStore((state: any) => state.updateSpider);
   const { t } = useTranslation();
@@ -47,8 +47,8 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
       try {
         await updateSpider(updatedSpider);
 
-        setSpiders((prev: any) =>
-          prev.map((s: any) => (s.id === spiderId ? updatedSpider : s)),
+        setSpiders((prev) =>
+          prev.map((s) => (s.id === spiderId ? updatedSpider : s)),
         );
       } catch (error) {
         console.error("Error:", error);
@@ -58,7 +58,7 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
   );
 
   const renderItem = useCallback(
-    ({ item, index }: { item: any; index: number }) => (
+    ({ item, index }: { item: SpiderItem; index: number }) => (
       <SpiderListItem
         spider={item}
         isLast={index === data.length - 1}
@@ -74,12 +74,10 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
   return (
     <CardComponent customStyle={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
-        <FlashList
+        <FlashList<SpiderItem>
           data={data}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
-          estimatedItemSize={viewType === ViewTypes.VIEW_FEEDING ? 180 : 140}
-          removeClippedSubviews={true}
           drawDistance={500}
           contentContainerStyle={{ paddingBottom: 150 }}
         />
