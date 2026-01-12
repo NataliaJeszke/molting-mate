@@ -1,5 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
-import { View, ScrollView, Image, StyleSheet, useWindowDimensions } from "react-native";
+import {
+  View,
+  ScrollView,
+  Image,
+  StyleSheet,
+  useWindowDimensions,
+} from "react-native";
 
 import { useUserStore } from "@/store/userStore";
 
@@ -14,8 +20,8 @@ interface SpiderGalleryProps {
 }
 
 const defaultSpiderImages = [
-  require("@/assets/images/spider-gallery-1.jpg"),
-  require("@/assets/images/spider-gallery-2.jpg"),
+  require("@/assets/images/spider-gallery-1.jpeg"),
+  require("@/assets/images/spider-gallery-2.jpeg"),
   require("@/assets/images/spider-gallery-3.jpg"),
 ];
 
@@ -48,6 +54,7 @@ const SpiderGallery = ({ spiders }: SpiderGalleryProps) => {
     }, 3000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex, imagesToShow]);
 
   return (
@@ -63,7 +70,10 @@ const SpiderGallery = ({ spiders }: SpiderGalleryProps) => {
           {imagesToShow.map((image, index) => (
             <View
               key={index}
-              style={[styles(currentTheme)["gallery__image-container"], { width }]}
+              style={[
+                styles(currentTheme)["gallery__image-container"],
+                { width },
+              ]}
             >
               <Image
                 source={image}
