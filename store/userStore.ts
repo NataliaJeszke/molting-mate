@@ -14,8 +14,12 @@ type UserState = {
   toggleTheme: () => void;
   toggleHasOnboarded: () => void;
   notificationsEnabled: boolean;
+  hasAskedForNotifications: boolean;
   toggleNotifications: () => void;
+  setNotificationsEnabled: (enabled: boolean) => void;
+  setHasAskedForNotifications: (asked: boolean) => void;
 };
+
 export const useUserStore = create<UserState>((set) => ({
   hasFinishedOnboarding: false,
   currentTheme: "light",
@@ -42,7 +46,12 @@ export const useUserStore = create<UserState>((set) => ({
       userSelectedTheme: true,
     })),
 
-  notificationsEnabled: true,
+  notificationsEnabled: false,
+  hasAskedForNotifications: false,
+  setNotificationsEnabled: (enabled: boolean) =>
+    set(() => ({ notificationsEnabled: enabled })),
+  setHasAskedForNotifications: (asked: boolean) =>
+    set(() => ({ hasAskedForNotifications: asked })),
   toggleNotifications: () =>
     set((state) => ({ notificationsEnabled: !state.notificationsEnabled })),
 }));
@@ -60,16 +69,15 @@ const loadUserStore = async () => {
       parsedData.language = defaultLang;
 
       useUserStore.setState(parsedData);
-      console.log("🌍 Loaded store, overwritten language:", defaultLang);
     } else {
       useUserStore.setState({
         hasFinishedOnboarding: false,
         currentTheme: "light",
         userSelectedTheme: false,
         language: defaultLang,
-        notificationsEnabled: true,
+        notificationsEnabled: false,
+        hasAskedForNotifications: false,
       });
-      console.log("🆕 Initialized store with system language:", defaultLang);
     }
   } catch (error) {
     console.error("❌ Error loading user store:", error);

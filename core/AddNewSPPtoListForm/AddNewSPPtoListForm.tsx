@@ -146,7 +146,6 @@ export default function SpiderSpeciesManager() {
     setEditingSpecies({ id: species.value, name: species.label });
     setNewSpeciesName(species.label);
     setIsEditModalVisible(true);
-    console.log("Edit species:", species);
   };
 
   const handleSaveEdit = async () => {
@@ -330,7 +329,7 @@ const styles = (theme: ThemeType) =>
       marginBottom: 10,
     },
     "species-manager__add-button": {
-      backgroundColor: "#4CAF50",
+      backgroundColor: Colors[theme].tint,
       padding: 12,
       borderRadius: 4,
       alignItems: "center",

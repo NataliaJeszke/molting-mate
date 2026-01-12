@@ -11,7 +11,6 @@ const i18n = new I18n({
   [Language.PL]: pl,
 });
 
-// Ustaw język na podstawie store'a
 const userLang = useUserStore.getState().language;
 i18n.locale = userLang === Language.PL ? "pl" : "en";
 i18n.enableFallback = true;

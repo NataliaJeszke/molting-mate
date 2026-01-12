@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useMemo, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,7 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
+  useWindowDimensions,
   Modal,
   TouchableWithoutFeedback,
 } from "react-native";
@@ -27,41 +27,46 @@ type SpiderListProps = {
   info?: string;
 };
 
-const { width } = Dimensions.get("window");
 const ITEM_WIDTH = 100;
 const SCROLL_AMOUNT = ITEM_WIDTH * 2;
 
 const SpiderList = ({ title, data, info }: SpiderListProps) => {
+  const { width } = useWindowDimensions();
   const scrollViewRef = useRef<ScrollView>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const { currentTheme } = useUserStore();
 
-  const maxScroll = Math.max(0, data.length * (ITEM_WIDTH + 10) - (width - 60));
+  const maxScroll = useMemo(
+    () => Math.max(0, data.length * (ITEM_WIDTH + 10) - (width - 60)),
+    [data.length, width],
+  );
 
-  const scrollLeft = () => {
+  const scrollLeft = useCallback(() => {
     const newPosition = Math.max(0, scrollPosition - SCROLL_AMOUNT);
     scrollViewRef.current?.scrollTo({ x: newPosition, animated: true });
     setScrollPosition(newPosition);
-  };
+  }, [scrollPosition]);
 
-  const scrollRight = () => {
+  const scrollRight = useCallback(() => {
     const newPosition = Math.min(maxScroll, scrollPosition + SCROLL_AMOUNT);
     scrollViewRef.current?.scrollTo({ x: newPosition, animated: true });
     setScrollPosition(newPosition);
-  };
+  }, [scrollPosition, maxScroll]);
 
   const showLeftArrow = scrollPosition > 0;
   const showRightArrow = scrollPosition < maxScroll;
 
-  const truncateText = (text: string, maxLength: number) => {
+  const truncateText = useCallback((text: string, maxLength: number) => {
     return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
-  };
+  }, []);
+
+  const componentStyles = useMemo(() => styles(currentTheme), [currentTheme]);
 
   return (
     <CardComponent>
-      <View style={styles(currentTheme)["spider-list__wrapper"]}>
-        <Text style={styles(currentTheme)["spider-list__title"]}>{title}</Text>
+      <View style={componentStyles["spider-list__wrapper"]}>
+        <Text style={componentStyles["spider-list__title"]}>{title}</Text>
         <TouchableOpacity
           onPress={() => setTooltipVisible(true)}
           style={{ marginLeft: 6 }}
@@ -81,9 +86,9 @@ const SpiderList = ({ title, data, info }: SpiderListProps) => {
         onRequestClose={() => setTooltipVisible(false)}
       >
         <TouchableWithoutFeedback onPress={() => setTooltipVisible(false)}>
-          <View style={styles(currentTheme)["spider-list__overlay"]}>
-            <View style={styles(currentTheme)["spider-list__tooltip"]}>
-              <Text style={styles(currentTheme)["spider-list__tooltip-text"]}>
+          <View style={componentStyles["spider-list__overlay"]}>
+            <View style={componentStyles["spider-list__tooltip"]}>
+              <Text style={componentStyles["spider-list__tooltip-text"]}>
                 {info}
               </Text>
             </View>
@@ -91,78 +96,89 @@ const SpiderList = ({ title, data, info }: SpiderListProps) => {
         </TouchableWithoutFeedback>
       </Modal>
 
-      <View style={styles(currentTheme)["spider-list__carousel"]}>
-        {showLeftArrow && (
-          <TouchableOpacity
-            style={styles(currentTheme)["spider-list__arrow-button"]}
-            onPress={scrollLeft}
-          >
-            <AntDesign
-              name="left"
-              size={20}
-              color={Colors[currentTheme].tint}
-            />
-          </TouchableOpacity>
-        )}
-
-        <ScrollView
-          ref={scrollViewRef}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={
-            styles(currentTheme)["spider-list__scroll-content"]
-          }
-          onScroll={(event) => {
-            setScrollPosition(event.nativeEvent.contentOffset.x);
-          }}
-          scrollEventThrottle={16}
-        >
-          {data.map((spider) => (
-            <View
-              key={spider.id}
-              style={styles(currentTheme)["spider-list__item"]}
+      {data.length === 0 ? (
+        <View style={componentStyles["spider-list__empty-state"]}>
+          <ThemedText style={componentStyles["spider-list__empty-text"]}>
+            Brak pająków w tej kategorii
+          </ThemedText>
+        </View>
+      ) : (
+        <View style={componentStyles["spider-list__carousel"]}>
+          {showLeftArrow && (
+            <TouchableOpacity
+              style={componentStyles["spider-list__arrow-button"]}
+              onPress={scrollLeft}
             >
-              <TouchableOpacity
-                onPress={() => {
-                  router.push(`/spider/${spider.id}`);
-                }}
-              >
-                <Image
-                  source={
-                    spider.imageUri
-                      ? { uri: spider.imageUri }
-                      : require("@/assets/images/spider.png")
-                  }
-                  style={styles(currentTheme)["spider-list__image"]}
-                />
-              </TouchableOpacity>
-              <ThemedText style={styles(currentTheme)["spider-list__info"]}>
-                {truncateText(spider.name, 8)}
-              </ThemedText>
-              <ThemedText style={styles(currentTheme)["spider-list__info"]}>
-                {spider.date}
-              </ThemedText>
+              <AntDesign
+                name="left"
+                size={20}
+                color={Colors[currentTheme].tint}
+              />
+            </TouchableOpacity>
+          )}
 
-              <ThemedText style={styles(currentTheme)["spider-list__info"]}>
-                {spider.status}
-              </ThemedText>
-            </View>
-          ))}
-        </ScrollView>
-
-        {showRightArrow && (
-          <TouchableOpacity
-            style={styles(currentTheme)["spider-list__arrow-button"]}
-            onPress={scrollRight}
+          <ScrollView
+            ref={scrollViewRef}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={
+              componentStyles["spider-list__scroll-content"]
+            }
+            onScroll={(event) => {
+              setScrollPosition(event.nativeEvent.contentOffset.x);
+            }}
+            scrollEventThrottle={16}
+            removeClippedSubviews={true}
+            decelerationRate="fast"
           >
-            <AntDesign
-              name="right"
-              size={20}
-              color={Colors[currentTheme].tint}
-            />
-          </TouchableOpacity>
-        )}
-      </View>
+            {data.map((spider) => (
+              <View
+                key={spider.id}
+                style={componentStyles["spider-list__item"]}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    router.push(`/spider/${spider.id}`);
+                  }}
+                >
+                  <Image
+                    source={
+                      spider.imageUri
+                        ? { uri: spider.imageUri }
+                        : require("@/assets/images/spider.png")
+                    }
+                    style={componentStyles["spider-list__image"]}
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
+                <ThemedText style={componentStyles["spider-list__info"]}>
+                  {truncateText(spider.name, 8)}
+                </ThemedText>
+                <ThemedText style={componentStyles["spider-list__info"]}>
+                  {spider.date}
+                </ThemedText>
+
+                <ThemedText style={componentStyles["spider-list__info"]}>
+                  {spider.status}
+                </ThemedText>
+              </View>
+            ))}
+          </ScrollView>
+
+          {showRightArrow && (
+            <TouchableOpacity
+              style={componentStyles["spider-list__arrow-button"]}
+              onPress={scrollRight}
+            >
+              <AntDesign
+                name="right"
+                size={20}
+                color={Colors[currentTheme].tint}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
     </CardComponent>
   );
 };
@@ -235,6 +251,19 @@ const styles = (theme: ThemeType) =>
     "spider-list__tooltip-text": {
       fontSize: 14,
       color: "#333",
+      textAlign: "center",
+    },
+    "spider-list__empty-state": {
+      paddingVertical: 20,
+      paddingHorizontal: 16,
+      alignItems: "center",
+      justifyContent: "center",
+      minHeight: 80,
+    },
+    "spider-list__empty-text": {
+      fontSize: 14,
+      color: Colors[theme].text,
+      opacity: 0.6,
       textAlign: "center",
     },
   });

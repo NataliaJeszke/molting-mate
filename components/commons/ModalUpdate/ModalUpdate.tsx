@@ -9,18 +9,16 @@ import {
   Platform,
   TextInput,
 } from "react-native";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { useLocalSearchParams } from "expo-router";
 import { BlurView } from "expo-blur";
 
-import { useSpidersStore } from "@/store/spidersStore";
+import { useSpidersStore, useSpider } from "@/store/spidersStore";
 import { useUserStore } from "@/store/userStore";
 
 import { Colors, ThemeType } from "@/constants/Colors";
 
 import { ThemedText } from "@/components/ui/ThemedText";
 import ThemedDatePicker from "@/components/ui/ThemedDatePicker";
-import { Spider } from "@/db/database";
 import { useTranslation } from "@/hooks/useTranslation";
 
 type ModalUpdateProps = {
@@ -32,20 +30,21 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   const { id, type } = useLocalSearchParams();
   const { t } = useTranslation();
   const { currentTheme } = useUserStore();
-  const updateSpider = useSpidersStore((state: any) => state.updateSpider);
-  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
+  const updateSpider = useSpidersStore((state) => state.updateSpider);
+
+  const spiderId = Array.isArray(id) ? id[0] : id || "";
+
+  const currentSpider = useSpider(spiderId);
+
   const [date, setDate] = useState("");
   const [age, setAge] = useState(0);
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
 
   useEffect(() => {
-    if (id && type === "molting") {
-      const currentSpider = spiders.find((spider) => spider.id === id);
-      if (currentSpider?.age) {
-        setAge(currentSpider.age);
-      }
+    if (id && type === "molting" && currentSpider?.age) {
+      setAge(currentSpider.age);
     }
-  }, [id, type, spiders]);
+  }, [id, type, currentSpider]);
 
   const getTodayDate = () => {
     const today = new Date();
@@ -58,32 +57,22 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   const handleSubmit = async () => {
     let finalDate = date.trim() || getTodayDate();
 
-    if (finalDate && id && type) {
-      const currentSpider = spiders.find((spider) => spider.id === id);
-
-      if (currentSpider) {
+    if (finalDate && spiderId && type && currentSpider) {
+      try {
         if (type === "feeding") {
-          const updatedSpider = {
-            ...currentSpider,
+          await updateSpider({
+            id: spiderId,
             lastFed: finalDate,
-          };
-          try {
-            await updateSpider(updatedSpider);
-          } catch (error) {
-            console.error("Error during saving to database:", error);
-          }
+          });
         } else if (type === "molting") {
-          const updatedSpider = {
-            ...currentSpider,
+          await updateSpider({
+            id: spiderId,
             lastMolt: finalDate,
             age: age,
-          };
-          try {
-            await updateSpider(updatedSpider);
-          } catch (error) {
-            console.error("Error during saving to database:", error);
-          }
+          });
         }
+      } catch (error) {
+        console.error("Error during saving to database:", error);
       }
       onClose();
     }
@@ -205,11 +194,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles(currentTheme).container}
       >
-        <Animated.View
-          style={styles(currentTheme).centeredView}
-          entering={FadeIn.duration(200)}
-          exiting={FadeOut.duration(200)}
-        >
+        <View style={styles(currentTheme).centeredView}>
           <BlurView
             intensity={10}
             tint={currentTheme === "dark" ? "dark" : "light"}
@@ -222,10 +207,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
             />
           </BlurView>
 
-          <Animated.View
-            style={styles(currentTheme).modalView}
-            entering={FadeIn.duration(300).delay(100)}
-          >
+          <View style={styles(currentTheme).modalView}>
             <View style={styles(currentTheme).modal__handle} />
             {renderContent()}
             <View style={styles(currentTheme).buttonContainer}>
@@ -254,8 +236,8 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
                 </ThemedText>
               </TouchableOpacity>
             </View>
-          </Animated.View>
-        </Animated.View>
+          </View>
+        </View>
       </KeyboardAvoidingView>
 
       <ThemedDatePicker

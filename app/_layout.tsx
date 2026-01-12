@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Platform, View, useColorScheme } from "react-native";
 import {
   DarkTheme,
@@ -12,6 +12,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
 import { useUserStore } from "@/store/userStore";
+import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 
 import { Colors } from "@/constants/Colors";
 
@@ -25,6 +26,9 @@ export default function RootLayout() {
   const { currentTheme, userSelectedTheme, setTheme } = useUserStore();
   const systemTheme = useColorScheme();
   const { t } = useTranslation();
+  const [dbInitialized, setDbInitialized] = useState(false);
+
+  useNotificationPermission();
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -39,16 +43,20 @@ export default function RootLayout() {
   }, [userSelectedTheme, systemTheme, setTheme]);
 
   useEffect(() => {
-    if (loaded) {
+    if (loaded && dbInitialized) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, dbInitialized]);
 
   useEffect(() => {
-    initDatabase().catch(console.error);
+    initDatabase()
+      .then(() => {
+        setDbInitialized(true);
+      })
+      .catch(console.error);
   }, []);
 
-  if (!loaded) {
+  if (!loaded || !dbInitialized) {
     return null;
   }
 
@@ -79,8 +87,10 @@ export default function RootLayout() {
           <Stack.Screen
             name="spiderForm"
             options={{
-              presentation: "modal",
+              presentation: "card",
               title: t("spider-form.title"),
+              headerBackTitle: t("spider-detail.back"),
+              headerTintColor: Colors[currentTheme].tint,
             }}
           />
           <Stack.Screen

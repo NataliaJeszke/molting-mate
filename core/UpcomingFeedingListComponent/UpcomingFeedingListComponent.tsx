@@ -6,11 +6,11 @@ import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { SpiderListItem } from "@/models/SpiderList.model";
 
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
-import { Spider } from "@/db/database";
+import { SpiderDetailType } from "@/db/database";
 import { useTranslation } from "@/hooks/useTranslation";
 
 interface UpcomingFeedingListComponentProps {
-  spiders: Spider[];
+  spiders: SpiderDetailType[];
 }
 
 const UpcomingFeedingListComponent = ({
@@ -36,15 +36,18 @@ const UpcomingFeedingListComponent = ({
           new Date(),
         );
 
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 0; i <= 3; i++) {
           if (isSameDay(nextFeedingDate, addDays(now, i))) {
-            const statusTemplate = t("upcoming-feeding-list.status", {
-              i: i,
-              days:
-                i === 1
-                  ? t("upcoming-feeding-list.day")
-                  : t("upcoming-feeding-list.days"),
-            });
+            const statusTemplate =
+              i === 0
+                ? t("upcoming-feeding-list.statusToday")
+                : t("upcoming-feeding-list.status", {
+                    i: i,
+                    days:
+                      i === 1
+                        ? t("upcoming-feeding-list.day")
+                        : t("upcoming-feeding-list.days"),
+                  });
 
             return {
               id: spider.id,
@@ -58,7 +61,8 @@ const UpcomingFeedingListComponent = ({
 
         return null;
       })
-      .filter(Boolean) as SpiderListItem[];
+      .filter(Boolean)
+      .slice(0, 20) as SpiderListItem[];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spiders]);
 

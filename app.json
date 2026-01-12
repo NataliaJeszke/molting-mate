@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "molting-mate",
+    "name": "Molting Mate",
     "slug": "molting-mate",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,12 +10,18 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.nataliafrontendorg.moltingmate"
+      "bundleIdentifier": "com.nataliafrontendorg.moltingmate",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "fetch",
+          "processing"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#2e1a47"
       },
       "package": "com.nataliafrontendorg.moltingmate"
     },
@@ -47,7 +53,8 @@
         }
       ],
       "expo-sqlite",
-      "expo-localization"
+      "expo-localization",
+      "expo-background-task"
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,8 +1,3 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
 export type ThemeType = "light" | "dark";
 
 const tintColorLight = "#2e1a47";
@@ -69,7 +64,7 @@ export const Colors = {
     },
     input: {
       label: "#6e6e6e",
-      placeholder: "#6e6e6e",
+      placeholder: "#b0b0b0",
       backgroundColor: "#ffffff",
       borderColor: "#C0C0C0",
     },
@@ -90,7 +85,7 @@ export const Colors = {
       borderColor: "#C0C0C0",
     },
     spider_detail: {
-      backgroundColor: "#1f1f1f",
+      backgroundColor: "#F2F2F7",
       borderColor: "#6a4c9c",
       borderWidth: 0.5,
     },
@@ -180,7 +175,7 @@ export const Colors = {
     },
     input: {
       label: "#c0c0c0",
-      placeholder: "#c0c0c0",
+      placeholder: "#808080",
       backgroundColor: "#1f1f1f",
       borderColor: "#6a4c9c",
     },

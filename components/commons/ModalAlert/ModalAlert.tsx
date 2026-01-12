@@ -8,13 +8,12 @@ import {
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 
-import { useSpidersStore } from "@/store/spidersStore";
+import { useSpidersStore, useSpider } from "@/store/spidersStore";
 import { useUserStore } from "@/store/userStore";
 
 import { Colors, ThemeType } from "@/constants/Colors";
 
 import { ThemedText } from "@/components/ui/ThemedText";
-import { Spider } from "@/db/database";
 import { useTranslation } from "@/hooks/useTranslation";
 
 type ModalAlertProps = {
@@ -24,21 +23,22 @@ type ModalAlertProps = {
 
 const ModalAlert = ({ isVisible, onClose }: ModalAlertProps) => {
   const { id } = useLocalSearchParams();
-  const spiders = useSpidersStore((state: any) => state.spiders as Spider[]);
-  const deleteSpider = useSpidersStore((state: any) => state.deleteSpider);
+  const spiderId = Array.isArray(id) ? id[0] : id || "";
+  const spider = useSpider(spiderId);
+  const deleteSpider = useSpidersStore((state) => state.deleteSpider);
   const { currentTheme } = useUserStore();
   const { t } = useTranslation();
 
   const handleConfirm = async () => {
-    if (id) {
-      await deleteSpider(id as string);
+    if (spiderId) {
+      await deleteSpider(spiderId);
       onClose();
     } else {
       onClose();
     }
   };
 
-  const spiderName = id ? spiders.find((spider) => spider.id === id)?.name : "";
+  const spiderName = spider?.name || "";
 
   return (
     <Modal

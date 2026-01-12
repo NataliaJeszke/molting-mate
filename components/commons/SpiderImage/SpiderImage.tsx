@@ -20,6 +20,7 @@ const SpiderImage = ({ size, imageUri }: Props) => {
         height: imageSize,
         borderRadius: 6,
       }}
+      resizeMode="contain"
     />
   );
 };

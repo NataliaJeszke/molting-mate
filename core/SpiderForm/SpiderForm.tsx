@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   TextInput,
   Alert,
@@ -45,12 +45,22 @@ export default function SpiderForm() {
   const individualTypeOptions = useIndividualTypeOptions();
   const feedingOptions = useFeedingFrequencyOptions();
   const { currentTheme } = useUserStore();
-  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
-  const addNewSpider = useSpidersStore((state: any) => state.addNewSpider);
-  const updateSpider = useSpidersStore((state: any) => state.updateSpider);
-  const { addSpeciesToDb } = useSpiderSpeciesStore();
-  const speciesOptions = useSpiderSpeciesStore((state) => state.speciesOptions);
-  const species = useSpiderSpeciesStore((state) => state.species);
+
+  const spiderById = useSpidersStore((state) => state.byId);
+  const allIds = useSpidersStore((state) => state.allIds);
+  const addNewSpider = useSpidersStore((state) => state.addNewSpider);
+  const updateSpider = useSpidersStore((state) => state.updateSpider);
+  const { addSpeciesToDb, speciesOptions } = useSpiderSpeciesStore();
+
+  const spiders = useMemo(
+    () => allIds.map((spiderId) => spiderById[spiderId]).filter(Boolean),
+    [allIds, spiderById],
+  );
+
+  const spiderToEdit = useMemo(
+    () => (id ? spiderById[id] : null),
+    [id, spiderById],
+  );
 
   const [name, setName] = useState<string>();
   const [age, setAge] = useState<number | null>(null);
@@ -71,26 +81,23 @@ export default function SpiderForm() {
   const newSpeciesLabelRef = useRef<string | null>(null);
 
   useEffect(() => {
-    console.log("Fetched species:", species);
-    console.log("Species options:", speciesOptions);
-  }, []);
+    if (id && spiderToEdit) {
+      setName(spiderToEdit.name);
+      setAge(spiderToEdit.age);
+      const speciesMatch = speciesOptions.find(
+        (s) => s.label === spiderToEdit.spiderSpecies,
+      );
+      setSpiderSpecies(speciesMatch ? speciesMatch.value : null);
+      setIndividualType(spiderToEdit.individualType as IndividualType);
+      setLastFed(spiderToEdit.lastFed);
+      setFeedingFrequency(spiderToEdit.feedingFrequency);
+      setLastMolt(spiderToEdit.lastMolt);
+      setImageUri(spiderToEdit.imageUri);
+    }
+  }, [id, spiderToEdit, speciesOptions]);
 
   useEffect(() => {
-    if (id) {
-      const spiderToEdit = spiders.find((s) => s.id === id);
-      console.log("Spider to edit:", spiderToEdit?.spiderSpecies);
-      console.log("pająk do edycji", spiderToEdit);
-      if (spiderToEdit) {
-        setName(spiderToEdit.name);
-        setAge(spiderToEdit.age);
-        setSpiderSpecies(Number(spiderToEdit.spiderSpecies));
-        setIndividualType(spiderToEdit.individualType as IndividualType);
-        setLastFed(spiderToEdit.lastFed);
-        setFeedingFrequency(spiderToEdit.feedingFrequency);
-        setLastMolt(spiderToEdit.lastMolt);
-        setImageUri(spiderToEdit.imageUri);
-      }
-    } else {
+    if (!id) {
       setName("");
       setAge(null);
       setSpiderSpecies(null);
@@ -100,21 +107,9 @@ export default function SpiderForm() {
       setLastMolt("");
       setImageUri(undefined);
     }
-  }, [id, spiders]);
+  }, [id]);
 
   const handleSubmit = async () => {
-    console.log("Submitting spider data...");
-    console.log(
-      name,
-      age,
-      spiderSpecies,
-      individualType,
-      lastFed,
-      feedingFrequency,
-      lastMolt,
-      imageUri,
-    );
-
     let speciesId = spiderSpecies;
 
     if (newSpeciesLabelRef.current && !spiderSpecies) {
@@ -159,7 +154,7 @@ export default function SpiderForm() {
     };
 
     if (id) {
-      updateSpider(spiderData);
+      updateSpider(spiderData as any);
       Alert.alert(
         t("spider-form.handle-submit.alert.success"),
         `${t("spider-form.handle-submit.alert.success_sub")} "${name}"`,
@@ -169,7 +164,7 @@ export default function SpiderForm() {
         ...spiderData,
         status: "",
         nextFeedingDate: "",
-      });
+      } as any);
       await addFeedingEntry(spiderData.id, lastFed);
       await addMoltingEntry(spiderData.id, lastMolt);
       await addDocumentToSpider(spiderData.id, spiderData.documentUri);
@@ -184,13 +179,15 @@ export default function SpiderForm() {
 
   const clearForm = () => {
     setName("");
-    setAge(0);
+    setAge(null);
     setSpiderSpecies(null);
     setIndividualType(undefined);
     setLastFed("");
     setFeedingFrequency("");
     setLastMolt("");
     setImageUri(undefined);
+    setDocumentUri(undefined);
+    newSpeciesLabelRef.current = null;
   };
 
   const handleChooseImage = async () => {
@@ -330,6 +327,7 @@ export default function SpiderForm() {
       <ScrollView
         contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <CardComponent>
           <View style={styles(currentTheme).centered}>
@@ -355,30 +353,33 @@ export default function SpiderForm() {
             {t("spider-form.name")}
           </ThemedText>
           <TextInput
-            value={name}
+            value={name ?? ""}
             onChangeText={setName}
             style={styles(currentTheme).input}
             placeholder={t("spider-form.name_placeholder")}
             placeholderTextColor={Colors[currentTheme].input.placeholder}
-            autoCapitalize="words"
+            autoCapitalize="none"
           />
 
           <ThemedText style={styles(currentTheme)["label"]}>
             {t("spider-form.age")}
           </ThemedText>
           <TextInput
-            value={age?.toString() ?? t("spider-form.age_placeholder")}
+            value={age !== null ? age.toString() : ""}
             onChangeText={(text) => {
-              const parsedAge = parseInt(text, 10);
-              if (isNaN(parsedAge)) {
-                setAge(0);
+              if (text === "") {
+                setAge(null);
               } else {
-                setAge(parsedAge);
+                const parsedAge = parseInt(text, 10);
+                if (!isNaN(parsedAge)) {
+                  setAge(parsedAge);
+                }
               }
             }}
             keyboardType="numeric"
             style={styles(currentTheme).input}
             placeholder={t("spider-form.age_placeholder")}
+            placeholderTextColor={Colors[currentTheme].input.placeholder}
           />
 
           <ThemedText style={styles(currentTheme).label}>
@@ -389,7 +390,6 @@ export default function SpiderForm() {
             <AutocompleteSpeciesInput
               value={spiderSpecies}
               onSelect={(value) => {
-                console.log("Selected species:", value);
                 setSpiderSpecies(value);
                 newSpeciesLabelRef.current = null;
               }}
@@ -583,7 +583,7 @@ const styles = (theme: ThemeType) =>
       alignItems: "center",
     },
     selectedRadioButton: {
-      backgroundColor: "#4CAF50",
+      backgroundColor: Colors[theme].tint,
     },
 
     selectedText: {

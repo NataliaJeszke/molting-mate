@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 
 import { router, useLocalSearchParams } from "expo-router";
@@ -8,11 +7,7 @@ import ModalAlert from "@/components/commons/ModalAlert/ModalAlert";
 
 export default function ManageAlertModal() {
   const params = useLocalSearchParams();
-  const { id, type, action } = params;
-
-  useEffect(() => {
-    console.log("ManageAlertModal mounted with:", { id, type, action });
-  }, [id, type, action]);
+  const { action } = params;
 
   const handleClose = () => {
     router.back();

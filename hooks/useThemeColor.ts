@@ -10,7 +10,6 @@ export function useThemeColor(
   props: { light?: string; dark?: string },
   colorName: keyof typeof Colors.light & keyof typeof Colors.dark,
 ) {
-  console.log("useThemeColor props:", props);
   const theme = useColorScheme() ?? "light";
   const colorFromProps = props[theme];
 

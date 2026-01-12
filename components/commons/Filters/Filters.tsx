@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -10,7 +10,6 @@ import {
   Modal,
   View,
 } from "react-native";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { isAfter, parseISO } from "date-fns";
 
 import { useFiltersStore } from "@/store/filtersStore";
@@ -18,6 +17,7 @@ import { useUserStore } from "@/store/userStore";
 
 import { useTranslation } from "@/hooks/useTranslation";
 import { useIndividualTypeOptions } from "@/hooks/useIndividualTypeOptions";
+import { useDebounce } from "@/hooks/useDebounce";
 
 import { IndividualType } from "@/constants/IndividualType.enums";
 import { Colors, ThemeType } from "@/constants/Colors";
@@ -46,7 +46,18 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   );
   const { t } = useTranslation();
 
+  const [speciesInput, setSpeciesInput] = useState(current.spiderSpecies || "");
+
+  const debouncedSpecies = useDebounce(speciesInput, 300);
+
   const today = new Date();
+
+  useEffect(() => {
+    if (debouncedSpecies !== current.spiderSpecies) {
+      handleChange("spiderSpecies", debouncedSpecies);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSpecies]);
 
   const handleChange = (
     field: keyof typeof current,
@@ -61,6 +72,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   const handleReset = () => {
     resetFilters(viewType);
     setIndividualTypes([]);
+    setSpeciesInput("");
   };
 
   const showDateFromPicker = () => {
@@ -90,7 +102,6 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
   };
 
   const handleRangeChange = (from: number, to: number) => {
-    console.log("Range slider changed to", from, to);
     setRangeFilters(viewType, from, to);
   };
 
@@ -141,14 +152,10 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
         style={styles(currentTheme).filters}
       >
         <TouchableWithoutFeedback onPress={onClose}>
-          <Animated.View
-            style={styles(currentTheme).filters__overlay}
-            entering={FadeIn.duration(200)}
-            exiting={FadeOut.duration(200)}
-          />
+          <View style={styles(currentTheme).filters__overlay} />
         </TouchableWithoutFeedback>
 
-        <Animated.View style={styles(currentTheme).filters__modal}>
+        <View style={styles(currentTheme).filters__modal}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles(currentTheme).filters__content}>
               <View style={styles(currentTheme).filters__handle} />
@@ -221,8 +228,8 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
                   placeholder={t(
                     "components.commons.filters.species_placeholder",
                   )}
-                  value={current.spiderSpecies || ""}
-                  onChangeText={(text) => handleChange("spiderSpecies", text)}
+                  value={speciesInput}
+                  onChangeText={setSpeciesInput}
                   style={styles(currentTheme).filters__input}
                   placeholderTextColor={Colors[currentTheme].text + "80"}
                 />
@@ -301,7 +308,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
               </View>
             </View>
           </TouchableWithoutFeedback>
-        </Animated.View>
+        </View>
 
         {viewType !== "collection" && (
           <>

@@ -1,16 +1,15 @@
 import React, { useMemo } from "react";
 import { parse } from "date-fns";
-import { Spider } from "@/db/database";
+import { SpiderDetailType } from "@/db/database";
 
 import SpiderList from "@/components/commons/SpiderList/SpiderList";
 import { PostMoltingMsg } from "./PostMolting.constants";
 import { useTranslation } from "@/hooks/useTranslation";
 
 interface PostMoltingListComponentProps {
-  spiders: Spider[];
+  spiders: SpiderDetailType[];
 }
 
-//This component is to change when there is data from AI about molting predictions
 const PostMoltingListComponent = ({
   spiders,
 }: PostMoltingListComponentProps) => {
@@ -25,6 +24,7 @@ const PostMoltingListComponent = ({
         const dateB = parse(b.lastMolt, "yyyy-MM-dd", new Date()).getTime();
         return dateB - dateA;
       })
+      .slice(0, 20)
       .map((spider) => ({
         id: spider.id,
         name: spider.name,

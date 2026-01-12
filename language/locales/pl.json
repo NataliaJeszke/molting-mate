@@ -214,7 +214,7 @@
   },
   "profile": {
     "profile": "Profil",
-    "user": "Uytkownik",
+    "user": "Ustawienia",
     "subtitle": "Entuzjasta pająków",
     "settings": "Ustawienia aplikacji",
     "language": "Język",
@@ -252,8 +252,9 @@
   },
   "upcoming-feeding-list": {
     "title": "Zbliżające się karmienie",
-    "info": "Lista pająków do nakarmienia za 1–3 dni",
+    "info": "Lista pająków do nakarmienia dziś i w najbliższych dniach",
     "status": "ZA {{i}} {{days}}",
+    "statusToday": "DZISIAJ",
     "day": "dzień",
     "days": "dni"
   },
@@ -341,7 +342,7 @@
       },
       "spider-document": {
         "title": "Dokumentacja",
-        "no_document": "Brak dokumentu. Kliknij plus, aby dodać.",
+        "no_document": "Pająk nie ma dodanych dokumentów.",
         "info": "Obsługiwane są tylko obrazy jako dokumenty",
         "button": {
           "view": "Podgląd",
@@ -363,18 +364,30 @@
     "rarely": "Rzadziej"
   },
   "notifications": {
+    "permission": {
+      "title": "Powiadomienia",
+      "message": "Czy chcesz otrzymywać powiadomienia o karmieniu i linieniu pająków?",
+      "allow": "Zezwól",
+      "deny": "Nie teraz"
+    },
     "feeding": {
       "title": "Karmienie pająka",
+      "todaySingular": "Dzisiaj nakarm pająka",
+      "todayPlural": "Dzisiaj masz do nakarmienia pająki",
       "bodyGroup": "Ilość pająków do nakarmienia: {{count}} za {{days}}.",
       "day": "1 dzień",
       "days": "{{count}} dni",
       "action": "Zobacz szczegóły"
-
     },
     "molting": {
       "title": "Czas na linienie",
       "body": "Pająk {{spiderName}} liniał.",
       "action": "Zobacz szczegóły"
+    },
+    "background": {
+      "title": "Czas na karmienie!",
+      "bodySingular": "Masz 1 pająka do nakarmienia dzisiaj",
+      "bodyPlural": "Masz {{count}} pająków do nakarmienia dzisiaj"
     },
     "toast": {
       "on": "Powiadomienia zostały włączone",

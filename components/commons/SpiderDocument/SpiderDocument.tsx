@@ -43,8 +43,12 @@ const SpiderDocument = ({
     setShowDocumentModal(true);
   };
 
+  const validDocuments = documentUris.filter(
+    (doc) => doc.document_uri && doc.document_uri.trim() !== "",
+  );
+
   const renderContent = () => {
-    if (documentUris.length === 0) {
+    if (validDocuments.length === 0) {
       return (
         <View style={styles(currentTheme).documentCard__noDocument}>
           <Feather
@@ -53,13 +57,13 @@ const SpiderDocument = ({
             color={Colors[currentTheme].text}
           />
           <ThemedText style={styles(currentTheme).documentCard__noDocumentText}>
-            {t("components.commons.spider-document.no-document")}
+            {t("components.commons.spider-document.no_document")}
           </ThemedText>
         </View>
       );
     }
 
-    return documentUris.map((doc, index) => {
+    return validDocuments.map((doc, index) => {
       const uri = doc.document_uri;
       const docId = doc.id;
 

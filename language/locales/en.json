@@ -213,7 +213,7 @@
   },
   "profile": {
     "profile": "Profile",
-    "user": "User",
+    "user": "Settings",
     "subtitle": "Spider enthusiast",
     "settings": "App settings",
     "language": "Language",
@@ -251,8 +251,9 @@
   },
   "upcoming-feeding-list": {
     "title": "Upcoming Feeding",
-    "info": "List of spiders to be fed in 1–3 days",
+    "info": "List of spiders to be fed today and in the next few days",
     "status": "IN {{i}} {{days}}",
+    "statusToday": "TODAY",
     "day": "day",
     "days": "days"
   },
@@ -340,7 +341,7 @@
       },
       "spider-document": {
         "title": "Documentation",
-        "no_document": "No document. Click plus to add.",
+        "no_document": "Spider has no added documents.",
         "info": "Only images are supported as documents",
         "button": {
           "view": "Preview",
@@ -362,8 +363,16 @@
     "rarely": "Rarely"
   },
   "notifications": {
+    "permission": {
+      "title": "Notifications",
+      "message": "Would you like to receive notifications about spider feeding and molting?",
+      "allow": "Allow",
+      "deny": "Not now"
+    },
     "feeding": {
       "title": "Spider feeding",
+      "todaySingular": "Feed your spider today",
+      "todayPlural": "You have spiders to feed today",
       "bodyGroup": "You have spiders: {{count}} to feed in {{days}}.",
       "day": "1 day",
       "days": "{{count}} days",
@@ -373,6 +382,11 @@
       "title": "Molting time",
       "body": "The spider {{spiderName}} has molted.",
       "action": "View details"
+    },
+    "background": {
+      "title": "Time to feed!",
+      "bodySingular": "You have 1 spider to feed today",
+      "bodyPlural": "You have {{count}} spiders to feed today"
     },
     "toast": {
       "on": "Notifications have been enabled",

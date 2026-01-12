@@ -18,7 +18,6 @@ const SearchComponent = () => {
 
   const handleSearch = (text: string) => {
     setSearchText(text);
-    console.log("Wpisano:", text);
   };
 
   return (

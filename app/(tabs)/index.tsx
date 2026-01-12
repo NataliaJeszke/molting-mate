@@ -7,7 +7,6 @@ import {
 } from "react-native";
 
 import { useRouter } from "expo-router";
-import * as Notifications from "expo-notifications";
 
 import Feather from "@expo/vector-icons/build/Feather";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -31,8 +30,7 @@ import {
   getAddSpiderStyle,
 } from "@/utils/animations.constants";
 
-import { Spider } from "@/db/database";
-import { useSpidersStore } from "@/store/spidersStore";
+import { useSpidersStore, useSpiders } from "@/store/spidersStore";
 import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useFeedingNotifications } from "@/hooks/useFeedingNotifications";
@@ -42,22 +40,14 @@ export default function HomeScreen() {
   const { currentTheme } = useUserStore();
   const [isFabOpen, setIsFabOpen] = useState(false);
   const [animation] = useState(new Animated.Value(0));
-  const spiders = useSpidersStore((state: any) => state.spiders) as Spider[];
-  const fetchSpiders = useSpidersStore((state: any) => state.fetchSpiders);
+
+  const spiders = useSpiders();
+  const fetchSpiders = useSpidersStore((state) => state.fetchSpiders);
   const fetchSpecies = useSpiderSpeciesStore(
     (state: any) => state.fetchSpecies,
   );
   const { t } = useTranslation();
   useFeedingNotifications(spiders);
-
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowBanner: true,
-      shouldShowList: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-    }),
-  });
 
   useEffect(() => {
     fetchSpiders();
@@ -76,8 +66,6 @@ export default function HomeScreen() {
         friction: 5,
         useNativeDriver: true,
       }).start();
-
-      console.log("Nowa wartość isFabOpen:", newValue);
       return newValue;
     });
   };
@@ -87,7 +75,6 @@ export default function HomeScreen() {
       <CardComponent customStyle={styles(currentTheme)["dashboard__top-bar"]}>
         <TouchableOpacity
           onPress={() => {
-            console.log("Ulubione pająki");
             router.push("/favourites");
           }}
         >
@@ -115,7 +102,7 @@ export default function HomeScreen() {
             style={[
               styles(currentTheme).fabItemButton,
               {
-                backgroundColor: Colors[currentTheme].tint || "#4CAF50",
+                backgroundColor: Colors[currentTheme].tint,
               },
             ]}
             onPress={() => {

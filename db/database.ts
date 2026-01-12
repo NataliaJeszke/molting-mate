@@ -114,19 +114,6 @@ export const getAllSpiders = async (): Promise<Spider[]> => {
   }
 };
 
-// export const getAllSpiders = async (): Promise<Spider[]> => {
-//   try {
-//     if (!db) throw new Error("Baza danych nie została zainicjalizowana");
-
-//     const result = await db.getAllAsync(`SELECT * FROM spiders`);
-
-//     return result as Spider[];
-//   } catch (error) {
-//     console.error("Błąd podczas pobierania pająków:", error);
-//     return [];
-//   }
-// };
-
 export const addSpider = async (spider: any) => {
   try {
     if (!db) throw new Error("Baza danych nie została zainicjalizowana");
@@ -412,7 +399,6 @@ export const getSpiderById = async (spiderId: string) => {
   try {
     if (!db) throw new Error("Baza danych nie została zainicjalizowana");
 
-    // Pobieramy pająka wraz z nazwą gatunku
     const spider = await db.getFirstAsync(
       `
       SELECT 
@@ -558,4 +544,26 @@ export const updateSpiderSpeciesName = async (id: number, newName: string) => {
       };
     }
   }
+};
+
+export const countSpiders = async () => {
+  const result = await db.getFirstAsync(
+    "SELECT COUNT(*) as count FROM spiders",
+  );
+
+  if (result) {
+    console.log("Liczba pająków w bazie:", result);
+  } else {
+    console.log("Liczba pająków w bazie: 0");
+  }
+};
+
+export const getSpeciesIdByName = async (
+  name: string,
+): Promise<number | null> => {
+  const result = await db.getFirstAsync<{ id: number }>(
+    `SELECT id FROM spider_species WHERE name = ?`,
+    [name],
+  );
+  return result?.id ?? null;
 };

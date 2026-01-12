@@ -7,6 +7,7 @@ module.exports = {
     "prettier/prettier": "error",
     "react-native/no-unused-styles": "error",
     "import/no-unresolved": "error",
+    "expo/use-dom-exports": "off",
   },
   settings: {
     "import/resolver": {
