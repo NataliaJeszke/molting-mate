@@ -15,9 +15,7 @@ try {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   BackgroundTask = require("expo-background-task");
 } catch {
-  console.log(
-    "expo-background-task not available (likely running on simulator)",
-  );
+  // expo-background-task not available
 }
 
 const BACKGROUND_TASK_IDENTIFIER = "background-feeding-check";
@@ -56,7 +54,6 @@ const getFeedingStatus = (
 
 TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
   const now = new Date();
-  console.log("Background task running at:", now.toISOString());
 
   try {
     const db = await SQLite.openDatabaseAsync("spiders.db");
@@ -81,7 +78,6 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
     await Notifications.cancelScheduledNotificationAsync(NOTIFICATION_ID);
 
     if (spidersToFeedToday === 0) {
-      console.log("No spiders to feed today");
       return BackgroundTask?.BackgroundTaskResult?.Success ?? 1;
     }
 
@@ -125,8 +121,6 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
         },
         trigger: null,
       });
-
-      console.log("Notification shown immediately (past noon)");
     }
 
     return BackgroundTask?.BackgroundTaskResult?.Success ?? 1;
@@ -138,22 +132,17 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
 
 export async function registerBackgroundTaskAsync(): Promise<boolean> {
   if (Platform.OS === "ios" && !BackgroundTask) {
-    console.log(
-      "Background tasks not available (simulator or module not loaded)",
-    );
     return false;
   }
 
   try {
     if (!BackgroundTask) {
-      console.log("BackgroundTask module not available");
       return false;
     }
 
     const status = await BackgroundTask.getStatusAsync();
 
     if (status === BackgroundTask.BackgroundTaskStatus.Restricted) {
-      console.log("Background task status restricted (likely on simulator)");
       return false;
     }
 
@@ -165,9 +154,6 @@ export async function registerBackgroundTaskAsync(): Promise<boolean> {
       await BackgroundTask.registerTaskAsync(BACKGROUND_TASK_IDENTIFIER, {
         minimumInterval: 60,
       });
-      console.log("Background task registered (runs approximately hourly)");
-    } else {
-      console.log("Background task already registered");
     }
 
     return true;
@@ -185,7 +171,6 @@ export async function unregisterBackgroundTaskAsync(): Promise<void> {
 
     if (isRegistered && BackgroundTask) {
       await BackgroundTask.unregisterTaskAsync(BACKGROUND_TASK_IDENTIFIER);
-      console.log("Background task unregistered");
     }
 
     await Notifications.cancelScheduledNotificationAsync(NOTIFICATION_ID);

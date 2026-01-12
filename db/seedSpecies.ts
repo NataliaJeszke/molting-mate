@@ -49,8 +49,5 @@ export const seedSpiderSpecies = async (db: SQLite.SQLiteDatabase) => {
       db.runAsync(insertQuery, [species]),
     );
     await Promise.all(insertPromises);
-    console.log("Initial spider species seeded.");
-  } else {
-    console.log("Spider species already seeded.");
   }
 };

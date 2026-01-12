@@ -122,11 +122,6 @@ export const addSpider = async (spider: any) => {
       INSERT INTO spiders (id, name, age, spiderSpecies, individualType, lastFed, feedingFrequency, lastMolt, imageUri, isFavourite, status, nextFeedingDate)
       VALUES ('${spider.id}', '${spider.name}', ${spider.age}, '${spider.spiderSpecies}', '${spider.individualType}', '${spider.lastFed}', '${spider.feedingFrequency}', '${spider.lastMolt}', '${spider.imageUri}', ${spider.isFavourite ? 1 : 0}, '${spider.status}', '${spider.nextFeedingDate}');
     `);
-    const result = await db.getFirstAsync(
-      `SELECT * FROM spiders WHERE id = ?`,
-      [spider.id],
-    );
-    console.log("✅ Dodano pająka do bazy:", result);
   } catch (error) {
     console.error("Błąd podczas dodawania pająka:", error);
   }
@@ -147,24 +142,18 @@ export const updateSpider = async (spider: any) => {
           `INSERT INTO feeding_history (spider_id, fed_at) VALUES (?, ?)`,
           [spider.id, spider.lastFed],
         );
-        console.log(`✅ Dodano wpis karmienia ${spider.lastFed}`);
-      } else {
-        console.log(`ℹ️ Karmienie z datą ${spider.lastFed} już istnieje`);
       }
 
       const latestFeedingDate = await db.getFirstAsync<{ fed_at: string }>(
-        `SELECT fed_at FROM feeding_history 
-         WHERE spider_id = ? 
-         ORDER BY datetime(fed_at) DESC 
+        `SELECT fed_at FROM feeding_history
+         WHERE spider_id = ?
+         ORDER BY datetime(fed_at) DESC
          LIMIT 1`,
         [spider.id],
       );
 
       if (latestFeedingDate && latestFeedingDate.fed_at) {
         spider.lastFed = latestFeedingDate.fed_at;
-        console.log(
-          `ℹ️ Ustawiono lastFed na najnowszą datę: ${spider.lastFed}`,
-        );
       }
     }
 
@@ -179,24 +168,18 @@ export const updateSpider = async (spider: any) => {
           `INSERT INTO molting_history (spider_id, molted_at) VALUES (?, ?)`,
           [spider.id, spider.lastMolt],
         );
-        console.log(`✅ Dodano wpis linienia ${spider.lastMolt}`);
-      } else {
-        console.log(`ℹ️ Linienie z datą ${spider.lastMolt} już istnieje`);
       }
 
       const latestMoltingDate = await db.getFirstAsync<{ molted_at: string }>(
-        `SELECT molted_at FROM molting_history 
-         WHERE spider_id = ? 
-         ORDER BY datetime(molted_at) DESC 
+        `SELECT molted_at FROM molting_history
+         WHERE spider_id = ?
+         ORDER BY datetime(molted_at) DESC
          LIMIT 1`,
         [spider.id],
       );
 
       if (latestMoltingDate && latestMoltingDate.molted_at) {
         spider.lastMolt = latestMoltingDate.molted_at;
-        console.log(
-          `ℹ️ Ustawiono lastMolt na najnowszą datę: ${spider.lastMolt}`,
-        );
       }
     }
 
@@ -241,22 +224,13 @@ export const updateSpider = async (spider: any) => {
         [spider.id],
       );
 
-      if (existingDocument) {
-        console.log(`ℹ️ Dokument już istnieje dla pająka ID ${spider.id}`);
-      } else if (existingDocsCount[0].count >= 5) {
-        console.warn(
-          `⚠️ Pająk ID ${spider.id} ma już 5 dokumentów. Nie dodano.`,
-        );
-      } else {
+      if (!existingDocument && existingDocsCount[0].count < 5) {
         await db.runAsync(
           `INSERT INTO spider_documents (spider_id, document_uri) VALUES (?, ?)`,
           [spider.id, spider.documentUri],
         );
-        console.log(`✅ Dodano nowy dokument dla pająka ID ${spider.id}`);
       }
     }
-
-    console.log("✅ Zaktualizowano dane pająka:", spider.id);
   } catch (error) {
     console.error("Błąd podczas aktualizacji pająka:", error);
   }
@@ -267,8 +241,6 @@ export const deleteSpider = async (spiderId: string) => {
     if (!db) throw new Error("Baza danych nie została zainicjalizowana");
 
     await db.runAsync(`DELETE FROM spiders WHERE id = ?`, [spiderId]);
-
-    console.log(`🕷️ Usunięto pająka oraz powiązane dane: ${spiderId}`);
   } catch (error) {
     console.error("Błąd podczas usuwania pająka:", error);
   }
@@ -282,7 +254,6 @@ export const addFeedingEntry = async (spiderId: string, fedAt: string) => {
       `INSERT INTO feeding_history (spider_id, fed_at) VALUES (?, ?)`,
       [spiderId, fedAt],
     );
-    console.log(`✅ Dodano wpis karmienia dla pająka ID ${spiderId}`);
   } catch (error) {
     console.error("Błąd podczas dodawania wpisu karmienia:", error);
   }
@@ -296,7 +267,6 @@ export const addMoltingEntry = async (spiderId: string, moltedAt: string) => {
       `INSERT INTO molting_history (spider_id, molted_at) VALUES (?, ?)`,
       [spiderId, moltedAt],
     );
-    console.log(`Dodano wpis linienia dla pająka ID ${spiderId}`);
   } catch (error) {
     console.error("Błąd podczas dodawania wpisu linienia:", error);
   }
@@ -324,7 +294,6 @@ export const addDocumentToSpider = async (
       [spiderId, documentUri],
     );
 
-    console.log(`✅ Dodano dokument dla pająka ID ${spiderId}`);
     return true;
   } catch (error) {
     console.error("Błąd podczas dodawania dokumentu do pająka:", error);
@@ -339,8 +308,6 @@ export const deleteDocument = async (documentId: number) => {
     await db.runAsync(`DELETE FROM spider_documents WHERE id = ?`, [
       documentId,
     ]);
-
-    console.log(`Usunięto dokument ID ${documentId}`);
   } catch (error) {
     console.error("Błąd podczas usuwania dokumentu:", error);
   }
@@ -365,10 +332,6 @@ export const checkSpiderRecords = async (spiderId: string) => {
       [spiderId],
     );
 
-    console.log("Historia karmienia:", feedingHistory);
-    console.log("Historia linienia:", moltingHistory);
-    console.log("Dokumenty:", spiderDocuments);
-
     if (feedingHistory.length === 0) {
       console.warn("Brak historii karmienia dla pająka o ID:", spiderId);
     }
@@ -379,16 +342,6 @@ export const checkSpiderRecords = async (spiderId: string) => {
 
     if (spiderDocuments.length === 0) {
       console.warn("Brak dokumentów dla pająka o ID:", spiderId);
-    }
-
-    if (
-      feedingHistory.length > 0 &&
-      moltingHistory.length > 0 &&
-      spiderDocuments.length > 0
-    ) {
-      console.log(
-        `Wszystkie dane zostały poprawnie dodane dla pająka ID ${spiderId}`,
-      );
     }
   } catch (error) {
     console.error("Błąd podczas sprawdzania danych pająka:", error);
@@ -503,7 +456,6 @@ export const deleteSpiderSpecies = async (
     }
 
     await db.runAsync(`DELETE FROM spider_species WHERE id = ?`, [speciesId]);
-    console.log(`✅ Usunięto gatunek ID ${speciesId}`);
     return { success: true, count: 0 };
   } catch (error) {
     console.error("Błąd podczas usuwania gatunku pająka:", error);
@@ -519,8 +471,6 @@ export const updateSpiderSpeciesName = async (id: number, newName: string) => {
       newName,
       id,
     ]);
-
-    console.log(`✅ Zaktualizowano nazwę gatunku ID ${id} na "${newName}"`);
 
     return {
       success: true,
@@ -547,15 +497,7 @@ export const updateSpiderSpeciesName = async (id: number, newName: string) => {
 };
 
 export const countSpiders = async () => {
-  const result = await db.getFirstAsync(
-    "SELECT COUNT(*) as count FROM spiders",
-  );
-
-  if (result) {
-    console.log("Liczba pająków w bazie:", result);
-  } else {
-    console.log("Liczba pająków w bazie: 0");
-  }
+  await db.getFirstAsync("SELECT COUNT(*) as count FROM spiders");
 };
 
 export const getSpeciesIdByName = async (
