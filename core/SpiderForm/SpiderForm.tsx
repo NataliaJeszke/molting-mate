@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   TextInput,
   Alert,
@@ -53,8 +53,17 @@ export default function SpiderForm() {
   const updateSpider = useSpidersStore((state) => state.updateSpider);
   const { addSpeciesToDb, speciesOptions } = useSpiderSpeciesStore();
 
-  // Derive spiders array for compatibility
-  const spiders = allIds.map((spiderId) => spiderById[spiderId]).filter(Boolean);
+  // Derive spiders array with stable reference
+  const spiders = useMemo(
+    () => allIds.map((spiderId) => spiderById[spiderId]).filter(Boolean),
+    [allIds, spiderById]
+  );
+
+  // Get the spider being edited (if any) with stable reference
+  const spiderToEdit = useMemo(
+    () => (id ? spiderById[id] : null),
+    [id, spiderById]
+  );
 
   const [name, setName] = useState<string>();
   const [age, setAge] = useState<number | null>(null);
@@ -74,24 +83,27 @@ export default function SpiderForm() {
   >();
   const newSpeciesLabelRef = useRef<string | null>(null);
 
+  // Initialize form when editing an existing spider
   useEffect(() => {
-    if (id) {
-      const spiderToEdit = spiders.find((s) => s.id === id);
-      if (spiderToEdit) {
-        setName(spiderToEdit.name);
-        setAge(spiderToEdit.age);
-        // Find species ID by name from speciesOptions
-        const speciesMatch = speciesOptions.find(
-          (s) => s.label === spiderToEdit.spiderSpecies,
-        );
-        setSpiderSpecies(speciesMatch ? speciesMatch.value : null);
-        setIndividualType(spiderToEdit.individualType as IndividualType);
-        setLastFed(spiderToEdit.lastFed);
-        setFeedingFrequency(spiderToEdit.feedingFrequency);
-        setLastMolt(spiderToEdit.lastMolt);
-        setImageUri(spiderToEdit.imageUri);
-      }
-    } else {
+    if (id && spiderToEdit) {
+      setName(spiderToEdit.name);
+      setAge(spiderToEdit.age);
+      // Find species ID by name from speciesOptions
+      const speciesMatch = speciesOptions.find(
+        (s) => s.label === spiderToEdit.spiderSpecies,
+      );
+      setSpiderSpecies(speciesMatch ? speciesMatch.value : null);
+      setIndividualType(spiderToEdit.individualType as IndividualType);
+      setLastFed(spiderToEdit.lastFed);
+      setFeedingFrequency(spiderToEdit.feedingFrequency);
+      setLastMolt(spiderToEdit.lastMolt);
+      setImageUri(spiderToEdit.imageUri);
+    }
+  }, [id, spiderToEdit, speciesOptions]);
+
+  // Reset form when creating a new spider (no id)
+  useEffect(() => {
+    if (!id) {
       setName("");
       setAge(null);
       setSpiderSpecies(null);
@@ -101,7 +113,7 @@ export default function SpiderForm() {
       setLastMolt("");
       setImageUri(undefined);
     }
-  }, [id, spiders, speciesOptions]);
+  }, [id]);
 
   const handleSubmit = async () => {
     let speciesId = spiderSpecies;
@@ -349,11 +361,8 @@ export default function SpiderForm() {
             {t("spider-form.name")}
           </ThemedText>
           <TextInput
-            defaultValue={name}
-            onChangeText={(text) => {
-              console.log("Name changed:", text);
-              setName(text);
-            }}
+            value={name ?? ""}
+            onChangeText={setName}
             style={styles(currentTheme).input}
             placeholder={t("spider-form.name_placeholder")}
             placeholderTextColor={Colors[currentTheme].input.placeholder}

@@ -39,7 +39,7 @@ const SpiderList = ({ title, data, info }: SpiderListProps) => {
 
   const maxScroll = useMemo(
     () => Math.max(0, data.length * (ITEM_WIDTH + 10) - (width - 60)),
-    [data.length],
+    [data.length, width],
   );
 
   const scrollLeft = useCallback(() => {

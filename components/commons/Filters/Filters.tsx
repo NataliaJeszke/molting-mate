@@ -10,7 +10,6 @@ import {
   Modal,
   View,
 } from "react-native";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { isAfter, parseISO } from "date-fns";
 
 import { useFiltersStore } from "@/store/filtersStore";
@@ -153,14 +152,10 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
         style={styles(currentTheme).filters}
       >
         <TouchableWithoutFeedback onPress={onClose}>
-          <Animated.View
-            style={styles(currentTheme).filters__overlay}
-            entering={FadeIn.duration(200)}
-            exiting={FadeOut.duration(200)}
-          />
+          <View style={styles(currentTheme).filters__overlay} />
         </TouchableWithoutFeedback>
 
-        <Animated.View style={styles(currentTheme).filters__modal}>
+        <View style={styles(currentTheme).filters__modal}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles(currentTheme).filters__content}>
               <View style={styles(currentTheme).filters__handle} />
@@ -313,7 +308,7 @@ const Filters = ({ viewType, isVisible, onClose }: FiltersProps) => {
               </View>
             </View>
           </TouchableWithoutFeedback>
-        </Animated.View>
+        </View>
 
         {viewType !== "collection" && (
           <>

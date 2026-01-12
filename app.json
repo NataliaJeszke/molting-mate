@@ -12,7 +12,10 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.nataliafrontendorg.moltingmate",
       "infoPlist": {
-        "UIBackgroundModes": ["fetch", "processing"]
+        "UIBackgroundModes": [
+          "fetch",
+          "processing"
+        ]
       }
     },
     "android": {
@@ -50,7 +53,8 @@
         }
       ],
       "expo-sqlite",
-      "expo-localization"
+      "expo-localization",
+      "expo-background-task"
     ],
     "experiments": {
       "typedRoutes": true

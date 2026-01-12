@@ -3,8 +3,8 @@ import * as Notifications from "expo-notifications";
 import { SpiderDetailType } from "@/db/database";
 import { useUserStore } from "@/store/userStore";
 import {
-  registerBackgroundFetchAsync,
-  unregisterBackgroundFetchAsync,
+  registerBackgroundTaskAsync,
+  unregisterBackgroundTaskAsync,
   checkFeedingNotificationsNow,
 } from "@/services/backgroundNotifications";
 
@@ -26,9 +26,9 @@ export function useFeedingNotifications(spiders: SpiderDetailType[]) {
 
   useEffect(() => {
     if (notificationsEnabled) {
-      registerBackgroundFetchAsync();
+      registerBackgroundTaskAsync();
     } else {
-      unregisterBackgroundFetchAsync();
+      unregisterBackgroundTaskAsync();
     }
   }, [notificationsEnabled]);
 

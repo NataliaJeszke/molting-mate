@@ -7,27 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C0E47EDF345A9441D8878F5 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 61D0422A60011CFEC5B4CEE2 /* PrivacyInfo.xcprivacy */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		15FF1876F2D15CF5A17992A2 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F0A27CB7401D7303D56C7B11 /* PrivacyInfo.xcprivacy */; };
+		31ECD342914F2320C9588D81 /* libPods-MoltingMate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD9DFD35E5DE6A95B903C272 /* libPods-MoltingMate.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		439B08E07EA34553F4939669 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC2EF05D6E5FF9A1DA48469 /* ExpoModulesProvider.swift */; };
-		6DC56D3325875525D7AB3FF7 /* libPods-MoltingMate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DFC043CD5099445F90AD07EA /* libPods-MoltingMate.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		E6D6501C843D55E681FA6220 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7315E4BCB6F5B9DD385C68A2 /* ExpoModulesProvider.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0DA489C72722D8177CD834FF /* Pods-MoltingMate.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoltingMate.debug.xcconfig"; path = "Target Support Files/Pods-MoltingMate/Pods-MoltingMate.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* MoltingMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoltingMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MoltingMate/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MoltingMate/Info.plist; sourceTree = "<group>"; };
-		1CC2EF05D6E5FF9A1DA48469 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-MoltingMate/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		71557546C55957053ED1195F /* Pods-MoltingMate.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoltingMate.release.xcconfig"; path = "Target Support Files/Pods-MoltingMate/Pods-MoltingMate.release.xcconfig"; sourceTree = "<group>"; };
+		27F99B416D99CFE2BF7DCDD8 /* Pods-MoltingMate.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoltingMate.debug.xcconfig"; path = "Target Support Files/Pods-MoltingMate/Pods-MoltingMate.debug.xcconfig"; sourceTree = "<group>"; };
+		61D0422A60011CFEC5B4CEE2 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = MoltingMate/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		7315E4BCB6F5B9DD385C68A2 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-MoltingMate/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = MoltingMate/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		DFC043CD5099445F90AD07EA /* libPods-MoltingMate.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MoltingMate.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD46BF4F02DE1444DF63E033 /* Pods-MoltingMate.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoltingMate.release.xcconfig"; path = "Target Support Files/Pods-MoltingMate/Pods-MoltingMate.release.xcconfig"; sourceTree = "<group>"; };
+		CD9DFD35E5DE6A95B903C272 /* libPods-MoltingMate.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MoltingMate.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F0A27CB7401D7303D56C7B11 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = MoltingMate/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = MoltingMate/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* MoltingMate-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "MoltingMate-Bridging-Header.h"; path = "MoltingMate/MoltingMate-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6DC56D3325875525D7AB3FF7 /* libPods-MoltingMate.a in Frameworks */,
+				31ECD342914F2320C9588D81 /* libPods-MoltingMate.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,7 +53,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				F0A27CB7401D7303D56C7B11 /* PrivacyInfo.xcprivacy */,
+				61D0422A60011CFEC5B4CEE2 /* PrivacyInfo.xcprivacy */,
 			);
 			name = MoltingMate;
 			sourceTree = "<group>";
@@ -62,15 +62,15 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				DFC043CD5099445F90AD07EA /* libPods-MoltingMate.a */,
+				CD9DFD35E5DE6A95B903C272 /* libPods-MoltingMate.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		5FA991A211DFB476E1F107C0 /* MoltingMate */ = {
+		621ADB1B7F242608105C35EA /* MoltingMate */ = {
 			isa = PBXGroup;
 			children = (
-				1CC2EF05D6E5FF9A1DA48469 /* ExpoModulesProvider.swift */,
+				7315E4BCB6F5B9DD385C68A2 /* ExpoModulesProvider.swift */,
 			);
 			name = MoltingMate;
 			sourceTree = "<group>";
@@ -89,8 +89,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				A07B1DCA80067E49F0EF4ABB /* Pods */,
-				FE75FBF08D89913F115C2410 /* ExpoModulesProviders */,
+				A0E29F6CA70187415F987F5F /* Pods */,
+				E36048EB56105652B51D6000 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -105,11 +105,11 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A07B1DCA80067E49F0EF4ABB /* Pods */ = {
+		A0E29F6CA70187415F987F5F /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				0DA489C72722D8177CD834FF /* Pods-MoltingMate.debug.xcconfig */,
-				71557546C55957053ED1195F /* Pods-MoltingMate.release.xcconfig */,
+				27F99B416D99CFE2BF7DCDD8 /* Pods-MoltingMate.debug.xcconfig */,
+				CD46BF4F02DE1444DF63E033 /* Pods-MoltingMate.release.xcconfig */,
 			);
 			name = Pods;
 			path = Pods;
@@ -124,10 +124,10 @@
 			path = MoltingMate/Supporting;
 			sourceTree = "<group>";
 		};
-		FE75FBF08D89913F115C2410 /* ExpoModulesProviders */ = {
+		E36048EB56105652B51D6000 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				5FA991A211DFB476E1F107C0 /* MoltingMate */,
+				621ADB1B7F242608105C35EA /* MoltingMate */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "MoltingMate" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				F9BD44F76A2E72A5EA2F8806 /* [Expo] Configure project */,
+				BF860FD233FF9A3624C8E5CC /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				ACF4AD99C8085AC95FB56F4E /* [CP] Embed Pods Frameworks */,
+				4A583592F2E3D7D242008759 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				15FF1876F2D15CF5A17992A2 /* PrivacyInfo.xcprivacy in Resources */,
+				0C0E47EDF345A9441D8878F5 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +240,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4A583592F2E3D7D242008759 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MoltingMate/Pods-MoltingMate-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactNativeDependencies.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MoltingMate/Pods-MoltingMate-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
@@ -290,29 +312,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MoltingMate/Pods-MoltingMate-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		ACF4AD99C8085AC95FB56F4E /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MoltingMate/Pods-MoltingMate-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactNativeDependencies.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MoltingMate/Pods-MoltingMate-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F9BD44F76A2E72A5EA2F8806 /* [Expo] Configure project */ = {
+		BF860FD233FF9A3624C8E5CC /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -344,7 +344,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				439B08E07EA34553F4939669 /* ExpoModulesProvider.swift in Sources */,
+				E6D6501C843D55E681FA6220 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,7 +353,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0DA489C72722D8177CD834FF /* Pods-MoltingMate.debug.xcconfig */;
+			baseConfigurationReference = 27F99B416D99CFE2BF7DCDD8 /* Pods-MoltingMate.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -389,7 +389,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 71557546C55957053ED1195F /* Pods-MoltingMate.release.xcconfig */;
+			baseConfigurationReference = CD46BF4F02DE1444DF63E033 /* Pods-MoltingMate.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

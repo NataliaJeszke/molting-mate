@@ -1,14 +1,23 @@
-import * as BackgroundFetch from "expo-background-fetch";
 import * as TaskManager from "expo-task-manager";
 import * as Notifications from "expo-notifications";
 import * as SQLite from "expo-sqlite";
+import { Platform } from "react-native";
 
 import { parse } from "date-fns";
 
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 
-const BACKGROUND_FETCH_TASK = "background-feeding-notification";
+// Dynamic import to handle simulator case gracefully
+let BackgroundTask: typeof import("expo-background-task") | null = null;
+
+try {
+  BackgroundTask = require("expo-background-task");
+} catch {
+  console.log("expo-background-task not available (likely running on simulator)");
+}
+
+const BACKGROUND_TASK_IDENTIFIER = "background-feeding-check";
 const NOTIFICATION_ID = "daily-feeding-reminder";
 const NOTIFICATION_HOUR = 12;
 
@@ -42,8 +51,10 @@ const getFeedingStatus = (
   return FeedingStatus.NOT_HUNGRY;
 };
 
-TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-  console.log("🔄 Daily background task running at:", new Date().toISOString());
+// Define the background task
+TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
+  const now = new Date();
+  console.log("Background task running at:", now.toISOString());
 
   try {
     const db = await SQLite.openDatabaseAsync("spiders.db");
@@ -63,14 +74,18 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
       );
     }).length;
 
+    // Update badge count
+    await Notifications.setBadgeCountAsync(spidersToFeedToday);
+
+    // Cancel any existing scheduled notification
     await Notifications.cancelScheduledNotificationAsync(NOTIFICATION_ID);
 
     if (spidersToFeedToday === 0) {
-      console.log("✅ No spiders to feed today");
-      return BackgroundFetch.BackgroundFetchResult.NoData;
+      console.log("No spiders to feed today");
+      return BackgroundTask?.BackgroundTaskResult?.Success ?? 1;
     }
 
-    const now = new Date();
+    // Calculate time until noon
     const triggerDate = new Date();
     triggerDate.setHours(NOTIFICATION_HOUR, 0, 0, 0);
 
@@ -78,15 +93,16 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
       (triggerDate.getTime() - now.getTime()) / 1000,
     );
 
+    // Schedule notification for noon if we haven't passed it yet
     if (secondsUntilNoon > 0) {
       await Notifications.scheduleNotificationAsync({
         identifier: NOTIFICATION_ID,
         content: {
-          title: "🕷️ Czas na karmienie!",
+          title: "Czas na karmienie!",
           body:
             spidersToFeedToday === 1
-              ? "Masz 1 pająka do nakarmienia dzisiaj"
-              : `Masz ${spidersToFeedToday} pająków do nakarmienia dzisiaj`,
+              ? "Masz 1 pajaka do nakarmienia dzisiaj"
+              : `Masz ${spidersToFeedToday} pajakow do nakarmienia dzisiaj`,
           sound: "default",
           badge: spidersToFeedToday,
         },
@@ -97,78 +113,90 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
       });
 
       console.log(
-        `📅 Notification scheduled for 12:00 (in ${Math.floor(secondsUntilNoon / 60)} minutes)`,
+        `Notification scheduled for 12:00 (in ${Math.floor(secondsUntilNoon / 60)} minutes)`,
       );
     } else {
+      // It's past noon, show notification now
       await Notifications.scheduleNotificationAsync({
         identifier: NOTIFICATION_ID,
         content: {
-          title: "🕷️ Czas na karmienie!",
+          title: "Czas na karmienie!",
           body:
             spidersToFeedToday === 1
-              ? "Masz 1 pająka do nakarmienia dzisiaj"
-              : `Masz ${spidersToFeedToday} pająków do nakarmienia dzisiaj`,
+              ? "Masz 1 pajaka do nakarmienia dzisiaj"
+              : `Masz ${spidersToFeedToday} pajakow do nakarmienia dzisiaj`,
           sound: "default",
           badge: spidersToFeedToday,
         },
         trigger: null,
       });
+
+      console.log("Notification shown immediately (past noon)");
     }
 
-    return BackgroundFetch.BackgroundFetchResult.NewData;
+    return BackgroundTask?.BackgroundTaskResult?.Success ?? 1;
   } catch (error) {
-    console.error("❌ Background task error:", error);
-    return BackgroundFetch.BackgroundFetchResult.Failed;
+    console.error("Background task error:", error);
+    return BackgroundTask?.BackgroundTaskResult?.Failed ?? 0;
   }
 });
 
-export async function registerBackgroundFetchAsync(): Promise<boolean> {
-  try {
-    const status = await BackgroundFetch.getStatusAsync();
+export async function registerBackgroundTaskAsync(): Promise<boolean> {
+  // Background tasks are not available on iOS simulator
+  if (Platform.OS === "ios" && !BackgroundTask) {
+    console.log("Background tasks not available (simulator or module not loaded)");
+    return false;
+  }
 
-    if (
-      status === BackgroundFetch.BackgroundFetchStatus.Restricted ||
-      status === BackgroundFetch.BackgroundFetchStatus.Denied
-    ) {
+  try {
+    if (!BackgroundTask) {
+      console.log("BackgroundTask module not available");
+      return false;
+    }
+
+    const status = await BackgroundTask.getStatusAsync();
+
+    if (status === BackgroundTask.BackgroundTaskStatus.Restricted) {
+      console.log("Background task status restricted (likely on simulator)");
       return false;
     }
 
     const isRegistered = await TaskManager.isTaskRegisteredAsync(
-      BACKGROUND_FETCH_TASK,
+      BACKGROUND_TASK_IDENTIFIER,
     );
 
     if (!isRegistered) {
-      await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-        minimumInterval: 24 * 60 * 60,
-        stopOnTerminate: false,
-        startOnBoot: true,
+      // Register task with minimum interval of 60 minutes (runs ~once per hour)
+      // The system will execute it at optimal times
+      await BackgroundTask.registerTaskAsync(BACKGROUND_TASK_IDENTIFIER, {
+        minimumInterval: 60, // minutes (minimum is 15)
       });
-      console.log("✅ Background task registered (runs once daily)");
+      console.log("Background task registered (runs approximately hourly)");
     } else {
-      console.log("ℹ️ Background task already registered");
+      console.log("Background task already registered");
     }
 
     return true;
   } catch (error) {
-    console.error("❌ Error registering background task:", error);
+    console.error("Error registering background task:", error);
     return false;
   }
 }
 
-export async function unregisterBackgroundFetchAsync(): Promise<void> {
+export async function unregisterBackgroundTaskAsync(): Promise<void> {
   try {
     const isRegistered = await TaskManager.isTaskRegisteredAsync(
-      BACKGROUND_FETCH_TASK,
+      BACKGROUND_TASK_IDENTIFIER,
     );
 
-    if (isRegistered) {
-      await BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
-      console.log("✅ Background task unregistered");
+    if (isRegistered && BackgroundTask) {
+      await BackgroundTask.unregisterTaskAsync(BACKGROUND_TASK_IDENTIFIER);
+      console.log("Background task unregistered");
     }
 
     await Notifications.cancelScheduledNotificationAsync(NOTIFICATION_ID);
   } catch (error) {
-    console.error("❌ Error unregistering background task:", error);
+    console.error("Error unregistering background task:", error);
   }
 }
 
@@ -193,6 +221,6 @@ export async function checkFeedingNotificationsNow(): Promise<void> {
 
     await Notifications.setBadgeCountAsync(spidersToFeedToday);
   } catch (error) {
-    console.error("❌ Error checking notifications:", error);
+    console.error("Error checking notifications:", error);
   }
 }

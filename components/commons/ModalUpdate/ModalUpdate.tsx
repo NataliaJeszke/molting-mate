@@ -9,7 +9,6 @@ import {
   Platform,
   TextInput,
 } from "react-native";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { useLocalSearchParams } from "expo-router";
 import { BlurView } from "expo-blur";
 
@@ -196,11 +195,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles(currentTheme).container}
       >
-        <Animated.View
-          style={styles(currentTheme).centeredView}
-          entering={FadeIn.duration(200)}
-          exiting={FadeOut.duration(200)}
-        >
+        <View style={styles(currentTheme).centeredView}>
           <BlurView
             intensity={10}
             tint={currentTheme === "dark" ? "dark" : "light"}
@@ -213,10 +208,7 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
             />
           </BlurView>
 
-          <Animated.View
-            style={styles(currentTheme).modalView}
-            entering={FadeIn.duration(300).delay(100)}
-          >
+          <View style={styles(currentTheme).modalView}>
             <View style={styles(currentTheme).modal__handle} />
             {renderContent()}
             <View style={styles(currentTheme).buttonContainer}>
@@ -245,8 +237,8 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
                 </ThemedText>
               </TouchableOpacity>
             </View>
-          </Animated.View>
-        </Animated.View>
+          </View>
+        </View>
       </KeyboardAvoidingView>
 
       <ThemedDatePicker

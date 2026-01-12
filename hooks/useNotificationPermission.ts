@@ -4,8 +4,8 @@ import * as Notifications from "expo-notifications";
 import { useUserStore } from "@/store/userStore";
 import { useTranslation } from "./useTranslation";
 import {
-  registerBackgroundFetchAsync,
-  unregisterBackgroundFetchAsync,
+  registerBackgroundTaskAsync,
+  unregisterBackgroundTaskAsync,
 } from "@/services/backgroundNotifications";
 
 export function useNotificationPermission() {
@@ -110,9 +110,9 @@ export function useNotificationPermission() {
 
   useEffect(() => {
     if (notificationsEnabled) {
-      registerBackgroundFetchAsync();
+      registerBackgroundTaskAsync();
     } else {
-      unregisterBackgroundFetchAsync();
+      unregisterBackgroundTaskAsync();
     }
   }, [notificationsEnabled]);
 
