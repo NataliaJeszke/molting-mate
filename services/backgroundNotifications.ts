@@ -92,7 +92,6 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
       (triggerDate.getTime() - now.getTime()) / 1000,
     );
 
-    // Build notification content with translations
     const notificationTitle = t("notifications.background.title");
     const notificationBody =
       spidersToFeedToday === 1
