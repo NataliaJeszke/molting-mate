@@ -46,23 +46,20 @@ export default function SpiderForm() {
   const feedingOptions = useFeedingFrequencyOptions();
   const { currentTheme } = useUserStore();
 
-  // Use normalized store - access byId for efficient lookups
   const spiderById = useSpidersStore((state) => state.byId);
   const allIds = useSpidersStore((state) => state.allIds);
   const addNewSpider = useSpidersStore((state) => state.addNewSpider);
   const updateSpider = useSpidersStore((state) => state.updateSpider);
   const { addSpeciesToDb, speciesOptions } = useSpiderSpeciesStore();
 
-  // Derive spiders array with stable reference
   const spiders = useMemo(
     () => allIds.map((spiderId) => spiderById[spiderId]).filter(Boolean),
-    [allIds, spiderById]
+    [allIds, spiderById],
   );
 
-  // Get the spider being edited (if any) with stable reference
   const spiderToEdit = useMemo(
     () => (id ? spiderById[id] : null),
-    [id, spiderById]
+    [id, spiderById],
   );
 
   const [name, setName] = useState<string>();
@@ -83,12 +80,10 @@ export default function SpiderForm() {
   >();
   const newSpeciesLabelRef = useRef<string | null>(null);
 
-  // Initialize form when editing an existing spider
   useEffect(() => {
     if (id && spiderToEdit) {
       setName(spiderToEdit.name);
       setAge(spiderToEdit.age);
-      // Find species ID by name from speciesOptions
       const speciesMatch = speciesOptions.find(
         (s) => s.label === spiderToEdit.spiderSpecies,
       );
@@ -101,7 +96,6 @@ export default function SpiderForm() {
     }
   }, [id, spiderToEdit, speciesOptions]);
 
-  // Reset form when creating a new spider (no id)
   useEffect(() => {
     if (!id) {
       setName("");
@@ -160,14 +154,12 @@ export default function SpiderForm() {
     };
 
     if (id) {
-      // Cast to any to allow spiderSpecies as number (ID) - store handles conversion
       updateSpider(spiderData as any);
       Alert.alert(
         t("spider-form.handle-submit.alert.success"),
         `${t("spider-form.handle-submit.alert.success_sub")} "${name}"`,
       );
     } else {
-      // Cast to any to allow spiderSpecies as number (ID) - store handles conversion
       await addNewSpider({
         ...spiderData,
         status: "",

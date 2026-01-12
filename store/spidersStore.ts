@@ -47,13 +47,25 @@ interface SpidersActions {
   // CRUD operations
   fetchSpiders: () => Promise<void>;
   getSpiderById: (spiderId: string) => Promise<SpiderDetailType | null>;
-  addNewSpider: (spider: Omit<SpiderDetailType, "feedingHistory" | "moltingHistory" | "documents">) => Promise<void>;
-  updateSpider: (spider: Partial<SpiderDetailType> & { id: string }) => Promise<void>;
+  addNewSpider: (
+    spider: Omit<
+      SpiderDetailType,
+      "feedingHistory" | "moltingHistory" | "documents"
+    >,
+  ) => Promise<void>;
+  updateSpider: (
+    spider: Partial<SpiderDetailType> & { id: string },
+  ) => Promise<void>;
   deleteSpider: (id: string) => Promise<void>;
 
   // Document operations
-  addDocumentToSpider: (spiderId: string, documentUri: string) => Promise<boolean | undefined>;
-  deleteSpiderDocument: (documentId: number) => Promise<{ success: boolean; message: string }>;
+  addDocumentToSpider: (
+    spiderId: string,
+    documentUri: string,
+  ) => Promise<boolean | undefined>;
+  deleteSpiderDocument: (
+    documentId: number,
+  ) => Promise<{ success: boolean; message: string }>;
 
   // Selectors (derived data)
   getSpiders: () => SpiderDetailType[];
@@ -66,7 +78,9 @@ type SpidersStore = SpidersState & SpidersActions;
 // HELPER FUNCTIONS
 // ============================================================================
 
-const normalizeSpiders = (spiders: SpiderDetailType[]): { byId: SpiderById; allIds: string[] } => {
+const normalizeSpiders = (
+  spiders: SpiderDetailType[],
+): { byId: SpiderById; allIds: string[] } => {
   const byId: SpiderById = {};
   const allIds: string[] = [];
 
@@ -122,7 +136,8 @@ export const useSpidersStore = create<SpidersStore>()(
       set({ loading: true, error: null });
       try {
         // getAllSpiders returns data with JOINed species name, cast to SpiderDetailType
-        const spiders = (await getAllSpiders()) as unknown as SpiderDetailType[];
+        const spiders =
+          (await getAllSpiders()) as unknown as SpiderDetailType[];
         const { byId, allIds } = normalizeSpiders(spiders);
         set({ byId, allIds, loading: false, version: get().version + 1 });
       } catch (error) {
@@ -202,7 +217,9 @@ export const useSpidersStore = create<SpidersStore>()(
 
         // Handle species name to ID conversion if needed
         if (typeof mergedSpider.spiderSpecies === "string") {
-          const speciesId = await getSpeciesIdByName(mergedSpider.spiderSpecies as string);
+          const speciesId = await getSpeciesIdByName(
+            mergedSpider.spiderSpecies as string,
+          );
           if (speciesId) {
             mergedSpider.spiderSpecies = speciesId as unknown as string;
           }
@@ -298,10 +315,13 @@ export const useSpidersStore = create<SpidersStore>()(
 
         return { success: true, message: "Document deleted." };
       } catch (error) {
-        return { success: false, message: "Error deleting document." };
+        return {
+          success: false,
+          message: `Error deleting document. ${String(error)}`,
+        };
       }
     },
-  }))
+  })),
 );
 
 // ============================================================================
@@ -315,7 +335,6 @@ export const useSpidersStore = create<SpidersStore>()(
 export const useSpiders = (): SpiderDetailType[] => {
   const byId = useSpidersStore((state) => state.byId);
   const allIds = useSpidersStore((state) => state.allIds);
-  const version = useSpidersStore((state) => state.version);
 
   // This will recompute when byId, allIds, or version changes
   return allIds.map((id) => byId[id]).filter(Boolean);

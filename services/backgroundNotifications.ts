@@ -8,13 +8,15 @@ import { parse } from "date-fns";
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 
-// Dynamic import to handle simulator case gracefully
 let BackgroundTask: typeof import("expo-background-task") | null = null;
 
 try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   BackgroundTask = require("expo-background-task");
 } catch {
-  console.log("expo-background-task not available (likely running on simulator)");
+  console.log(
+    "expo-background-task not available (likely running on simulator)",
+  );
 }
 
 const BACKGROUND_TASK_IDENTIFIER = "background-feeding-check";
@@ -51,7 +53,6 @@ const getFeedingStatus = (
   return FeedingStatus.NOT_HUNGRY;
 };
 
-// Define the background task
 TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
   const now = new Date();
   console.log("Background task running at:", now.toISOString());
@@ -74,10 +75,8 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
       );
     }).length;
 
-    // Update badge count
     await Notifications.setBadgeCountAsync(spidersToFeedToday);
 
-    // Cancel any existing scheduled notification
     await Notifications.cancelScheduledNotificationAsync(NOTIFICATION_ID);
 
     if (spidersToFeedToday === 0) {
@@ -85,7 +84,6 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
       return BackgroundTask?.BackgroundTaskResult?.Success ?? 1;
     }
 
-    // Calculate time until noon
     const triggerDate = new Date();
     triggerDate.setHours(NOTIFICATION_HOUR, 0, 0, 0);
 
@@ -93,7 +91,6 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
       (triggerDate.getTime() - now.getTime()) / 1000,
     );
 
-    // Schedule notification for noon if we haven't passed it yet
     if (secondsUntilNoon > 0) {
       await Notifications.scheduleNotificationAsync({
         identifier: NOTIFICATION_ID,
@@ -111,12 +108,7 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
           seconds: secondsUntilNoon,
         },
       });
-
-      console.log(
-        `Notification scheduled for 12:00 (in ${Math.floor(secondsUntilNoon / 60)} minutes)`,
-      );
     } else {
-      // It's past noon, show notification now
       await Notifications.scheduleNotificationAsync({
         identifier: NOTIFICATION_ID,
         content: {
@@ -142,9 +134,10 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
 });
 
 export async function registerBackgroundTaskAsync(): Promise<boolean> {
-  // Background tasks are not available on iOS simulator
   if (Platform.OS === "ios" && !BackgroundTask) {
-    console.log("Background tasks not available (simulator or module not loaded)");
+    console.log(
+      "Background tasks not available (simulator or module not loaded)",
+    );
     return false;
   }
 
@@ -166,10 +159,8 @@ export async function registerBackgroundTaskAsync(): Promise<boolean> {
     );
 
     if (!isRegistered) {
-      // Register task with minimum interval of 60 minutes (runs ~once per hour)
-      // The system will execute it at optimal times
       await BackgroundTask.registerTaskAsync(BACKGROUND_TASK_IDENTIFIER, {
-        minimumInterval: 60, // minutes (minimum is 15)
+        minimumInterval: 60,
       });
       console.log("Background task registered (runs approximately hourly)");
     } else {

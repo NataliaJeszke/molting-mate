@@ -31,7 +31,6 @@ export type ExtendedSpider = Omit<SpiderDetailType, "status"> & {
 const FeedingListComponent = () => {
   const { t } = useTranslation();
 
-  // Use the custom hook that reacts to store changes
   const spiders = useSpiders();
   const fetchSpiders = useSpidersStore((state) => state.fetchSpiders);
   const { sortType, sortOrder } = useSortConfig();
@@ -39,7 +38,6 @@ const FeedingListComponent = () => {
   const filters = useFiltersStore((state) => state.filters.feeding);
   const viewType = ViewTypes.VIEW_FEEDING;
 
-  // Fetch on focus
   useFocusEffect(
     useCallback(() => {
       fetchSpiders();
@@ -52,7 +50,6 @@ const FeedingListComponent = () => {
     datePropertyKey: "lastFed",
   });
 
-  // Memoized date parser
   const parseDateMemo = useMemo(() => {
     const cache = new Map<string, Date | null>();
     return (dateString: string): Date | null => {
@@ -64,7 +61,6 @@ const FeedingListComponent = () => {
     };
   }, []);
 
-  // Memoized processed spiders with feeding status
   const processedSpiders: ExtendedSpider[] = useMemo(() => {
     const enriched = filteredSpiders.map((spider) => {
       const nextFeedingDate = getNextFeedingDate(

@@ -31,7 +31,6 @@ const SpiderFullList = ({ data, viewType }: SpiderListProps) => {
   const toggleFavourite = useCallback(
     async (spiderId: string, isFavourite: boolean) => {
       try {
-        // Update only the isFavourite field
         await updateSpider({
           id: spiderId,
           isFavourite: !isFavourite,

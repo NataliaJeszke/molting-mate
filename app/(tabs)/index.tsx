@@ -41,7 +41,6 @@ export default function HomeScreen() {
   const [isFabOpen, setIsFabOpen] = useState(false);
   const [animation] = useState(new Animated.Value(0));
 
-  // Use the reactive hook for spiders
   const spiders = useSpiders();
   const fetchSpiders = useSpidersStore((state) => state.fetchSpiders);
   const fetchSpecies = useSpiderSpeciesStore(

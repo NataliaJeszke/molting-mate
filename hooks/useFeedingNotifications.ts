@@ -8,7 +8,6 @@ import {
   checkFeedingNotificationsNow,
 } from "@/services/backgroundNotifications";
 
-// Configure notification handler
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,

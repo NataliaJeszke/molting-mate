@@ -15,12 +15,10 @@ import {
 import { useTranslation } from "@/hooks/useTranslation";
 
 const CollectionListComponent = () => {
-  // Use the custom hook that reacts to store changes
   const spiders = useSpiders();
   const fetchSpiders = useSpidersStore((state) => state.fetchSpiders);
   const { sortType, sortOrder } = useSortConfig();
 
-  // Fetch on initial focus
   useFocusEffect(
     useCallback(() => {
       fetchSpiders();
@@ -31,7 +29,6 @@ const CollectionListComponent = () => {
   const { t } = useTranslation();
   const viewType = ViewTypes.VIEW_COLLECTION;
 
-  // Memoized date parser
   const parseDateMemo = useMemo(() => {
     const cache = new Map<string, number>();
     return (dateString: string): number => {
@@ -44,7 +41,6 @@ const CollectionListComponent = () => {
     };
   }, []);
 
-  // Memoized filtered and sorted spiders
   const filteredSpiders = useMemo(() => {
     const hasActiveFilters =
       filters.isActive ||
@@ -92,7 +88,6 @@ const CollectionListComponent = () => {
       });
     }
 
-    // Apply sorting
     if (sortType) {
       result.sort((a, b) => {
         const aValue = a[sortType as keyof SpiderDetailType];

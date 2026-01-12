@@ -32,9 +32,8 @@ const ModalUpdate = ({ isVisible, onClose }: ModalUpdateProps) => {
   const { currentTheme } = useUserStore();
   const updateSpider = useSpidersStore((state) => state.updateSpider);
 
-  // Get spider ID as string
   const spiderId = Array.isArray(id) ? id[0] : id || "";
-  // Use reactive hook for current spider
+
   const currentSpider = useSpider(spiderId);
 
   const [date, setDate] = useState("");

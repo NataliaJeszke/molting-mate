@@ -7,7 +7,6 @@ import { useSpiders } from "@/store/spidersStore";
 export default function Favourites() {
   const spiders = useSpiders();
 
-  // Derive favourites from spiders - automatically updates when store changes
   const favouriteSpiders = useMemo(
     () => spiders.filter((spider) => spider.isFavourite),
     [spiders],

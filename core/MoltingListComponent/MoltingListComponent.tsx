@@ -14,7 +14,6 @@ import {
 import { useTranslation } from "@/hooks/useTranslation";
 
 const MoltingListComponent = () => {
-  // Use the custom hook that reacts to store changes
   const spiders = useSpiders();
   const fetchSpiders = useSpidersStore((state) => state.fetchSpiders);
   const filters = useFiltersStore((state) => state.filters.molting);
@@ -22,7 +21,6 @@ const MoltingListComponent = () => {
   const { t } = useTranslation();
   const viewType = ViewTypes.VIEW_MOLTING;
 
-  // Fetch on focus
   useFocusEffect(
     useCallback(() => {
       fetchSpiders();
@@ -35,7 +33,6 @@ const MoltingListComponent = () => {
     datePropertyKey: "lastMolt",
   });
 
-  // Memoized date parser
   const parseDateMemo = useMemo(() => {
     const cache = new Map<string, Date | null>();
     return (dateString: string): Date | null => {
@@ -47,7 +44,6 @@ const MoltingListComponent = () => {
     };
   }, []);
 
-  // Memoized processed spiders
   const processedSpiders = useMemo(() => {
     const enriched = filteredSpiders.map((spider) => ({
       ...spider,
