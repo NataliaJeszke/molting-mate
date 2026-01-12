@@ -383,6 +383,11 @@
       "body": "The spider {{spiderName}} has molted.",
       "action": "View details"
     },
+    "background": {
+      "title": "Time to feed!",
+      "bodySingular": "You have 1 spider to feed today",
+      "bodyPlural": "You have {{count}} spiders to feed today"
+    },
     "toast": {
       "on": "Notifications have been enabled",
       "off": "Notifications have been disabled",

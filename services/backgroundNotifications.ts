@@ -7,6 +7,7 @@ import { parse } from "date-fns";
 
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
+import { t } from "@/language/i18n";
 
 let BackgroundTask: typeof import("expo-background-task") | null = null;
 
@@ -91,15 +92,21 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
       (triggerDate.getTime() - now.getTime()) / 1000,
     );
 
+    // Build notification content with translations
+    const notificationTitle = t("notifications.background.title");
+    const notificationBody =
+      spidersToFeedToday === 1
+        ? t("notifications.background.bodySingular")
+        : t("notifications.background.bodyPlural", {
+            count: spidersToFeedToday,
+          });
+
     if (secondsUntilNoon > 0) {
       await Notifications.scheduleNotificationAsync({
         identifier: NOTIFICATION_ID,
         content: {
-          title: "Czas na karmienie!",
-          body:
-            spidersToFeedToday === 1
-              ? "Masz 1 pajaka do nakarmienia dzisiaj"
-              : `Masz ${spidersToFeedToday} pajakow do nakarmienia dzisiaj`,
+          title: notificationTitle,
+          body: notificationBody,
           sound: "default",
           badge: spidersToFeedToday,
         },
@@ -112,11 +119,8 @@ TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
       await Notifications.scheduleNotificationAsync({
         identifier: NOTIFICATION_ID,
         content: {
-          title: "Czas na karmienie!",
-          body:
-            spidersToFeedToday === 1
-              ? "Masz 1 pajaka do nakarmienia dzisiaj"
-              : `Masz ${spidersToFeedToday} pajakow do nakarmienia dzisiaj`,
+          title: notificationTitle,
+          body: notificationBody,
           sound: "default",
           badge: spidersToFeedToday,
         },

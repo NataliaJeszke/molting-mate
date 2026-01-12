@@ -384,6 +384,11 @@
       "body": "Pająk {{spiderName}} liniał.",
       "action": "Zobacz szczegóły"
     },
+    "background": {
+      "title": "Czas na karmienie!",
+      "bodySingular": "Masz 1 pająka do nakarmienia dzisiaj",
+      "bodyPlural": "Masz {{count}} pająków do nakarmienia dzisiaj"
+    },
     "toast": {
       "on": "Powiadomienia zostały włączone",
       "off": "Powiadomienia zostały wyłączone",
