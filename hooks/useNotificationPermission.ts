@@ -32,9 +32,9 @@ export function useNotificationPermission() {
   const syncWithSystemPermission = useCallback(async () => {
     const isGranted = await checkSystemPermission();
 
-    if (isGranted && !notificationsEnabled) {
-      setNotificationsEnabled(true);
-    } else if (!isGranted && notificationsEnabled) {
+    // Only sync if system permission was REVOKED
+    // Don't override user's choice to disable notifications in-app
+    if (!isGranted && notificationsEnabled) {
       setNotificationsEnabled(false);
     }
   }, [checkSystemPermission, notificationsEnabled, setNotificationsEnabled]);

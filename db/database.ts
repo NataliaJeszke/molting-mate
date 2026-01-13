@@ -41,65 +41,92 @@ export interface SpiderSpecies {
   name: string;
 }
 
-let db: SQLite.SQLiteDatabase;
+let db: SQLite.SQLiteDatabase | null = null;
+let dbInitPromise: Promise<SQLite.SQLiteDatabase> | null = null;
+let dbReady = false;
+
+export const isDatabaseReady = (): boolean => dbReady;
+
+export const getDatabase = async (): Promise<SQLite.SQLiteDatabase> => {
+  // Return existing database if already initialized
+  if (db) {
+    return db;
+  }
+
+  // If initialization is in progress, wait for it
+  if (dbInitPromise) {
+    return dbInitPromise;
+  }
+
+  // Start initialization
+  dbInitPromise = (async () => {
+    const database = await SQLite.openDatabaseAsync("spiders.db");
+
+    await database.execAsync(`
+      PRAGMA journal_mode = WAL;
+      PRAGMA foreign_keys = ON;
+
+      CREATE TABLE IF NOT EXISTS spider_species (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT UNIQUE NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS spiders (
+        id TEXT PRIMARY KEY NOT NULL,
+        name TEXT,
+        age INTEGER,
+        spiderSpecies INTEGER,
+        individualType TEXT,
+        lastFed TEXT,
+        feedingFrequency TEXT,
+        lastMolt TEXT,
+        imageUri TEXT,
+        isFavourite BOOLEAN,
+        status TEXT,
+        nextFeedingDate TEXT,
+        FOREIGN KEY (spiderSpecies) REFERENCES spider_species(id) ON DELETE SET NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS feeding_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        spider_id TEXT,
+        fed_at TEXT,
+        FOREIGN KEY (spider_id) REFERENCES spiders(id) ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS molting_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        spider_id TEXT,
+        molted_at TEXT,
+        FOREIGN KEY (spider_id) REFERENCES spiders(id) ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS spider_documents (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        spider_id TEXT NOT NULL,
+        document_uri TEXT NOT NULL,
+        FOREIGN KEY (spider_id) REFERENCES spiders(id) ON DELETE CASCADE
+      );
+    `);
+
+    db = database;
+    dbReady = true;
+    return database;
+  })();
+
+  return dbInitPromise;
+};
 
 export const initDatabase = async () => {
-  db = await SQLite.openDatabaseAsync("spiders.db");
-
-  await db.execAsync(`
-    PRAGMA journal_mode = WAL;
-    PRAGMA foreign_keys = ON;
-
-    CREATE TABLE IF NOT EXISTS spider_species (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT UNIQUE NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS spiders (
-      id TEXT PRIMARY KEY NOT NULL,
-      name TEXT,
-      age INTEGER,
-      spiderSpecies INTEGER,
-      individualType TEXT,
-      lastFed TEXT,
-      feedingFrequency TEXT,
-      lastMolt TEXT,
-      imageUri TEXT,
-      isFavourite BOOLEAN,
-      status TEXT,
-      nextFeedingDate TEXT,
-      FOREIGN KEY (spiderSpecies) REFERENCES spider_species(id) ON DELETE SET NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS feeding_history (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      spider_id TEXT,
-      fed_at TEXT,
-      FOREIGN KEY (spider_id) REFERENCES spiders(id) ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS molting_history (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      spider_id TEXT,
-      molted_at TEXT,
-      FOREIGN KEY (spider_id) REFERENCES spiders(id) ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS spider_documents (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      spider_id TEXT NOT NULL,
-      document_uri TEXT NOT NULL,
-      FOREIGN KEY (spider_id) REFERENCES spiders(id) ON DELETE CASCADE
-    );
-  `);
-  await seedSpiderSpecies(db);
+  const database = await getDatabase();
+  await seedSpiderSpecies(database);
 };
 
 export const getAllSpiders = async (): Promise<Spider[]> => {
   try {
-    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+    const database = await getDatabase();
 
-    const result = await db.getAllAsync(`
+    const result = await database.getAllAsync(`
       SELECT
         spiders.*,
         spider_species.name as spiderSpecies
@@ -116,9 +143,9 @@ export const getAllSpiders = async (): Promise<Spider[]> => {
 
 export const addSpider = async (spider: any) => {
   try {
-    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+    const database = await getDatabase();
 
-    await db.execAsync(`
+    await database.execAsync(`
       INSERT INTO spiders (id, name, age, spiderSpecies, individualType, lastFed, feedingFrequency, lastMolt, imageUri, isFavourite, status, nextFeedingDate)
       VALUES ('${spider.id}', '${spider.name}', ${spider.age}, '${spider.spiderSpecies}', '${spider.individualType}', '${spider.lastFed}', '${spider.feedingFrequency}', '${spider.lastMolt}', '${spider.imageUri}', ${spider.isFavourite ? 1 : 0}, '${spider.status}', '${spider.nextFeedingDate}');
     `);
@@ -129,22 +156,24 @@ export const addSpider = async (spider: any) => {
 
 export const updateSpider = async (spider: any) => {
   try {
-    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+    const database = await getDatabase();
 
     if (spider.lastFed) {
-      const existingFeed = await db.getFirstAsync(
+      const existingFeed = await database.getFirstAsync(
         `SELECT * FROM feeding_history WHERE spider_id = ? AND fed_at = ?`,
         [spider.id, spider.lastFed],
       );
 
       if (!existingFeed) {
-        await db.runAsync(
+        await database.runAsync(
           `INSERT INTO feeding_history (spider_id, fed_at) VALUES (?, ?)`,
           [spider.id, spider.lastFed],
         );
       }
 
-      const latestFeedingDate = await db.getFirstAsync<{ fed_at: string }>(
+      const latestFeedingDate = await database.getFirstAsync<{
+        fed_at: string;
+      }>(
         `SELECT fed_at FROM feeding_history
          WHERE spider_id = ?
          ORDER BY datetime(fed_at) DESC
@@ -158,19 +187,21 @@ export const updateSpider = async (spider: any) => {
     }
 
     if (spider.lastMolt) {
-      const existingMolt = await db.getFirstAsync(
+      const existingMolt = await database.getFirstAsync(
         `SELECT * FROM molting_history WHERE spider_id = ? AND molted_at = ?`,
         [spider.id, spider.lastMolt],
       );
 
       if (!existingMolt) {
-        await db.runAsync(
+        await database.runAsync(
           `INSERT INTO molting_history (spider_id, molted_at) VALUES (?, ?)`,
           [spider.id, spider.lastMolt],
         );
       }
 
-      const latestMoltingDate = await db.getFirstAsync<{ molted_at: string }>(
+      const latestMoltingDate = await database.getFirstAsync<{
+        molted_at: string;
+      }>(
         `SELECT molted_at FROM molting_history
          WHERE spider_id = ?
          ORDER BY datetime(molted_at) DESC
@@ -183,19 +214,19 @@ export const updateSpider = async (spider: any) => {
       }
     }
 
-    await db.runAsync(
-      `UPDATE spiders SET 
-       name = ?, 
-       age = ?, 
-       spiderSpecies = ?, 
-       individualType = ?, 
-       lastFed = ?, 
-       feedingFrequency = ?, 
-       lastMolt = ?, 
-       imageUri = ?, 
-       isFavourite = ?, 
-       status = ?, 
-       nextFeedingDate = ? 
+    await database.runAsync(
+      `UPDATE spiders SET
+       name = ?,
+       age = ?,
+       spiderSpecies = ?,
+       individualType = ?,
+       lastFed = ?,
+       feedingFrequency = ?,
+       lastMolt = ?,
+       imageUri = ?,
+       isFavourite = ?,
+       status = ?,
+       nextFeedingDate = ?
        WHERE id = ?`,
       [
         spider.name,
@@ -214,18 +245,18 @@ export const updateSpider = async (spider: any) => {
     );
 
     if (spider.documentUri) {
-      const existingDocument = await db.getFirstAsync(
+      const existingDocument = await database.getFirstAsync(
         `SELECT * FROM spider_documents WHERE spider_id = ? AND document_uri = ?`,
         [spider.id, spider.documentUri],
       );
 
-      const existingDocsCount: { count: number }[] = await db.getAllAsync(
+      const existingDocsCount: { count: number }[] = await database.getAllAsync(
         `SELECT COUNT(*) as count FROM spider_documents WHERE spider_id = ?`,
         [spider.id],
       );
 
       if (!existingDocument && existingDocsCount[0].count < 5) {
-        await db.runAsync(
+        await database.runAsync(
           `INSERT INTO spider_documents (spider_id, document_uri) VALUES (?, ?)`,
           [spider.id, spider.documentUri],
         );
@@ -238,9 +269,9 @@ export const updateSpider = async (spider: any) => {
 
 export const deleteSpider = async (spiderId: string) => {
   try {
-    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+    const database = await getDatabase();
 
-    await db.runAsync(`DELETE FROM spiders WHERE id = ?`, [spiderId]);
+    await database.runAsync(`DELETE FROM spiders WHERE id = ?`, [spiderId]);
   } catch (error) {
     console.error("Błąd podczas usuwania pająka:", error);
   }
@@ -248,9 +279,9 @@ export const deleteSpider = async (spiderId: string) => {
 
 export const addFeedingEntry = async (spiderId: string, fedAt: string) => {
   try {
-    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+    const database = await getDatabase();
 
-    await db.runAsync(
+    await database.runAsync(
       `INSERT INTO feeding_history (spider_id, fed_at) VALUES (?, ?)`,
       [spiderId, fedAt],
     );
@@ -261,9 +292,9 @@ export const addFeedingEntry = async (spiderId: string, fedAt: string) => {
 
 export const addMoltingEntry = async (spiderId: string, moltedAt: string) => {
   try {
-    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+    const database = await getDatabase();
 
-    await db.runAsync(
+    await database.runAsync(
       `INSERT INTO molting_history (spider_id, molted_at) VALUES (?, ?)`,
       [spiderId, moltedAt],
     );
@@ -277,9 +308,9 @@ export const addDocumentToSpider = async (
   documentUri: string,
 ) => {
   try {
-    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+    const database = await getDatabase();
 
-    const existingDocs: { count: number }[] = await db.getAllAsync(
+    const existingDocs: { count: number }[] = await database.getAllAsync(
       `SELECT COUNT(*) as count FROM spider_documents WHERE spider_id = ?`,
       [spiderId],
     );
@@ -289,7 +320,7 @@ export const addDocumentToSpider = async (
       return false;
     }
 
-    await db.runAsync(
+    await database.runAsync(
       `INSERT INTO spider_documents (spider_id, document_uri) VALUES (?, ?)`,
       [spiderId, documentUri],
     );
@@ -303,9 +334,9 @@ export const addDocumentToSpider = async (
 
 export const deleteDocument = async (documentId: number) => {
   try {
-    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+    const database = await getDatabase();
 
-    await db.runAsync(`DELETE FROM spider_documents WHERE id = ?`, [
+    await database.runAsync(`DELETE FROM spider_documents WHERE id = ?`, [
       documentId,
     ]);
   } catch (error) {
@@ -315,19 +346,19 @@ export const deleteDocument = async (documentId: number) => {
 
 export const checkSpiderRecords = async (spiderId: string) => {
   try {
-    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+    const database = await getDatabase();
 
-    const feedingHistory = await db.getAllAsync(
+    const feedingHistory = await database.getAllAsync(
       `SELECT * FROM feeding_history WHERE spider_id = ?`,
       [spiderId],
     );
 
-    const moltingHistory = await db.getAllAsync(
+    const moltingHistory = await database.getAllAsync(
       `SELECT * FROM molting_history WHERE spider_id = ?`,
       [spiderId],
     );
 
-    const spiderDocuments = await db.getAllAsync(
+    const spiderDocuments = await database.getAllAsync(
       `SELECT * FROM spider_documents WHERE spider_id = ?`,
       [spiderId],
     );
@@ -350,15 +381,15 @@ export const checkSpiderRecords = async (spiderId: string) => {
 
 export const getSpiderById = async (spiderId: string) => {
   try {
-    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+    const database = await getDatabase();
 
-    const spider = await db.getFirstAsync(
+    const spider = await database.getFirstAsync(
       `
-      SELECT 
+      SELECT
         s.id,
         s.name,
         s.age,
-        ss.name AS spiderSpecies, -- tu zamiast ID pobieramy nazwę
+        ss.name AS spiderSpecies,
         s.individualType,
         s.lastFed,
         s.feedingFrequency,
@@ -379,17 +410,17 @@ export const getSpiderById = async (spiderId: string) => {
       return null;
     }
 
-    const feedingHistory = await db.getAllAsync(
+    const feedingHistory = await database.getAllAsync(
       `SELECT * FROM feeding_history WHERE spider_id = ? ORDER BY fed_at DESC`,
       [spiderId],
     );
 
-    const moltingHistory = await db.getAllAsync(
+    const moltingHistory = await database.getAllAsync(
       `SELECT * FROM molting_history WHERE spider_id = ? ORDER BY molted_at DESC`,
       [spiderId],
     );
 
-    const documents = await db.getAllAsync(
+    const documents = await database.getAllAsync(
       `SELECT * FROM spider_documents WHERE spider_id = ?`,
       [spiderId],
     );
@@ -407,15 +438,16 @@ export const getSpiderById = async (spiderId: string) => {
 };
 
 export const getAllSpiderSpecies = async (): Promise<SpiderSpecies[]> => {
-  const results = await db.getAllAsync<SpiderSpecies>(
+  const database = await getDatabase();
+  const results = await database.getAllAsync<SpiderSpecies>(
     "SELECT * FROM spider_species",
   );
   return results;
 };
 
 export const addSpecies = async (name: string): Promise<number> => {
-  const db = await SQLite.openDatabaseAsync("spiders.db");
-  const result = await db.runAsync(
+  const database = await getDatabase();
+  const result = await database.runAsync(
     "INSERT INTO spider_species (name) VALUES (?)",
     [name],
   );
@@ -426,9 +458,9 @@ export const countSpidersBySpecies = async (
   speciesId: number,
 ): Promise<number> => {
   try {
-    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+    const database = await getDatabase();
 
-    const result = await db.getFirstAsync<{ count: number }>(
+    const result = await database.getFirstAsync<{ count: number }>(
       `SELECT COUNT(*) as count FROM spiders WHERE spiderSpecies = ?`,
       [speciesId],
     );
@@ -444,7 +476,7 @@ export const deleteSpiderSpecies = async (
   speciesId: number,
 ): Promise<{ success: boolean; count: number }> => {
   try {
-    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+    const database = await getDatabase();
 
     const count = await countSpidersBySpecies(speciesId);
 
@@ -455,7 +487,9 @@ export const deleteSpiderSpecies = async (
       return { success: false, count };
     }
 
-    await db.runAsync(`DELETE FROM spider_species WHERE id = ?`, [speciesId]);
+    await database.runAsync(`DELETE FROM spider_species WHERE id = ?`, [
+      speciesId,
+    ]);
     return { success: true, count: 0 };
   } catch (error) {
     console.error("Błąd podczas usuwania gatunku pająka:", error);
@@ -465,9 +499,9 @@ export const deleteSpiderSpecies = async (
 
 export const updateSpiderSpeciesName = async (id: number, newName: string) => {
   try {
-    if (!db) throw new Error("Baza danych nie została zainicjalizowana");
+    const database = await getDatabase();
 
-    await db.runAsync(`UPDATE spider_species SET name = ? WHERE id = ?`, [
+    await database.runAsync(`UPDATE spider_species SET name = ? WHERE id = ?`, [
       newName,
       id,
     ]);
@@ -497,13 +531,15 @@ export const updateSpiderSpeciesName = async (id: number, newName: string) => {
 };
 
 export const countSpiders = async () => {
-  await db.getFirstAsync("SELECT COUNT(*) as count FROM spiders");
+  const database = await getDatabase();
+  await database.getFirstAsync("SELECT COUNT(*) as count FROM spiders");
 };
 
 export const getSpeciesIdByName = async (
   name: string,
 ): Promise<number | null> => {
-  const result = await db.getFirstAsync<{ id: number }>(
+  const database = await getDatabase();
+  const result = await database.getFirstAsync<{ id: number }>(
     `SELECT id FROM spider_species WHERE name = ?`,
     [name],
   );

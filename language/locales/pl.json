@@ -348,6 +348,9 @@
           "view": "Podgląd",
           "remove": "Usuń"
         }
+      },
+      "spider-list": {
+        "empty": "Brak pająków w tej kategorii"
       }
     }
   },

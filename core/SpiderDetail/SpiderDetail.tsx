@@ -58,11 +58,12 @@ const SpiderDetails = ({ spiderId }: Props) => {
   const moltingHistoryData = spiderData?.moltingHistory ?? null;
   const documentsData = spiderData?.documents ?? null;
 
+  // Always fetch fresh data when component mounts or spiderId changes
   useEffect(() => {
-    if (!spiderData && spiderIdString) {
+    if (spiderIdString) {
       getSpiderById(spiderIdString);
     }
-  }, [spiderIdString, spiderData, getSpiderById]);
+  }, [spiderIdString, getSpiderById]);
 
   const nextFeedingDate = spiderData
     ? getNextFeedingDate(spiderData.lastFed, spiderData.feedingFrequency)

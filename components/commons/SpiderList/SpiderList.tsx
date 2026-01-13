@@ -20,6 +20,7 @@ import { Colors, ThemeType } from "@/constants/Colors";
 import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import { router } from "expo-router";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const defaultSpiderImage = require("@/assets/images/spider.png");
 
@@ -58,6 +59,7 @@ const SpiderList = ({ title, data, info }: SpiderListProps) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const { currentTheme } = useUserStore();
+  const { t } = useTranslation();
 
   const maxScroll = useMemo(
     () => Math.max(0, data.length * (ITEM_WIDTH + 10) - (width - 60)),
@@ -121,7 +123,7 @@ const SpiderList = ({ title, data, info }: SpiderListProps) => {
       {data.length === 0 ? (
         <View style={componentStyles["spider-list__empty-state"]}>
           <ThemedText style={componentStyles["spider-list__empty-text"]}>
-            Brak pająków w tej kategorii
+            {t("components.commons.spider-list.empty")}
           </ThemedText>
         </View>
       ) : (

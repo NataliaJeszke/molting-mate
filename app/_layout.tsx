@@ -22,13 +22,19 @@ import { useTranslation } from "@/hooks/useTranslation";
 
 SplashScreen.preventAutoHideAsync();
 
+// Component that initializes notifications after database is ready
+function NotificationInitializer() {
+  useNotificationPermission();
+  return null;
+}
+
 export default function RootLayout() {
   const { currentTheme, userSelectedTheme, setTheme } = useUserStore();
   const systemTheme = useColorScheme();
   const { t } = useTranslation();
   const [dbInitialized, setDbInitialized] = useState(false);
 
-  useNotificationPermission();
+  // Note: useNotificationPermission is called after database is ready (see below)
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -71,6 +77,7 @@ export default function RootLayout() {
       }}
     >
       <ThemeProvider value={currentTheme === "dark" ? DarkTheme : DefaultTheme}>
+        <NotificationInitializer />
         <Stack>
           <Stack.Screen
             name="(tabs)"
