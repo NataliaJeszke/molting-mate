@@ -33,7 +33,8 @@
       "blockedPermissions": [
         "RECORD_AUDIO",
         "SYSTEM_ALERT_WINDOW"
-      ]
+      ],
+      "privacyPolicy": "https://nataliajeszke.github.io/molting-mate/privacy-policy.html"
     },
     "web": {
       "bundler": "metro",
