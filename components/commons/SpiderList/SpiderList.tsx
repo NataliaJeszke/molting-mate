@@ -21,10 +21,32 @@ import { ThemedText } from "@/components/ui/ThemedText";
 import CardComponent from "@/components/ui/CardComponent";
 import { router } from "expo-router";
 
+const defaultSpiderImage = require("@/assets/images/spider.png");
+
 type SpiderListProps = {
   title: string;
   data: SpiderListItem[];
   info?: string;
+};
+
+const CarouselSpiderImage = ({
+  imageUri,
+  style,
+}: {
+  imageUri?: string | null;
+  style: object;
+}) => {
+  const [hasError, setHasError] = useState(false);
+  const shouldUseDefault = !imageUri || imageUri.trim() === "" || hasError;
+
+  return (
+    <Image
+      source={shouldUseDefault ? defaultSpiderImage : { uri: imageUri }}
+      style={style}
+      resizeMode="cover"
+      onError={() => setHasError(true)}
+    />
+  );
 };
 
 const ITEM_WIDTH = 100;
@@ -141,14 +163,9 @@ const SpiderList = ({ title, data, info }: SpiderListProps) => {
                     router.push(`/spider/${spider.id}`);
                   }}
                 >
-                  <Image
-                    source={
-                      spider.imageUri
-                        ? { uri: spider.imageUri }
-                        : require("@/assets/images/spider.png")
-                    }
+                  <CarouselSpiderImage
+                    imageUri={spider.imageUri}
                     style={componentStyles["spider-list__image"]}
-                    resizeMode="cover"
                   />
                 </TouchableOpacity>
                 <ThemedText style={componentStyles["spider-list__info"]}>

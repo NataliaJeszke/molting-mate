@@ -26,6 +26,8 @@ import { useFeedingStatusLabel } from "@/hooks/useFeedingStatusLabel";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useIndividualTypeLabel } from "@/hooks/useIndividualTypeTranslation";
 
+const defaultSpiderImage = require("@/assets/images/spider.png");
+
 interface Props {
   spiderId: string | string[] | undefined;
 }
@@ -47,6 +49,7 @@ const SpiderDetails = ({ spiderId }: Props) => {
   const [showFeedingHistory, setShowFeedingHistory] = useState(false);
   const [showMoltingHistory, setShowMoltingHistory] = useState(false);
   const [showDocumentModal, setShowDocumentModal] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const getFeedingStatusLabel = useFeedingStatusLabel();
   const getIndividualTypeLabel = useIndividualTypeLabel();
@@ -233,12 +236,15 @@ const SpiderDetails = ({ spiderId }: Props) => {
         <View style={styles(currentTheme).imageCard__content}>
           <Image
             source={
-              spiderData?.imageUri
-                ? { uri: spiderData?.imageUri }
-                : require("@/assets/images/spider.png")
+              spiderData?.imageUri &&
+              spiderData.imageUri.trim() !== "" &&
+              !imageError
+                ? { uri: spiderData.imageUri }
+                : defaultSpiderImage
             }
             style={styles(currentTheme).imageCard__image}
             resizeMode="contain"
+            onError={() => setImageError(true)}
           />
           <ThemedText style={styles(currentTheme).imageCard__name}>
             {spiderData?.name}

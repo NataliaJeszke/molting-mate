@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { View, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -11,6 +11,8 @@ import { FeedingStatus } from "@/constants/FeedingStatus.enums";
 import { Colors, ThemeType } from "@/constants/Colors";
 
 import { ThemedText } from "@/components/ui/ThemedText";
+
+const defaultSpiderImage = require("@/assets/images/spider.png");
 
 type Props = {
   spider: any;
@@ -30,8 +32,12 @@ const SpiderListItemComponent = ({
   toggleFavourite,
 }: Props) => {
   const router = useRouter();
+  const [imageError, setImageError] = useState(false);
 
   const componentStyles = useMemo(() => styles(currentTheme), [currentTheme]);
+
+  const shouldUseDefault =
+    !spider.imageUri || spider.imageUri.trim() === "" || imageError;
 
   const renderStatusIcon = (spider: Spider | ExtendedSpider) => {
     if (spider.status === FeedingStatus.HUNGRY) {
@@ -95,12 +101,11 @@ const SpiderListItemComponent = ({
         <TouchableOpacity onPress={() => router.push(`/spider/${spider.id}`)}>
           <Image
             source={
-              spider.imageUri
-                ? { uri: spider.imageUri }
-                : require("@/assets/images/spider.png")
+              shouldUseDefault ? defaultSpiderImage : { uri: spider.imageUri }
             }
             style={componentStyles["spider-list__image"]}
             resizeMode="cover"
+            onError={() => setImageError(true)}
           />
         </TouchableOpacity>
 
