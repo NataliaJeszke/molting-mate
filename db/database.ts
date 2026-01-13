@@ -308,7 +308,23 @@ export const addDocumentToSpider = async (
   documentUri: string,
 ) => {
   try {
+    // Don't add empty documents
+    if (!documentUri || documentUri.trim() === "") {
+      return false;
+    }
+
     const database = await getDatabase();
+
+    // Check if this exact document already exists (prevent duplicates)
+    const existingDoc = await database.getFirstAsync<{ id: number }>(
+      `SELECT id FROM spider_documents WHERE spider_id = ? AND document_uri = ?`,
+      [spiderId, documentUri],
+    );
+
+    if (existingDoc) {
+      console.warn("⚠️ Ten dokument już istnieje dla tego pająka.");
+      return false;
+    }
 
     const existingDocs: { count: number }[] = await database.getAllAsync(
       `SELECT COUNT(*) as count FROM spider_documents WHERE spider_id = ?`,

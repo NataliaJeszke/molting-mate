@@ -116,7 +116,11 @@ const SpiderDetails = ({ spiderId }: Props) => {
 
   const handleChooseDocument = () => {
     const handleAddDocument = async (id: string, uri: string) => {
-      await addDocumentToSpider(id, uri);
+      const result = await addDocumentToSpider(id, uri);
+      // Force refresh spider data after adding document
+      if (result) {
+        await getSpiderById(id);
+      }
     };
 
     Alert.alert(

@@ -13,10 +13,10 @@ import CardComponent from "@/components/ui/CardComponent";
 import { useTranslation } from "@/hooks/useTranslation";
 
 interface SpiderDocumentProps {
-  documentUris: { document_uri: string; id: string }[];
+  documentUris: { document_uri: string; id: number }[];
   isImageDocument: (uri: string) => boolean;
   onChooseDocument: () => void;
-  onRemoveDocument: (docId: string) => void;
+  onRemoveDocument: (docId: number) => void;
   currentTheme: ThemeType;
   styles: any;
   showDocumentModal: boolean;

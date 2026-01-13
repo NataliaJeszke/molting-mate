@@ -19,7 +19,6 @@ import { useSpidersStore } from "@/store/spidersStore";
 import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
 
 import {
-  addDocumentToSpider,
   addFeedingEntry,
   addMoltingEntry,
   Spider,
@@ -50,6 +49,7 @@ export default function SpiderForm() {
   const allIds = useSpidersStore((state) => state.allIds);
   const addNewSpider = useSpidersStore((state) => state.addNewSpider);
   const updateSpider = useSpidersStore((state) => state.updateSpider);
+  const addDocumentToSpider = useSpidersStore((state) => state.addDocumentToSpider);
   const { addSpeciesToDb, speciesOptions } = useSpiderSpeciesStore();
 
   const spiders = useMemo(
@@ -167,7 +167,10 @@ export default function SpiderForm() {
       } as any);
       await addFeedingEntry(spiderData.id, lastFed);
       await addMoltingEntry(spiderData.id, lastMolt);
-      await addDocumentToSpider(spiderData.id, spiderData.documentUri);
+      // Only add document if URI is provided
+      if (documentUri && documentUri.trim() !== "") {
+        await addDocumentToSpider(spiderData.id, documentUri);
+      }
       Alert.alert(
         t("spider-form.handle-submit.alert.success"),
         `${t("spider-form.handle-submit.alert.success_sub_add")} "${name}"`,
