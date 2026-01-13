@@ -23,7 +23,17 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#2e1a47"
       },
-      "package": "com.nataliafrontendorg.moltingmate"
+      "package": "com.nataliafrontendorg.moltingmate",
+      "description": "Application to track feeding and molting of spiders",
+      "permissions": [
+        "CAMERA",
+        "READ_MEDIA_IMAGES",
+        "POST_NOTIFICATIONS"
+      ],
+      "blockedPermissions": [
+        "RECORD_AUDIO",
+        "SYSTEM_ALERT_WINDOW"
+      ]
     },
     "web": {
       "bundler": "metro",
