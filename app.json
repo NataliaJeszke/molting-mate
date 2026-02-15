@@ -3,6 +3,7 @@
     "name": "Molting Mate",
     "slug": "molting-mate",
     "version": "1.0.0",
+    "description": "Application to track feeding and molting of spiders",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",

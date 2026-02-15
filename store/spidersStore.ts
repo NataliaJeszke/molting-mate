@@ -151,15 +151,11 @@ export const useSpidersStore = create<SpidersStore>()(
 
     getSpiderById: async (spiderId) => {
       try {
-        // First check local state
-        const localSpider = get().byId[spiderId];
-        if (localSpider) return localSpider;
-
-        // Fallback to DB
+        // Always fetch fresh data from DB to ensure we have latest documents, etc.
         const spiderData = await getSpiderById(spiderId);
         if (!spiderData) return null;
 
-        // Update local state with fetched spider
+        // Update local state with fresh data
         set((state) => ({
           byId: { ...state.byId, [spiderId]: spiderData },
           allIds: state.allIds.includes(spiderId)

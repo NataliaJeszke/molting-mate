@@ -21,7 +21,6 @@ import { useSpiderSpeciesStore } from "@/store/spiderSpeciesStore";
 import {
   addFeedingEntry,
   addMoltingEntry,
-  Spider,
 } from "@/db/database";
 
 import { useTranslation } from "@/hooks/useTranslation";
@@ -49,7 +48,6 @@ export default function SpiderForm() {
   const allIds = useSpidersStore((state) => state.allIds);
   const addNewSpider = useSpidersStore((state) => state.addNewSpider);
   const updateSpider = useSpidersStore((state) => state.updateSpider);
-  const addDocumentToSpider = useSpidersStore((state) => state.addDocumentToSpider);
   const { addSpeciesToDb, speciesOptions } = useSpiderSpeciesStore();
 
   const spiders = useMemo(
@@ -74,7 +72,6 @@ export default function SpiderForm() {
     "lastFed" | "lastMolt" | null
   >(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [documentUri, setDocumentUri] = useState<string>();
   const [individualType, setIndividualType] = useState<
     IndividualType | undefined
   >();
@@ -149,12 +146,11 @@ export default function SpiderForm() {
       feedingFrequency: feedingFrequency as FeedingFrequency,
       lastMolt,
       imageUri: imageUri || "",
-      documentUri: documentUri || "",
       isFavourite: existingSpider?.isFavourite ?? false,
     };
 
     if (id) {
-      updateSpider(spiderData as any);
+      await updateSpider(spiderData as any);
       Alert.alert(
         t("spider-form.handle-submit.alert.success"),
         `${t("spider-form.handle-submit.alert.success_sub")} "${name}"`,
@@ -167,10 +163,6 @@ export default function SpiderForm() {
       } as any);
       await addFeedingEntry(spiderData.id, lastFed);
       await addMoltingEntry(spiderData.id, lastMolt);
-      // Only add document if URI is provided
-      if (documentUri && documentUri.trim() !== "") {
-        await addDocumentToSpider(spiderData.id, documentUri);
-      }
       Alert.alert(
         t("spider-form.handle-submit.alert.success"),
         `${t("spider-form.handle-submit.alert.success_sub_add")} "${name}"`,
@@ -189,7 +181,6 @@ export default function SpiderForm() {
     setFeedingFrequency("");
     setLastMolt("");
     setImageUri(undefined);
-    setDocumentUri(undefined);
     newSpeciesLabelRef.current = null;
   };
 
@@ -236,63 +227,6 @@ export default function SpiderForm() {
               setImageUri(result.assets[0].uri);
             }
           },
-        },
-      ],
-    );
-  };
-
-  const handleChooseDocument = () => {
-    Alert.alert(
-      t("spider-form.handle-choose-document.alert.choose_source.title"),
-      t("spider-form.handle-choose-document.alert.choose_source.info"),
-      [
-        {
-          text: t("spider-form.handle-choose-document.alert.camera.title"),
-          onPress: async () => {
-            const permission =
-              await ImagePicker.requestCameraPermissionsAsync();
-            if (permission.status !== "granted") {
-              Alert.alert(
-                t("spider-form.handle-choose-document.alert.permission.denied"),
-              );
-              return;
-            }
-
-            const result = await ImagePicker.launchCameraAsync({
-              allowsEditing: true,
-              aspect: [1, 1],
-              quality: 1,
-            });
-            if (!result.canceled) {
-              setDocumentUri(result.assets[0].uri);
-            }
-          },
-        },
-        {
-          text: t("spider-form.handle-choose-document.alert.gallery.title"),
-          onPress: async () => {
-            const permission =
-              await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (permission.status !== "granted") {
-              Alert.alert(
-                t("spider-form.handle-choose-document.alert.permission.denied"),
-              );
-              return;
-            }
-
-            const result = await ImagePicker.launchImageLibraryAsync({
-              allowsEditing: true,
-              aspect: [1, 1],
-              quality: 1,
-            });
-            if (!result.canceled) {
-              setDocumentUri(result.assets[0].uri);
-            }
-          },
-        },
-        {
-          text: t("spider-form.handle-choose-document.alert.cancel"),
-          style: "cancel",
         },
       ],
     );
@@ -510,22 +444,6 @@ export default function SpiderForm() {
             })}
           </View>
 
-          <ThemedText style={styles(currentTheme).label}>
-            {t("spider-form.spider_documents")}
-          </ThemedText>
-
-          <TouchableOpacity
-            onPress={handleChooseDocument}
-            activeOpacity={0.8}
-            style={styles(currentTheme).filePicker}
-          >
-            <ThemedText>
-              {documentUri
-                ? t("spider-form.document_added")
-                : t("spider-form.document_not_added")}
-            </ThemedText>
-          </TouchableOpacity>
-
           <Pressable style={styles(currentTheme).button} onPress={handleSubmit}>
             <ThemedText style={styles(currentTheme).buttonText}>
               {t("spider-form.save")}
@@ -588,21 +506,10 @@ const styles = (theme: ThemeType) =>
     selectedRadioButton: {
       backgroundColor: Colors[theme].tint,
     },
-
     selectedText: {
       color: "#fff",
       fontWeight: "bold",
     },
-
-    filePicker: {
-      borderWidth: 1,
-      borderColor: "#ccc",
-      borderRadius: 8,
-      padding: 12,
-      marginVertical: 8,
-      alignItems: "center",
-    },
-
     pickerOption: {
       padding: 10,
       marginRight: 10,

@@ -1,13 +1,32 @@
 import * as TaskManager from "expo-task-manager";
 import * as Notifications from "expo-notifications";
 import * as SQLite from "expo-sqlite";
+import * as Localization from "expo-localization";
 
 import { parse } from "date-fns";
 
 import { FeedingFrequency } from "@/constants/FeedingFrequency.enums";
 import { FeedingStatus } from "@/constants/FeedingStatus.enums";
-import { t } from "@/language/i18n";
 import { getDatabase, isDatabaseReady } from "@/db/database";
+
+// Translations for background notifications
+const translations = {
+  pl: {
+    title: "Czas na karmienie!",
+    bodySingular: "Masz 1 pająka do nakarmienia dzisiaj",
+    bodyPlural: (count: number) => `Masz ${count} pająków do nakarmienia dzisiaj`,
+  },
+  en: {
+    title: "Time to feed!",
+    bodySingular: "You have 1 spider to feed today",
+    bodyPlural: (count: number) => `You have ${count} spiders to feed today`,
+  },
+};
+
+const getNotificationStrings = () => {
+  const systemLang = Localization.getLocales()[0]?.languageCode;
+  return systemLang === "pl" ? translations.pl : translations.en;
+};
 
 // Helper to safely get database - uses shared connection when available
 const getDatabaseSafely = async (): Promise<SQLite.SQLiteDatabase | null> => {
@@ -114,13 +133,12 @@ async function scheduleDailyNotification(): Promise<void> {
       return;
     }
 
-    const notificationTitle = t("notifications.background.title");
+    const strings = getNotificationStrings();
+    const notificationTitle = strings.title;
     const notificationBody =
       spidersToFeedToday === 1
-        ? t("notifications.background.bodySingular")
-        : t("notifications.background.bodyPlural", {
-            count: spidersToFeedToday,
-          });
+        ? strings.bodySingular
+        : strings.bodyPlural(spidersToFeedToday);
 
     // Schedule daily notification for noon
     // If it's past noon today, it will fire tomorrow at noon
