@@ -127,33 +127,31 @@ const SpiderDocument = ({
   return (
     <>
       <CardComponent customStyle={styles(currentTheme).documentCard}>
-        <View style={styles(currentTheme).documentCard}>
-          <View style={styles(currentTheme).documentCard__header}>
-            <View style={styles(currentTheme).documentCard__headerContent}>
-              <Feather
-                name="file"
-                size={20}
-                style={styles(currentTheme).documentCard__icon}
-              />
-              <ThemedText style={styles(currentTheme).documentCard__title}>
-                {t("components.commons.spider-document.title")}
-              </ThemedText>
-            </View>
-            <TouchableOpacity
-              onPress={onChooseDocument}
-              style={styles(currentTheme).documentCard__addButton}
-            >
-              <Feather
-                name="plus"
-                size={20}
-                style={styles(currentTheme).documentCard__icon}
-              />
-            </TouchableOpacity>
+        <View style={styles(currentTheme).documentCard__header}>
+          <View style={styles(currentTheme).documentCard__headerContent}>
+            <Feather
+              name="file"
+              size={20}
+              style={styles(currentTheme).documentCard__icon}
+            />
+            <ThemedText style={styles(currentTheme).documentCard__title}>
+              {t("components.commons.spider-document.title")}
+            </ThemedText>
           </View>
+          <TouchableOpacity
+            onPress={onChooseDocument}
+            style={styles(currentTheme).documentCard__addButton}
+          >
+            <Feather
+              name="plus"
+              size={20}
+              style={styles(currentTheme).documentCard__icon}
+            />
+          </TouchableOpacity>
+        </View>
 
-          <View style={styles(currentTheme).documentCard__content}>
-            {renderContent()}
-          </View>
+        <View style={styles(currentTheme).documentCard__content}>
+          {renderContent()}
         </View>
       </CardComponent>
 
